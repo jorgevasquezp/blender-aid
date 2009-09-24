@@ -9,13 +9,13 @@ This page describe the installation steps of the product
 just unzip the downloaded file (where this file is part of) and extract it to a directory
 make sure the user has read & write priviledges to "/var/tmp".
 and run server.py
-
+{{{
 python server.py
-
+}}}
 the migration tool can be started using
-
+{{{
 python migrate.py
-
+}}}
 = CONFIGURATION =
 
 in settings.py settings can be modified. At this moment only the web server bingin (listening port) and the database location can be configured. Defaults are OK for local usage. When installing on a central server the web server binding needs to be altered to the networkcard in stead of the localhost.
@@ -30,7 +30,7 @@ Before using the migrate tool, a production has to be added. this can be done by
 
 = DE-INSTALLATION =
 
-To remove just delete the directory where it is installed to. The only created file is /var/tmp/sql.bin (or otherwise when changed in settings.py)
+To remove just delete the directory where it is installed to. The only created file is {{{/var/tmp/sql.bin}}} (or otherwise when changed in settings.py)
 
 
 = KNOWN ISSUES =
