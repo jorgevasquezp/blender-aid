@@ -1,4 +1,0 @@
-#labels Featured,Phase-Requirements,visibility
-#Visibility is to view the way your content is ordered and used within your project
-
-= Introduction =
