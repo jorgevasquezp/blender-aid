@@ -1,0 +1,95 @@
+<html><head>
+<title>Blender-aid</title>
+
+<link rel="stylesheet" type="text/css" href="${css}">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+ 
+ 
+  <form>
+<script type="text/javascript" src="script/table.js"></script>
+<script type="text/javascript" src="script/func.js"></script>
+
+<fieldset>
+<legend>Productions</legend>
+<div><p>Select the production you want to work on.</p>
+<table id="productions"></table>
+</div>
+</fieldset>
+<fieldset>
+<legend class="close" onclick="javascript:sh(this, 'test4')">Add new production</legend>
+<div id="test4" style="display:none">
+<label>name:</label><input id="productionname"></input><br/>
+<label>location:</label><input id="productionlocation" class="large"></input><br/>
+<a href="#" onclick="javascript:addProduction();return false;">Add new production</a>
+</div>
+</fieldset>
+<script>
+function linkFactory(item, column, td) {
+	node = defaultDom(item, column, td);
+	atag = document.createElement("a");
+	atag.setAttribute("href", "production.html?production_id="+item.production_id);
+	atag.appendChild(node);
+	return atag
+}
+function iconFactory(item, column, td) {
+	if (column[0]=="icon") {
+		result = document.createElement("img");
+		result .setAttribute("src", "images/production.png");
+		return result;
+	} else {
+		result = document.createElement("a")
+		atag = document.createElement("img");
+		atag.setAttribute("src", "images/delete.png");
+		atag.setAttribute("title", "Delete this production");
+		result.setAttribute("onclick", "javascript:deleteProduction("+item.production_id+");return false;")
+		result.setAttribute("href", "#");
+		result.appendChild(atag);
+		return result;
+	}
+}
+table = document.getElementById("productions");
+initTable(table, "table");
+table.setCaption("Productions");
+table.addColumn("icon", "", "icon", true, false, iconFactory);
+table.addColumn("name", "name", "production_name", true, null, linkFactory);
+table.addColumn("location", "location", "production_location", true, null, linkFactory);
+table.addColumn("action", "", "del", true, false, iconFactory);
+table.paging=false;
+table.footer=false;
+table.update();
+
+xmlDoc2 = serviceProductions(process2);
+function process2() {
+	if ( xmlDoc2.readyState != 4 ) return ;
+	files = eval(xmlDoc2.responseText);
+	table.setItems(files);
+	table.update();
+}
+
+xmlDoc3=null;
+xmlDoc4=null;
+
+function deleteProduction(productionId) {
+	xmlDoc3 = serviceDeleteProduction(deleteProductionCallback, productionId)
+}
+
+function deleteProductionCallback() {
+	if ( xmlDoc3.readyState != 4 ) return ;
+	xmlDoc2 = serviceProductions(process2);
+}
+function addProductionCallback() {
+	if ( xmlDoc4.readyState != 4 ) return ;
+	xmlDoc2 = serviceProductions(process2);
+	document.getElementById("productionname").value="";
+	document.getElementById("productionlocation").value="";
+}
+
+function addProduction() {
+	name = document.getElementById("productionname").value;
+	plocation = document.getElementById("productionlocation").value;
+	xmlDoc4 = serviceAddProduction(addProductionCallback, name, plocation);
+}
+</script>
+
+  </form>
+ </body></html>
