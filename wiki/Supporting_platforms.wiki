@@ -1,7 +1,0 @@
-#Supporting platforms and issues
-
-= Supporting issues = 
-
-Blender-aid is build on Python2.6 on Linux. windows works, but has some displaying issues on filenames.
-
-Python3.0 is supported, when PIL is migrated.
