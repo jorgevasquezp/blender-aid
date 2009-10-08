@@ -32,7 +32,7 @@ SQLITE3_CONNECTIONURL="/var/tmp/sql.bin"
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="0.1"
+VERSION="20091008"
 
 #additional description of the release
-VERSION_DESCRIPTION="Blender conference 2009 release"
+VERSION_DESCRIPTION="Durian beta release"
