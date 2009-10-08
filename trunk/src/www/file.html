@@ -1,0 +1,344 @@
+<html><head>
+<title>Blender-aid</title>
+<link rel="stylesheet" type="text/css" href="${css}">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+ 
+ 
+  <form>
+<script type="text/javascript" src="script/table.js"></script>
+<script type="text/javascript" src="script/tab.js"></script>
+<script type="text/javascript" src="script/func.js"></script>
+<fieldset>
+<legend>Production</legend>
+<div id="test1">
+<label>name:</label><span id="spanProductionName" ></span><br/>
+<label>location:</label><span id="spanProductionLocation" ></span><br/>
+<label>file:</label><span id="spanFileLocation" ></span> <a id="aLocalLink" style="display:none;">Open</a><br/>
+<label>refactor:</label>
+<a href="#" onclick="javascript:startMoveFile()">Move</a>&nbsp;&nbsp;<a href="#" onclick="javascript:startRenameFile()">Rename</a>
+
+
+
+<br/>
+<span style="float:right;">
+<img src="images/back.png"></img><a href="productions.html">Productions</a>
+<img src="images/production.png"></img><a href="production.html">Back to <span id="spanProductionName2"></span></a>
+</span>
+
+</div>
+</fieldset>
+
+<ul id="tabs">
+	<li><img src="images/unknownfile.png"><a id="linkBasic" >Basic</a></li>
+	<li><img src="images/object.png"><a id="linkElements" >Elements</a></li>
+	<li><img src="images/dependancy.png"><a id="linkReferences" >References</a></li>
+	<li><img src="images/dependancy2.png"><a id="linkDependancies" >Dependancy viewer</a></li>
+</ul>
+
+<div id="tabBasic" class="tab">
+<div id="blend-settings" style="display:none;">
+	<label>scene:</label><span id="spanSceneName" ></span><br/>
+	<label>startframe:</label><span id="spanSceneStartframe" ></span><br/>
+	<label>endframe:</label><span id="spanSceneEndframe" ></span><br/>
+	<label>resolution:</label><span id="spanSceneResolution" ></span><br/>
+	<label>output:</label><span id="spanSceneOutputtype" ></span><br/>
+	<label>x-parts:</label><span id="spanSceneXparts" ></span><br/>
+	<label>y-parts:</label><span id="spanSceneYparts" ></span><br/>
+</div>
+
+<div id="image-settings" style="display:none;">
+<a href="/download/file?file_id=${file_id}&production_id=${production_id}" class="img"><img id="preview" src="/thumbnail/512?file_id=${file_id}&production_id=${production_id}"></img>
+</a>
+</div>
+</div>
+
+<div id="tabElements" class="tab">
+<div id="blend-elements" style="display:none;">
+	<div id="test3">
+		<label>filter:</label><input id="filterElements" onchange="javascript:applyFilter()" onkeyup="javascript:applyFilter()" type="text"></input><br/><br/>
+
+		<table id="elements"></table>
+	</div>
+</div>
+</div>
+
+<div id="tabReferences" class="tab">
+		<a href="/svg/1/neighbour/all/detail/${file_id}" target="_blank" >Show graphical view</a>
+		<div id="blend-uses" style="display:none;">
+		<table id="references"></table> <br/>
+		</div>
+		<table id="usedby"></table>
+</div>
+
+<div id="tabDependancies" class="tab">
+<fieldset>
+	<legend>settings</legend>
+	<select id="selectView" onchange="javascript:updateD()">
+		<option value="neighbour">neighbour</option>
+		<option value="uses">uses</option>
+		<option value="used">used</option>
+		<option value="production">production</option>
+	</select><br/>
+	<input id="checkAll" checked="true" onchange="javascript:updateD()" type="checkbox">All</input> 
+	<ul id="checksub" style="display:none;">
+	<li>
+	<input id="checkOB" onchange="javascript:updateD()" type="checkbox"><img src="images/object.png"></img>Object</input> 
+</li><li><input id="checkMA" onchange="javascript:updateD()" type="checkbox"><img src="images/material.png"></img>Material</input> 
+</li><li><input id="checkME" onchange="javascript:updateD()" type="checkbox"><img src="images/mesh.png"></img>Mesh</input> 
+</li><li><input id="checkTE" onchange="javascript:updateD()" type="checkbox"><img src="images/texture.png"></img>Texture</input> 
+</li><li><input id="checkLA" onchange="javascript:updateD()" type="checkbox"><img src="images/lamp.png"></img>Lamp</input> 
+</li><li><input id="checkAR" onchange="javascript:updateD()" type="checkbox"><img src="images/armature.png"></img>Armature</input> 
+</li><li><input id="checkAC" onchange="javascript:updateD()" type="checkbox"><img src="images/action.png"></img>Action</input> 
+</li><li><input id="checkPA" onchange="javascript:updateD()" type="checkbox"><img src="images/particle.png"></img>Particle</input> 
+</li><li><input id="checkGR" onchange="javascript:updateD()" type="checkbox"><img src="images/group.png"></img>Group</input> 
+</li><li><input id="checkCA" onchange="javascript:updateD()" type="checkbox"><img src="images/camera.png"></img>Camera</input> 
+</li><li><input id="checkWO" onchange="javascript:updateD()" type="checkbox"><img src="images/world.png"></img>World</input> 
+</li><li><input id="checkIM" onchange="javascript:updateD()" type="checkbox"><img src="images/image.png"></img>Image</input>
+</li>
+	</ul>
+
+
+</fieldset>
+<fieldset>
+	<legend>graphical display</legend>
+	<input id="checkDisplay" onchange="javascript:updateD()" type="checkbox">Show detailed file reference information</input> <br/>
+<a id="aGraph" href="/svg/dependancy.svg?navigation=1" target="new">Show graph</a>
+</fieldset>
+<fieldset>
+	<legend>result</legend>
+	<table id="tableD"></table>
+</fieldset>
+</div>
+
+<script>
+tab = document.getElementById("tabs")
+initTab(tab, "tab")
+tab.addTab("linkBasic", "tabBasic")
+tab.addTab("linkElements", "tabElements")
+tab.addTab("linkReferences", "tabReferences")
+tab.addTab("linkDependancies", "tabDependancies")
+tab.update()
+
+tableElements = document.getElementById("elements");
+initTable(tableElements, "tableElements");
+tableElements.setCaption("Elements");
+tableElements.addColumn("icon", "", "element_type", true, false, elementIconFactory);
+tableElements.addColumn("element_type", "type", "element_type", true);
+tableElements.addColumn("element_name", "name", "element_name", true);
+tableElements.addColumn("refactor", "actions", "file_id", true, false, elementActionsFactory);
+tableElements.pageitems=20;
+tableElements.filter=filter;
+tableElements.update(); 
+
+tableReferences = document.getElementById("references");
+initTable(tableReferences, "tableReferences");
+tableReferences.setCaption("References");
+tableReferences.addColumn("file_icon", "", "file_location", true, false, fileIconFactory);
+tableReferences.addColumn("file_location", "file", "file_location", true, null, linkFactoryFile);
+tableReferences.addColumn("element_icon", "", "element_type", true, false, elementIconFactory);
+tableReferences.addColumn("element_type", "type", "element_type", true);
+tableReferences.addColumn("element_name", "name", "element_name", true);
+tableReferences.pageitems=20;
+tableReferences.update();
+tableUsedby = document.getElementById("usedby");
+initTable(tableUsedby, "tableUsedby");
+tableUsedby.setCaption("File is used by");
+tableUsedby.addColumn("file_icon", "", "file_location", true, false, fileIconFactory);
+tableUsedby.addColumn("file_location", "file", "file_location", true, null, linkFactoryFile);
+tableUsedby.addColumn("element_icon", "", "element_type", true, false, elementIconFactory);
+tableUsedby.addColumn("element_type", "type", "element_type", true);
+tableUsedby.addColumn("element_name", "name", "element_name", true);
+tableUsedby.pageitems=20;
+tableUsedby.update(); 
+
+xmlDoc = serviceFileView(processP, ${production_id}, ${file_id});
+function processP() {
+	if ( xmlDoc.readyState != 4 ) return ;
+	result = eval(xmlDoc.responseText)
+	production = result[0];
+	file = result[1];
+	fillSpan("spanProductionName", production.production_name);
+	fillSpan("spanProductionName2", production.production_name);
+	fillSpan("spanProductionLocation", production.production_location);
+
+	fillSpan("spanFileLocation", file.file_location);
+	fileName = file.file_name;
+	fileLocation = file.file_location;
+	locallink=document.getElementById("aLocalLink")
+	locallink.setAttribute("href", "file://"+production.production_location+"/"+file.file_location)
+	locallink.setAttribute("style", "")
+
+
+	if (isBlendFile(file.file_location)) {
+		document.getElementById("blend-settings").setAttribute("style", "display:block;")
+		document.getElementById("blend-elements").setAttribute("style", "display:block;")
+		document.getElementById("blend-uses").setAttribute("style", "display:block;")
+
+		fillSpan("spanSceneName", file.scene_name);
+		fillSpan("spanSceneStartframe", file.scene_startframe);
+		fillSpan("spanSceneEndframe", file.scene_endframe);
+		fillSpan("spanSceneResolution", file.scene_resolution);
+		fillSpan("spanSceneOutputtype", file.scene_outputtype);
+		fillSpan("spanSceneXparts", file.scene_xparts);
+		fillSpan("spanSceneYparts", file.scene_yparts);
+
+	} else if (isImageFile(file.file_location)) {
+		document.getElementById("image-settings").setAttribute("style", "display:block;")
+		tab.hideTabLink("linkElements");
+	} else {
+	}
+	elements = result[2]
+	tableElements.setItems(elements);
+	tableElements.update();
+	tableReferences.setItems(result[3]);
+	tableReferences.update();
+	tableUsedby.setItems(result[4]);
+	tableUsedby.update();
+}
+
+function applyFilter() {
+	tableElements.needsupdate=true;
+	tableElements.update();
+}
+function filter(items) {
+	f1 = document.getElementById("filterElements").value.toLowerCase();
+	if (f1.length==0) {
+		return items;
+	}
+
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.element_name.toLowerCase().indexOf(f1) != -1) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+xmlRef=null
+function startRenameFile() {
+	newName = prompt("new name for ["+fileName+"]", fileName)
+	if (newName != null) {
+		if (newName != fileName) {
+			xmlRef = serviceStartRenameFile(refactorCallback, ${production_id}, ${file_id}, newName)
+		}
+	}
+}
+function startMoveFile() {
+	path=fileLocation.substring(0,fileLocation.lastIndexOf("/"))
+	newName = prompt("new location for ["+fileLocation+"]", path)
+	if (newName != null) {
+		if (newName != fileName) {
+			xmlRef = serviceStartMoveFile(refactorCallback, ${production_id}, ${file_id}, newName)
+		}
+	}
+}
+function startRenameElement(elementId) {
+	element=null
+	for (i=0;i<elements.length;i++) {
+		element1=elements[i]
+		if (element1.element_id==elementId) {
+			element = element1
+		}
+	}
+	newName = prompt("new name for ["+element.element_name+"]", element.element_name)
+	if (newName != null) {
+		if (newName != element.element_name) {
+			xmlRef = serviceStartRenameElement(refactorCallback, ${production_id}, ${file_id}, elementId, newName)
+		}
+	}
+}
+
+function refactorCallback() {
+	if ( xmlRef.readyState != 4 ) return ;
+	document.location.href="refactor.html"
+}
+
+function processD() {
+	if ( xmlDep.readyState != 4 ) return ;
+	items = eval(xmlDep.responseText);
+	tableD.setItems(items)
+	tableD.update()
+}
+
+tableD = document.getElementById("tableD")
+initTable(tableD, "tableD")
+tableD.setCaption("result");
+tableD.addColumn("fileicon", "", "source_file_location", true, null, fileIconFactory);
+tableD.addColumn("file", "file", "source_file_location", true, null, linkFactoryFileDepSource);
+tableD.addColumn("referenceicon", "", "target_file_location", true, null, fileIconFactory);
+tableD.addColumn("references", "references", "target_file_location", true, null, linkFactoryFileDepTarget);
+tableD.addColumn("icon", "", "element_type", true, null, elementIconFactory);
+tableD.addColumn("type", "type", "element_type", true);
+tableD.addColumn("element", "element", "element_name", true);
+tableD.pageitems=50
+tableD.setItems([])
+tableD.update()
+
+selectView = document.getElementById("selectView")
+checkAll=document.getElementById("checkAll")
+checkOB=document.getElementById("checkOB")
+checkMA=document.getElementById("checkMA")
+checkME=document.getElementById("checkME")
+checkPA=document.getElementById("checkPA")
+checkGR=document.getElementById("checkGR")
+checkCA=document.getElementById("checkCA")
+checkTE=document.getElementById("checkTE")
+checkLA=document.getElementById("checkLA")
+checkAR=document.getElementById("checkAR")
+checkAC=document.getElementById("checkAC")
+checkWO=document.getElementById("checkWO")
+checkIM=document.getElementById("checkIM")
+
+checkDisplay=document.getElementById("checkDisplay")
+aGraph=document.getElementById("aGraph")
+
+function addFilter(filter, check, type) {
+	if (!check.checked) return filter
+	if (filter!="") {
+		filter=filter+","
+	}
+	filter=filter+type
+	return filter
+}
+xmlDep=null;
+
+function updateD(){
+	filter=""
+	if (checkAll.checked) {
+		filter="all"
+		document.getElementById("checksub").setAttribute("style", "display:none;")
+	} else {
+		document.getElementById("checksub").setAttribute("style", "display:block;")
+		filter=addFilter(filter, checkOB, "OB")
+		filter=addFilter(filter, checkMA, "MA")
+		filter=addFilter(filter, checkME, "ME")
+		filter=addFilter(filter, checkPA, "PA")
+		filter=addFilter(filter, checkGR, "GR")
+		filter=addFilter(filter, checkCA, "CA")
+		filter=addFilter(filter, checkWO, "WO")
+		filter=addFilter(filter, checkTE, "TE")
+		filter=addFilter(filter, checkLA, "LA")
+		filter=addFilter(filter, checkAR, "AR")
+		filter=addFilter(filter, checkAC, "AC")
+		filter=addFilter(filter, checkIM, "IM")
+	}
+
+	display="global"
+	if (checkDisplay.checked) {
+		display="detail"
+	}
+
+	view = selectView.value
+	aGraph.setAttribute("href", "/svg/1/"+view+"/"+filter+"/"+display+"/"+${file_id})
+	xmlDep=serviceDependancies(processD, 1, view, filter, display, ${file_id})
+}
+
+
+
+updateD();
+</script>
+
+  </form>
+ </body></html>
