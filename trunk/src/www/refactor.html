@@ -11,6 +11,15 @@
 <div id="step1">
 	<a href="#" onclick="javascript:cancel();return false;">Cancel</a>
 	<a href="#" onclick="javascript:performTasks();return false;">Continue</a>
+</div>
+<div id="step2"  style="display:none;">
+	<div class="messagebox">
+		<p>Please wait while performing tasks</p>
+		<span class="progressbar">
+			<span id="idpi" style="width:0%;" class="progressindicator"></span>
+		</span>
+		
+	</div>
 </div><div id="step3" style="display:none;">
 	<a href="#" onclick="javascript:rollback();return false;">Rollback</a>
 	<a href="#" onclick="javascript:commit();return false;">Commit</a>
@@ -41,14 +50,21 @@ function process2() {
 	result = eval(xmlDoc.responseText)
 	tasks = result
 	cont=true;
-	for (i=0 ; i < tasks.length;i++) {
+	done=0;
+	total=tasks.length
+	for (i=0 ; i < total;i++) {
 		task = tasks[i]
 		if (task.task_status=="Created") {
 			cont=false;
+		} else {
+			done=done+1;
 		}
 	}
+	per = Math.round((100*done)/total)
+	document.getElementById("idpi").setAttribute("style", "display:block;width:"+per+"%")
 	if (cont) {
 		document.getElementById("step3").setAttribute("style", "display:block;")
+		document.getElementById("step2").setAttribute("style", "display:none;")
 	}
 	else
 	{
@@ -67,6 +83,7 @@ function cancel() {
 }
 function performTasks() {
 	document.getElementById("step1").setAttribute("style", "display:none;")
+	document.getElementById("step2").setAttribute("style", "display:block;")
 	xmlDoc=servicePerformOneRefactoringTask(process2)
 }
 function rollback() {

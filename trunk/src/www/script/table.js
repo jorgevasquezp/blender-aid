@@ -96,11 +96,17 @@ eitem = noitems;
 nopage = 0;
 
 if (this.paging) {
+	nopage = Math.ceil(noitems/this.pageitems);
+	if (this.currentpage>(nopage-1)) {
+		this.currentpage = nopage-1;
+	}
+	if (this.currentpage<0) {
+		this.currentpage = 0;
+	}
 	sitem = this.pageitems*this.currentpage;
 	eitem = sitem+this.pageitems;
 	if (sitem>noitems) sitem = noitems;
 	if (eitem>noitems) eitem = noitems;
-	nopage = Math.ceil(noitems/this.pageitems);
 }
 
 tbody = this.tbodytag;

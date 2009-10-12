@@ -1,11 +1,23 @@
+# This file is used to support python 2.5.
+# blender-aid uses some python 2.6 specific functions.
+# in this file these functions will get a python 2.5 variant.
+# using exception handling on the import
+# functions will be redirected to this file
+# --- see example
 #try:
 #    from os.path import relpath as _relpath
 #except:
 #    print("python < 2.6: import custom relpath")
 #    from bautil import relpath as _relpath
+# --- end example
 
+#original code:
 # relpath.py (http://code.activestate.com/recipes/302594/)
 # R.Barran 30/08/2004
+# adaptions:
+# in python 2.6 the target does not exist is not implemented
+# in blender-aid the check has to be removed as the missing links will
+# not have a target
 
 import os
 
@@ -14,9 +26,10 @@ def relpath(target, base=os.curdir):
     Return a relative path to the target from either the current dir or an optional base dir.
     Base can be a directory specified either as absolute or relative to current dir.
     """
-
+# --- removed from original source
 #    if not os.path.exists(target):
 #        raise OSError, 'Target does not exist: '+target
+# --- end remove
 
     if not os.path.isdir(base):
         raise OSError, 'Base is not a directory or does not exist: '+base
@@ -40,6 +53,3 @@ def relpath(target, base=os.curdir):
 
     rel_list = [os.pardir] * (len(base_list)-i) + target_list[i:]
     return os.path.join(*rel_list)
-
-    
-    
