@@ -26,7 +26,7 @@ import os
 try:
     from PIL import Image
 except:
-    print("No Python Imaging Library found! disabling thumbnails")
+    print("No Python Imaging Library found! redirecting thumbnails")
     Image=None
 
 import indexer
@@ -42,20 +42,34 @@ def handleGet(wfile, request, session):
     sfile.close()
     
 def handleGetThumbnail(wfile, request, session, size):
+    """ request handler to generate a thumbnail from a file
+    input:
+        file_id
+        production_id
+    output:
+        png thumbnail file or the original file
+
+    The thumbnail generation is done by PIL. When PIL is not installed the original file will be send"""
+    
     fileId=int(request["file_id"])
     productionId=int(request["production_id"])
     rPath=getAbsoluteFilename(productionId, fileId)
     if rPath.endswith("jpg") or rPath.endswith("jpeg") or rPath.endswith("png") or rPath.endswith("gif"):
         if Image == None:
-            pass
+            handleGet(wfile, request, session)
         else:
             im = Image.open(rPath)
             im.thumbnail([size,size], Image.ANTIALIAS)
             im.save(wfile, "PNG")
 
 def getAbsoluteFilename(productionId, fileId):
+    """ determine the absolute path the given file
+    input:
+        productinoId - id of the production, the file is part of
+        fileId - id of the file
+    output:
+        string - the absolute path
+    """
     production = indexer.getProduction(productionId)
     pfile = indexer.getFile(fileId)
     return os.path.join(production[2], pfile[3])
-    
-    

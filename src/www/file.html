@@ -13,7 +13,7 @@
 <div id="test1">
 <label>name:</label><span id="spanProductionName" ></span><br/>
 <label>location:</label><span id="spanProductionLocation" ></span><br/>
-<label>file:</label><span id="spanFileLocation" ></span> <a id="aLocalLink" style="display:none;">Open</a><br/>
+<label>file:</label><span id="spanFileLocation" ></span> <a id="aLocalLink" onclick="javascript:showOpenFileHelp();return false;" style="display:none;">Open</a><br/>
 <label>refactor:</label>
 <a href="#" onclick="javascript:startMoveFile()">Move</a>&nbsp;&nbsp;<a href="#" onclick="javascript:startRenameFile()">Rename</a>
 
@@ -47,7 +47,7 @@
 </div>
 
 <div id="image-settings" style="display:none;">
-<a href="/download/file?file_id=${file_id}&production_id=${production_id}" class="img"><img id="preview" src="/thumbnail/512?file_id=${file_id}&production_id=${production_id}"></img>
+<a href="/download/file?file_id=${file_id}&production_id=${production_id}" class="img"><img id="preview" src="/thumbnail/512?file_id=${file_id}&production_id=${production_id}" width="512"></img>
 </a>
 </div>
 </div>
@@ -335,6 +335,9 @@ function updateD(){
 	xmlDep=serviceDependancies(processD, 1, view, filter, display, ${file_id})
 }
 
+function showOpenFileHelp() {
+	alert("This is not possible due to internet security reasons. \r\nPlease use 'Copy link location' and use 'Start>Run' or equilivant.");
+}
 
 
 updateD();
