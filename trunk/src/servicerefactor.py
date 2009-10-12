@@ -261,16 +261,15 @@ class Task:
     
     def __init__(self):
         self.status=INIT
-        self.important=True
+        self.display=True
         
     def json(self):
         result = dict()
-        result["task_important"] = self.important
+        result["task_display"] = self.display
         result["task_status"] = self.status
         result["file_id"] = self.fileId
         result["file_location"] = self.fileDetails[3]
         result["task_description"] = self.description()
-        result["task_important"] = self.important
         return json.dumps(result)
         
     def commit(self):
@@ -474,7 +473,7 @@ class RenameFile(Task):
 class BackupFile(Task):
     def __init__(self):
         Task.__init__(self)
-        self.important=False
+        self.display=False
         
     def execute(self):
         productionLocation = self.productionDetails[2]
