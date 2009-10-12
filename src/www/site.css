@@ -157,7 +157,7 @@ div.messagebox {
 	height:70px;
 	top:50%;
 	background-color:#9b9b9b;
-	border: #000000 solid 2px;
+	border: #000000 solid 1px;
 	padding:32px;
 	-moz-border-radius: 10px;
 }

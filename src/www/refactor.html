@@ -21,8 +21,8 @@
 		
 	</div>
 </div><div id="step3" style="display:none;">
-	<a href="#" onclick="javascript:rollback();return false;">Rollback</a>
-	<a href="#" onclick="javascript:commit();return false;">Commit</a>
+	<a href="#" onclick="javascript:rollback();return false;">Undo changes</a>
+	<a href="#" onclick="javascript:commit();return false;">Save changes</a>
 </div>
 <script>
 table = document.getElementById("refactorTable")
@@ -34,6 +34,7 @@ table.addColumn("task_description", "description", "task_description", true, fal
 table.addColumn("task_status", "state", "task_status", true, false);
 table.paging=false;
 table.update(); 
+table.filter=filterTaskDisplay;
 
 xmlDoc=serviceRefactoringTasks(processTasks)
 
@@ -61,7 +62,7 @@ function process2() {
 		}
 	}
 	per = Math.round((100*done)/total)
-	document.getElementById("idpi").setAttribute("style", "display:block;width:"+per+"%")
+	document.getElementById("idpi").setAttribute("style", "width:"+per+"%")
 	if (cont) {
 		document.getElementById("step3").setAttribute("style", "display:block;")
 		document.getElementById("step2").setAttribute("style", "display:none;")
@@ -93,6 +94,18 @@ function rollback() {
 function commit() {
 	document.getElementById("step3").setAttribute("style", "display:none;")
 	xmlDoc=serviceCommitTasks(process3)
+}
+
+function filterTaskDisplay(items) {
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.task_display) {
+			result[result.length]=item;
+		}
+	}
+	return result;
 }
 
 </script>
