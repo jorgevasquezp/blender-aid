@@ -1,0 +1,312 @@
+<html><head>
+<title>Blender-aid</title>
+<link rel="stylesheet" type="text/css" href="${css}">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+ 
+ 
+  <form>
+<script type="text/javascript" src="script/table.js"></script>
+<script type="text/javascript" src="script/tab.js"></script>
+<script type="text/javascript" src="script/func.js"></script>
+<fieldset>
+<legend>Production</legend>
+<div>
+<label class="inset100">name:</label><span id="spanProductionName" ></span><br/>
+<label class="inset100">location:</label><span id="spanProductionLocation" ></span><br/>
+<span style="float:right;">
+<img src="images/back.png"></img><a href="productions.html">Productions</a>
+</span>
+</div>
+</fieldset>
+
+<ul id="tabs">
+	<li><img src="images/unknownfile.png"><a id="linkFiles" >Files</a></li>
+	<li><img src="images/filter.png"></img><a id="linkScenes">Scenes</a></li>
+	<li><img src="images/missing.png"><a id="linkMissing" >Missing links</a></li>
+</ul>
+<div id="tabMissing"  class="tab">
+<p>The following files are referenced, but not found.
+</p>
+<table id="errors"></table>
+</div>
+
+<div id="tabFiles" class="tab">
+<label>filter:</label><input id="filterFile" onchange="javascript:applyFilter()" onkeyup="javascript:applyFilter()" type="text"></input><br/><br/>
+<table id="files"></table>
+</div>
+
+<div id="tabScenes" class="tab">
+<fieldset>
+<legend class="open" onclick="javascript:sh(this, 'test1')">Filter</legend>
+<ul id="test1"><li><input id="f0" onchange="javascript:filterupdated()" type="checkbox">filter filename <input id="f0fn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value=""> and scene name <input id="f0sn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value="">.</li>
+
+<li><input id="f1" onchange="javascript:filterupdated()" type="checkbox">find scenes which <select id="f1uses" onchange="javascript:filterupdated()"><option selected="selected">uses</option><option>does not use</option></select> <select id="f1res" onchange="javascript:filterupdated()">
+	<option>600x600</option>
+	<option>720x405</option>
+	<option>800x600</option>
+	<option>1024x768</option>
+	<option>1024x1024</option>
+	<option>1080x1920</option>
+	<option>1600x1200</option>
+	<option>1920x1080</option>
+	<option>1920x1920</option>
+	<option>2000x3000</option>
+</select> as resolution.</li>
+<li><input id="f2" onchange="javascript:filterupdated()" type="checkbox">find scenes with output not using <select id="f2size" onchange="javascript:filterupdated()"><option selected="selected" value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select> size reduction</li>
+<li><input id="f3" onchange="javascript:filterupdated()" type="checkbox">find scenes what <select id="f3uses" onchange="javascript:filterupdated()"><option selected="selected">saves</option><option>does not save</option></select> to <select id="f3img" onchange="javascript:filterupdated()"><option>AVI</option><option selected="selected">EXR</option><option>JPEG</option><option>PNG</option></select></li>
+
+<li><input id="f4" onchange="javascript:filterupdated()" type="checkbox">find all scenes using less than <input id="f4num" onchange="javascript:filterupdated()" value="100"> threads/xy-parts</li>
+<li><input id="f5" onchange="javascript:filterupdated()" type="checkbox">not saved in blender version 
+<select id="f5ver" onchange="javascript:filterupdated()" >
+<option value="249">2.49</option>
+<option value="248">2.48</option>
+<option value="247">2.47</option>
+<option value="246">2.46</option>
+<option value="245">2.45</option>
+<option value="244">2.44</option>
+<option value="243">2.43</option>
+<option value="242">2.42</option>
+<option value="241">2.41</option>
+</select></li>
+<li><input id="f6" onchange="javascript:filterupdated()" type="checkbox"></input>display only active scenes</li>
+
+</ul></fieldset>
+
+<fieldset>
+<legend class="close" onclick="javascript:sh(this, 'test2')">Facets</legend>
+<ul id="test2" style="display:none;">
+<li><input id="fac1" onchange="javascript:updateFacets()" checked="true" type="checkbox">basic file and scene information (filename, scene name)</li>
+<li><input id="fac2" onchange="javascript:updateFacets()" type="checkbox">blender information (blender version, pointersize, endianness, compression)</li>
+<li><input id="fac3" onchange="javascript:updateFacets()" checked="true" type="checkbox">scene output information (resolution, size, output type)</li>
+<li><input id="fac4" onchange="javascript:updateFacets()" type="checkbox">scene frame information (frame step, start frame, end frame)</li>
+<li><input id="fac5" onchange="javascript:updateFacets()" type="checkbox">scene optimalization information (rt, xparts, yparts)</li>
+</ul>
+</fieldset>
+<table id="result"></table>
+</div>
+
+<script>
+tab = document.getElementById("tabs")
+initTab(tab, "tab")
+tab.addTab("linkFiles", "tabFiles")
+tab.addTab("linkMissing", "tabMissing")
+tab.addTab("linkScenes", "tabScenes")
+tab.update()
+
+function applyFilter() {
+	tableFiles.needsupdate=true;
+	tableFiles.update();
+}
+function filter(items) {
+	f1 = document.getElementById("filterFile").value;
+	if (f1.length==0) {
+		return items;
+	}
+
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.file_location.indexOf(f1) != -1) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+function iconFactoryMissing(item, column, td) {
+	atag = document.createElement("img");
+	atag.setAttribute("src", "images/missing.png");
+	atag.setAttribute("alt", "Missing link");
+	atag.setAttribute("title", "Missing link");
+	return atag
+}
+
+tableFiles = document.getElementById("files");
+initTable(tableFiles, "tableFiles");
+tableFiles.setCaption("Files");
+tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
+tableFiles.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
+tableFiles.pageitems=20;
+tableFiles.filter=filter;
+tableFiles.update();
+
+tableErrors = document.getElementById("errors");
+initTable(tableErrors, "tableErrors");
+tableErrors.setCaption("Missing links");
+tableErrors.addColumn("icon", "", "icon", true, null, iconFactoryMissing);
+tableErrors.addColumn("missing", "missing file", "missing_file_location", true);
+tableErrors.addColumn("file_location", "used by", "file_location", true, null, linkFactoryFile);
+tableErrors.pageitems=10;
+tableErrors.update();
+
+tableScenes = document.getElementById("result");
+initTable(tableScenes, "tableScenes");
+tableScenes.setCaption("result");
+tableScenes.addColumn("icon", "", "blend_file", true, false, fileIconFactory);
+tableScenes.addColumn("blendfile", "blendfile", "blend_file", true, false, linkFactoryFile);
+tableScenes.addColumn("blendversion", "blendversion", "blend_version", false);
+tableScenes.addColumn("blendpointersize", "pointersize", "blend_pointersize", false);
+tableScenes.addColumn("blendendianness", "endianness", "blend_littleendian", false, null, endiannessFactory);
+tableScenes.addColumn("blendcompression", "compressed", "blend_compressed", false, null, booleanFactory);
+tableScenes.addColumn("scene", "scene", "scene_name", true);
+tableScenes.addColumn("resolution", "resolution", "scene_resolution", true);
+tableScenes.addColumn("size", "size", "scene_size", true, null, sizeDom);
+tableScenes.addColumn("output", "output", "scene_outputtype", true);
+tableScenes.addColumn("start", "start", "scene_startframe", false);
+tableScenes.addColumn("end", "end", "scene_endframe", false);
+tableScenes.addColumn("step", "step", "scene_step", false);
+tableScenes.addColumn("rt", "rt", "scene_rt", false);
+tableScenes.addColumn("xparts", "xparts", "scene_xparts", false);
+tableScenes.addColumn("yparts", "yparts", "scene_yparts", false);
+tableScenes.filter=filterScenes;
+tableScenes.pageitems=50;
+tableScenes.update();
+
+fac = [document.getElementById("fac1"), 
+document.getElementById("fac2"), 
+document.getElementById("fac3"), 
+document.getElementById("fac4"), 
+document.getElementById("fac5")];
+
+function updateFacets() {
+	tableScenes.setColumnVisibility("blendfile", fac[0].checked);
+	tableScenes.setColumnVisibility("blendversion", fac[1].checked);
+	tableScenes.setColumnVisibility("blendpointersize", fac[1].checked);
+	tableScenes.setColumnVisibility("blendendianness", fac[1].checked);
+	tableScenes.setColumnVisibility("blendcompression", fac[1].checked);
+	tableScenes.setColumnVisibility("scene", fac[0].checked|fac[2].checked);
+	tableScenes.setColumnVisibility("resolution", fac[2].checked);
+	tableScenes.setColumnVisibility("size", fac[2].checked);
+	tableScenes.setColumnVisibility("output", fac[2].checked);
+	tableScenes.setColumnVisibility("start", fac[3].checked);
+	tableScenes.setColumnVisibility("end", fac[3].checked);
+	tableScenes.setColumnVisibility("step", fac[3].checked);
+	tableScenes.setColumnVisibility("rt", fac[4].checked);
+	tableScenes.setColumnVisibility("xparts", fac[4].checked);
+	tableScenes.setColumnVisibility("yparts", fac[4].checked);
+	tableScenes.update();
+}
+
+
+xmlDoc = serviceProductionView(process, ${production_id})
+
+  
+function process() {
+	if ( xmlDoc.readyState != 4 ) return ;
+	result = eval(xmlDoc.responseText)
+	production = result[0];
+	files = result[1]
+	scenes = result[2]
+	missing = result[3]
+	fillSpan("spanProductionName", production.production_name);
+	fillSpan("spanProductionLocation", production.production_location);
+
+	tableFiles.setItems(files);
+	tableFiles.update();
+	
+	tableScenes.setItems(scenes);
+	tableScenes.update();
+
+	tableErrors.setItems(missing);
+	tableErrors.update();
+}
+function sizeDom(item, column, td) {
+	return document.createTextNode(eval("item."+column[2])+"%");
+}
+
+function filterupdated() {
+	tableScenes.needsupdate=true;
+	tableScenes.update();
+}
+
+function filterScenes(items) {
+	f1 = document.getElementById("f1").checked;
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		add=filter0(item);
+		add=add & filter1(item);
+		add=add & filter2(item);
+		add=add & filter3(item);
+		add=add & filter4(item);
+		add=add & filter5(item);
+		add=add & filter6(item);
+		if (add) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+function filter0(item) {
+	f0 = document.getElementById("f0").checked;
+	if (!f0) return true;
+	filename= document.getElementById("f0fn").value;
+	scenename= document.getElementById("f0sn").value;
+	ifilename = item.blend_file;
+	iscenename = item.scene_name;
+	ifn = ifilename.indexOf(filename)>-1;
+	isn = iscenename.indexOf(scenename)>-1;
+	return ifn & isn;
+}
+
+function filter1(item) {
+	f1 = document.getElementById("f1").checked;
+	if (!f1) return true;
+	uses= document.getElementById("f1uses").value == "uses";
+	res= document.getElementById("f1res").value;
+	ires = item.scene_resolution;
+	if (uses) {
+		return res==ires;
+	} else {
+		return res!=ires;
+	}
+}
+function filter2(item) {
+	f2 = document.getElementById("f2").checked;
+	if (!f2) return true;
+	size= document.getElementById("f2size").value;
+	isize = ""+item.scene_size;
+
+	return size!=isize;
+	
+}
+function filter3(item) {
+	f3 = document.getElementById("f3").checked;
+	if (!f3) return true;
+	uses= document.getElementById("f3uses").value == "saves";
+	res= document.getElementById("f3img").value;
+	ires = item.scene_outputtype;
+
+	if (uses) {
+		return res==ires;
+	} else {
+		return res!=ires;
+	}
+}
+function filter4(item) {
+	f4 = document.getElementById("f4").checked;
+	if (!f4) return true;
+	size=  parseInt(document.getElementById("f4num").value);
+	isize = item.scene_xparts*item.scene_yparts;
+
+	return isize<size;
+
+}
+function filter5(item) {
+	f5 = document.getElementById("f5").checked;
+	if (!f5) return true;
+	ver= document.getElementById("f5ver").value;
+	iver = item.blend_version;
+
+	return ver!=iver;
+}
+
+function filter6(item) {
+	f6 = document.getElementById("f6").checked;
+	if (!f6) return true
+	return item.scene_active==1;
+}
+</script>
+  </form>
+ </body></html>
