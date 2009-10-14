@@ -17,8 +17,9 @@ Is there somewhere inside the blender data model a place where this is administe
 or is it only determined by the type of file what has been read?
 
 = Impact = 
- * production.html ==> add logic to start compression
+ * production.html ==> add UI to start compression
  * servicerefactoring.py ==> add logic to do the refactoring
+ * indexer.py ==> selector to find all uncompressed files
  * update user manual
  * update web site
  * create testcase
