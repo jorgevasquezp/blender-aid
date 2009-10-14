@@ -1,0 +1,34 @@
+#labels Phase-Design
+= What are missing links? = 
+
+Missing links are files or elements in files that are referred to, but is not part of a production. They emerge when:
+ * using an absolute path in the production.
+ * refer to files what are not part of the production.
+ * rename or move or delete a file without the usage of re-factoring
+ * rename, delete an element without the usage of re-factoring
+
+= Solving missing links =
+
+It should be possible to help you solving missing links. When solving you have to make a choice. the application will help you make the choice.
+
+== Solve blend to blend missing link ==
+When a blend file refers to another blend file it has more information inside to detect what blend file is possible to refer to.
+EG. blend file A uses blend file B for the elements GRc and MEd.
+
+1. find blend files with the elements GRc and MEd. 
+2. find all other blend files.
+
+This list can be large. so a filter is handy It should also be clear which files do match the needed elements and which files do not. matches will be shown first in the list of options
+
+== Solve blend to image missing link ==
+When a blend file refers to an image file. we only have a file-name.
+The selection of possible options will be ordered by what is best expected
+
+1. find files with the same file-name but on a different location
+2. find files with the same extension
+3. find all other image files.
+
+This list can be large. so a filter is handy
+
+= Re-factoring = 
+When a file has been selected the re-factoring process will be started.
