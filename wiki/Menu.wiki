@@ -1,2 +1,4 @@
-Design
+Design Enhancements
+ Oktober 2009
  * [SolvingMissingLinks]
+ * [CompressBlendFiles]
