@@ -1,0 +1,24 @@
+#labels Phase-Design
+There are 3 kind of blend files.
+1. uncompressed blend files
+2. compressed blend files
+3. packed blend files.
+
+compressed blend files are GZ variants of the uncompressed version. These files are commonly used to reduce needed space for Source control.
+
+Within blender you can change this by File ==> Compressed
+
+= Compress files =
+This feature will find all not compressed blend files
+and make tasks to compress them
+
+= Functional questions =
+Is there somewhere inside the blender data model a place where this is administered?
+or is it only determined by the type of file what has been read?
+
+= Impact = 
+ * production.html ==> add logic to start compression
+ * servicerefactoring.py ==> add logic to do the refactoring
+ * update user manual
+ * update web site
+ * create testcase
