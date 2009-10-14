@@ -2,3 +2,5 @@ Design Enhancements
  Oktober 2009
  * [SolvingMissingLinks]
  * [CompressBlendFiles]
+ * [UpdateRenderSettings]
+ * [MoveBlendElement]
