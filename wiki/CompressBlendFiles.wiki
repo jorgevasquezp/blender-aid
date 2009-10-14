@@ -1,8 +1,8 @@
 #labels Phase-Design
 There are 3 kind of blend files.
-1. uncompressed blend files
-2. compressed blend files
-3. packed blend files.
+# uncompressed blend files
+# compressed blend files
+# packed blend files.
 
 compressed blend files are GZ variants of the uncompressed version. These files are commonly used to reduce needed space for Source control.
 
