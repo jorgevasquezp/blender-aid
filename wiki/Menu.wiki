@@ -4,3 +4,5 @@ Design Enhancements
  * [CompressBlendFiles]
  * [UpdateRenderSettings]
  * [MoveBlendElement]
+ * [BrowseToProduction]
+ * [OpenFileLocally]
