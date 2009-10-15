@@ -38,6 +38,7 @@ FileGlobal --> fileflags & G_FILE_COMPRESS
  * servicerefactoring.py ==> add logic to do the refactoring
  * server.py ==> add referrer
  * indexer.py ==> selector to find all uncompressed files and index by FileGlobal.fileflags
+ * func.js ==> service handling
  * update user manual
  * update web site
  * create testcase
