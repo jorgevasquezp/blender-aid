@@ -20,7 +20,12 @@ during first inspection this has not been found.
 = Technical questions =
 == Where is compression stored? ==
 when compressing a blend file by hand, the file is read correctely, but in the menu the file is not marked as compressed. I assume that somewhere in the model, an attribute tells blender if the file was originally compressed.
-
+ # start blender
+ # save blend file
+ # tar blend file (tar file.blend)
+ # rename blend file (mv file.blend.gz file.compressed.blend)
+ # open blend file with blender
+ # menu --> file --> Compressed = false (should be true)
 
 = Impact = 
  * blendfile.py ==> add write int method
