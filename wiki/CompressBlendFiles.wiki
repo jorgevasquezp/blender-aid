@@ -30,23 +30,8 @@ FileGlobal --> fileflags & G_FILE_COMPRESS
 ./blender/blenkernel/.svn/text-base/BKE_global.h.svn-base:#define G_FILE_COMPRESS          (1 << 1)
 ./blender/blenkernel/BKE_global.h:#define G_FILE_COMPRESS          (1 << 1)
 ./blender/blenloader/intern/writefile.c:		if(write_flags & G_FILE_COMPRESS)
-./blender/blenloader/intern/.svn/text-base/writefile.c.svn-base:		if(write_flags & G_FILE_COMPRESS)
-./blender/windowmanager/intern/wm_files.c:	if(compress) writeflags |= G_FILE_COMPRESS;
-./blender/windowmanager/intern/wm_files.c:	else writeflags &= ~G_FILE_COMPRESS;
-./blender/windowmanager/intern/wm_files.c:		if(compress) G.fileflags |= G_FILE_COMPRESS;
-./blender/windowmanager/intern/wm_files.c:		else G.fileflags &= ~G_FILE_COMPRESS;
-./blender/windowmanager/intern/wm_files.c:	write_flags = G.fileflags & ~(G_FILE_COMPRESS | G_FILE_LOCK | G_FILE_SIGN);
-./blender/windowmanager/intern/wm_files.c:	write_flags = G.fileflags & ~(G_FILE_COMPRESS | G_FILE_LOCK | G_FILE_SIGN);
-./blender/windowmanager/intern/wm_operators.c:			RNA_boolean_set(op->ptr, "compress", G.fileflags & G_FILE_COMPRESS);
-./blender/windowmanager/intern/.svn/text-base/wm_operators.c.svn-base:			RNA_boolean_set(op->ptr, "compress", G.fileflags & G_FILE_COMPRESS);
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:	if(compress) writeflags |= G_FILE_COMPRESS;
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:	else writeflags &= ~G_FILE_COMPRESS;
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:		if(compress) G.fileflags |= G_FILE_COMPRESS;
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:		else G.fileflags &= ~G_FILE_COMPRESS;
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:	write_flags = G.fileflags & ~(G_FILE_COMPRESS | G_FILE_LOCK | G_FILE_SIGN);
-./blender/windowmanager/intern/.svn/text-base/wm_files.c.svn-base:	write_flags = G.fileflags & ~(G_FILE_COMPRESS | G_FILE_LOCK | G_FILE_SIGN);
-
 }}}
+
 = Impact = 
  * blendfile.py ==> add write int method
  * production.html ==> add UI to start compression
