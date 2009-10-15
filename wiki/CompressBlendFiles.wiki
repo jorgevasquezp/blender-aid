@@ -36,6 +36,7 @@ FileGlobal --> fileflags & G_FILE_COMPRESS
  * blendfile.py ==> add write int method
  * production.html ==> add UI to start compression
  * servicerefactoring.py ==> add logic to do the refactoring
+ * server.py ==> add referrer
  * indexer.py ==> selector to find all uncompressed files and index by FileGlobal.fileflags
  * update user manual
  * update web site
