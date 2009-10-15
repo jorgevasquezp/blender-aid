@@ -14,11 +14,6 @@ and make tasks to compress them
 
 = Functional questions =
 == Is there somewhere inside the blender data model a place where this is administered? ==
-during first inspection this has not been found.
-== or is it only determined by the type of file what has been read? ==
-
-= Technical questions =
-== Where is compression stored? ==
 when compressing a blend file by hand, the file is read correctely, but in the menu the file is not marked as compressed. I assume that somewhere in the model, an attribute tells blender if the file was originally compressed.
  # start blender
  # save blend file
@@ -27,6 +22,8 @@ when compressing a blend file by hand, the file is read correctely, but in the m
  # open blend file with blender
  # menu --> file --> Compressed = false (should be true)
 
+next part to inspect:
+{{{FileGlobal --> fileflags}}}
 = Impact = 
  * blendfile.py ==> add write int method
  * production.html ==> add UI to start compression
