@@ -17,7 +17,13 @@ and make tasks to compress them
 during first inspection this has not been found.
 == or is it only determined by the type of file what has been read? ==
 
+= Technical questions =
+== Where is compression stored? ==
+when compressing a blend file by hand, the file is read correctely, but in the menu the file is not marked as compressed. I assume that somewhere in the model, an attribute tells blender if the file was originally compressed.
+
+
 = Impact = 
+ * blendfile.py ==> add write int method
  * production.html ==> add UI to start compression
  * servicerefactoring.py ==> add logic to do the refactoring
  * indexer.py ==> selector to find all uncompressed files
