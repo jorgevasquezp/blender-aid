@@ -39,6 +39,7 @@ except:
 log = logging.getLogger("indexer")
 
 
+G_FILE_COMPRESS = 1 << 1
 
 def updateIndex(productionId):
     """Updates the index of a production
@@ -208,6 +209,9 @@ def indexNewFile(connection, productionId, productionDir, file):
         
         for block in bf.FindBlendFileBlocksWithCode("GLOB"):
             bfCurrentScenePointer = block.Get("curscene")
+            #flags=block.Get("fileflags")
+            #bfCompressed = (flags & G_FILE_COMPRESS) == G_FILE_COMPRESS
+            #print(flags, bfCompressed)
 
         for block in bf.FindBlendFileBlocksWithCode("SC"):
             scId = firstElementId + offsetElementId
@@ -393,6 +397,25 @@ def getProduction(productionId):
     connection.close()
     return result
 
+SQL_REMOVEACTIVEFLAG="""update production set active=0"""
+SQL_ACTIVATEPRODUCTION="""update production set active=1 where id=?"""
+def activateProduction(productionId):
+    """Set the active production"""
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    connection.execute(SQL_REMOVEACTIVEFLAG, []);
+    connection.execute(SQL_ACTIVATEPRODUCTION, [productionId]);
+    connection.commit()
+    connection.close()
+    return None
+
+SQL_GETACTIVEPRODUCTION="""select * from production where active=1"""
+def getActiveProduction():
+    """Get the active production"""
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    result = connection.execute(SQL_GETACTIVEPRODUCTION, []).fetchone();
+    connection.close()
+    return result
+
 def getFile(fileId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     query = """select * from file where id=?"""
@@ -409,7 +432,7 @@ def getAllProductions():
 
 def insertProduction(productionName, productionLocation):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = """insert into production values (null, ?, ?)"""
+    query = """insert into production values (null, ?, ?, 0)"""
     result = connection.execute(query, [productionName, productionLocation]);
     connection.commit();
     connection.close()
@@ -474,6 +497,16 @@ def getFileUsedBy(fileID):
     result = connection.execute(query, [fileID]).fetchall()
     connection.close()
     return result
+
+SQL_UNCOMPRESSED_FILES = """select file.* from element,file where element.file_id=file.id and element.type="BF" and not element.bf_compressed and file.production_id = ?;"""
+def getUncompressedFiles(productionId):
+    """ find all uncompressed blend files of a production
+    """
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    result = connection.execute(SQL_UNCOMPRESSED_FILES, [productionId]).fetchall();
+    connection.close()
+    return result
+
 
 # all dependancy queries    
 def queryDependancy(productionId, filter):
@@ -604,7 +637,8 @@ def setup():
     connection.execute("""create table if not exists production (
         id integer primary key autoincrement,
         name text,
-        location text
+        location text,
+        active int
     )""")
     connection.execute("""create table if not exists file (
         id int primary key,

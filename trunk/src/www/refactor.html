@@ -3,16 +3,19 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
  
  
-<form>
 <script type="text/javascript" src="script/table.js"></script>
 <script type="text/javascript" src="script/func.js"></script>
+<div class="page-header">
+	<h1>Re-factoring</h1>
+</div>
 <table id="refactorTable"></table>
+
 
 <div id="step1">
 	<a href="#" onclick="javascript:cancel();return false;">Cancel</a>
 	<a href="#" onclick="javascript:performTasks();return false;">Continue</a>
 </div>
-<div id="step2"  style="display:none;">
+<div id="step2"  style="display:none;" class="outerlayer">
 	<div class="messagebox">
 		<p>Please wait while performing tasks</p>
 		<span class="progressbar">
@@ -80,7 +83,7 @@ function process3() {
 }
 
 function cancel() {
-	document.location.href="file.html"
+	document.location.href="production.html"
 }
 function performTasks() {
 	document.getElementById("step1").setAttribute("style", "display:none;")
@@ -110,5 +113,4 @@ function filterTaskDisplay(items) {
 
 </script>
 
-  </form>
  </body></html>

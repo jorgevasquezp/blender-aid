@@ -84,17 +84,24 @@ function serviceProductions(callback) {
 	xmlDoc.send( "{}\r\n" );  
 	return xmlDoc;
 }
-function serviceProductionView(callback, productionId) {
+function serviceProductionView(callback) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/productionview", false );
+	xmlDoc.send( "{}\r\n" );
+	return xmlDoc;
+}
+function serviceActivateProduction(callback, productionId) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/activateproduction", true );
 	xmlDoc.send( "{\"production_id\":"+productionId+"}\r\n" );
 	return xmlDoc;
 }
 function serviceFileView(callback, productionId, fileId) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
-	xmlDoc.open( "POST", "/service/fileview", false );
+	xmlDoc.open( "POST", "/service/fileview", true );
 	xmlDoc.send( "{\"production_id\":"+productionId+",\"file_id\":"+fileId+"}\r\n" );
 	return xmlDoc;
 }
@@ -132,7 +139,8 @@ function linkFactoryFile(item, column, td) {
 	if (item.file_id!=null) {
 
 		atag = document.createElement("a");
-		atag.setAttribute("href", "file.html?file_id="+item.file_id);
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:selectFile("+item.file_id+");return false;");
 		atag.appendChild(node);
 		return atag
 	} else {
@@ -144,7 +152,8 @@ function linkFactoryFileDepSource(item, column, td) {
 	if (item.source_file_id!=null) {
 
 		atag = document.createElement("a");
-		atag.setAttribute("href", "file.html?file_id="+item.source_file_id);
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:selectFile("+item.source_file_id+");return false;");
 		atag.appendChild(node);
 		return atag
 	} else {
@@ -156,7 +165,8 @@ function linkFactoryFileDepTarget(item, column, td) {
 	if (item.target_file_id!=null) {
 
 		atag = document.createElement("a");
-		atag.setAttribute("href", "file.html?file_id="+item.target_file_id);
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:selectFile("+item.target_file_id+");return false;");
 		atag.appendChild(node);
 		return atag
 	} else {
@@ -166,7 +176,11 @@ function linkFactoryFileDepTarget(item, column, td) {
 
 function fillSpan(spanname, value) {
 	span = document.getElementById(spanname);
+	clearChilderen(span)
 	span.appendChild(document.createTextNode(value));
+}
+function clearChilderen(control) {
+	while(control.hasChildNodes()){control.removeChild(control.childNodes[0]);}
 }
 function endsWith(str, other) {
 	if (str == null) return false;

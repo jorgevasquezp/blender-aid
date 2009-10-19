@@ -168,6 +168,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         elif servicename=="/service/addproduction":
             serviceproduction.handleAdd(self.wfile, req, session)
 
+        elif servicename=="/service/activateproduction":
+            serviceproduction.handleActivateProduction(self.wfile, req, session)
         elif servicename=="/service/productionview":
             serviceproduction.handleGetProductionView(self.wfile, req, session)
         elif servicename=="/service/fileview":
@@ -180,6 +182,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             servicerefactor.handleStartMoveFile(self.wfile, req, session)
         elif servicename=="/service/renameelement":
             servicerefactor.handleStartRenameElement(self.wfile, req, session)
+        elif servicename=="/service/compressfiles":
+            servicerefactor.handleStartCompressFiles(self.wfile, req, session)
         elif servicename=="/service/refactoringtasks":
             servicerefactor.handleGetCurrentTasks(self.wfile, req, session)
         elif servicename=="/service/executetask":
@@ -189,14 +193,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         elif servicename=="/service/rollbacktasks":
             servicerefactor.handleRollbackCurrentTasks(self.wfile, req, session)
 
-        elif servicename=="/service/production":
-            serviceproduction.handleGet(self.wfile, req, session)
-        elif servicename=="/service/productionfiles":
-            serviceproduction.handleGetFiles(self.wfile, req, session)
-        elif servicename=="/service/fileelements":
-            serviceproduction.handleGetElements(self.wfile, req, session)
-        elif servicename=="/service/filedetails":
-            serviceproduction.handleGetFileDetails(self.wfile, req, session)
+#        elif servicename=="/service/production":
+#            serviceproduction.handleGet(self.wfile, req, session)
+#        elif servicename=="/service/productionfiles":
+#            serviceproduction.handleGetFiles(self.wfile, req, session)
+#        elif servicename=="/service/fileelements":
+#            serviceproduction.handleGetElements(self.wfile, req, session)
+#        elif servicename=="/service/filedetails":
+#            serviceproduction.handleGetFileDetails(self.wfile, req, session)
    
 
 # minimal web server.  serves files relative to the

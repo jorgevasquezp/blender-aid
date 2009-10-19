@@ -5,13 +5,17 @@ function initTab(tab, tabname) {
 	tab.hideLayer=hideLayer
 	tab.showLayer=showLayer
 	tab.hideTabLink=hideTabLink
+	tab.showTabLink=showTabLink
 	tab.items=[];
-	tab.setAttribute("class", "tabs")
 }
 
-function addTab(anchorId, layerId) {
+function addTab(anchorId, layerId, functionName) {
 	anchor = document.getElementById(anchorId)
-	anchor.setAttribute("onclick", "javascript:showTab(this, '"+this.id+"', '"+layerId+"');return false")
+	if (functionName ==null) {
+		anchor.setAttribute("onclick", "javascript:showTab(this, '"+this.id+"', '"+layerId+"');return false")
+	} else {
+		anchor.setAttribute("onclick", "javascript:showTab(this, '"+this.id+"', '"+layerId+"');"+functionName+"();return false")
+	}
 	anchor.setAttribute("href", "#")
 	this.items.push([anchorId, layerId])
 }
@@ -37,6 +41,10 @@ function hideAllTabs() {
 function hideTabLink(linkId) {
 	link = document.getElementById(linkId)
 	link.parentNode.setAttribute("style", "display:none;")
+}
+function showTabLink(linkId) {
+	link = document.getElementById(linkId)
+	link.parentNode.setAttribute("style", "display:block;")
 }
 
 function hideLayer(item) {

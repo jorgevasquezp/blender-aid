@@ -46,7 +46,7 @@ except:
 def handleStartMoveFile(wfile, request, session):
     productionId=int(session["production_id"])
     production = indexer.getProduction(productionId)
-    fileId=int(session["file_id"])
+    fileId=int(request["file_id"])
     fileDetails = indexer.getFile(fileId)
     newLocation = request["new_location"]
     tasks = []
@@ -95,7 +95,7 @@ def handleStartMoveFile(wfile, request, session):
 def handleStartRenameFile(wfile, request, session):
     productionId=int(session["production_id"])
     production = indexer.getProduction(productionId)
-    fileId=int(session["file_id"])
+    fileId=int(request["file_id"])
     fileDetails = indexer.getFile(fileId)
     newFilename = request["new_filename"]
     
@@ -144,7 +144,7 @@ def handleStartRenameFile(wfile, request, session):
 def handleStartRenameElement(wfile, request, session):
     productionId=int(session["production_id"])
     production = indexer.getProduction(productionId)
-    fileId=int(session["file_id"])
+    fileId=int(request["file_id"])
     elementId=int(request["element_id"])
     fileDetails = indexer.getFile(fileId)
     elementDetails = indexer.getElementDetails(elementId)
@@ -195,6 +195,30 @@ def handleStartRenameElement(wfile, request, session):
     session["tasks"]=tasks
     handleGetCurrentTasks(wfile, request, session)
 
+def handleStartCompressFiles(wfile, request, session):
+    productionId=int(session["production_id"])
+    production = indexer.getProduction(productionId)
+    files = indexer.getUncompressedFiles(productionId)
+    
+    tasks = []
+    for file in files:
+        ofileId = file[0]
+
+        bu = BackupFile()
+        bu.fileId = ofileId
+        bu.fileDetails = file
+        bu.productionDetails=production
+            
+        cf = CompressBlendFile()
+        cf.fileId = ofileId
+        cf.fileDetails = file
+        cf.productionDetails=production
+
+        tasks.append(bu)            
+        tasks.append(cf)
+
+    session["tasks"]=tasks
+    handleGetCurrentTasks(wfile, request, session)
     
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
@@ -469,7 +493,22 @@ class RenameFile(Task):
 
     def description(self):
         return "Rename ["+self.currentFilename+"] to ["+self.newFilename+"]"
+    
+class handleStartCompressFiles(Task):
+    def execute(self):
+        fileLocation = self.fileDetails[3]
+        fileLocation = os.path.join(self.productionDetails[2], fileLocation)
 
+        handle = blendfile.openBlendFile(fileLocation, 'r+b')
+        for globblock in handle.FindBlendFileBlocksWithCode("GLOB"):
+            globblock.Set("fileflags", globblock.Get(fileflags) | 2)
+        handle.close()
+        # TODO still need to be compressed
+    
+    def description(self):
+        return "Compress ["+self.fileDetails[3]+"]"
+
+    
 class BackupFile(Task):
     def __init__(self):
         Task.__init__(self)

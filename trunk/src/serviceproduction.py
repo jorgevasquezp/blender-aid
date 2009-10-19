@@ -37,6 +37,11 @@ def handleGetAll(wfile, request, session):
         list.append(productionToObject(production))
     wfile.write(json.dumps(list).encode())
     
+def handleActivateProduction(wfile, request, session):
+    productionId = request["production_id"]
+    indexer.activateProduction(productionId)
+    wfile.write(json.dumps(None).encode())
+    
 def handleGetProductionView(wfile, request, session):
     """Service to retrieve all production level information
     being:
@@ -45,20 +50,21 @@ def handleGetProductionView(wfile, request, session):
         scenes of the production
         missing links of the production
     """
-    productionId=int(request["production_id"])
 
-    indexer.updateIndex(productionId)
-
-    production = indexer.getProduction(productionId)
-    files = indexer.getProductionFiles(productionId)
-    scenes = indexer.getAllScenes(productionId)
-    errors = indexer.getConsistencyErrors(productionId)
-    
+    production = indexer.getActiveProduction()
     result = []
-    result.append(productionToObject(production))
-    result.append(filesToObject(files))
-    result.append(scenesToObject(scenes))
-    result.append(errorsToObject(errors))
+    if production is not None:
+        productionId=production[0]
+        session["production_id"]=productionId #fix for dependancy services..
+        indexer.updateIndex(productionId)
+        files = indexer.getProductionFiles(productionId)
+        scenes = indexer.getAllScenes(productionId)
+        errors = indexer.getConsistencyErrors(productionId)
+    
+        result.append(productionToObject(production))
+        result.append(filesToObject(files))
+        result.append(scenesToObject(scenes))
+        result.append(errorsToObject(errors))
     wfile.write(json.dumps(result).encode())
     
 def handleGetFileView(wfile, request, session):
