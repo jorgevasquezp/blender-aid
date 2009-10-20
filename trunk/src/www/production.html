@@ -488,7 +488,8 @@ function addProductionCallback() {
 function addProduction() {
 	name = document.getElementById("productionname").value;
 	plocation = document.getElementById("productionlocation").value;
-	xmlDocAddProduction = serviceAddProduction(addProductionCallback, name, plocation);
+	if (!(name.lenght==0 || plocation.length==0))
+		xmlDocAddProduction = serviceAddProduction(addProductionCallback, name, plocation);
 }
 function selectProduction(productionId) {
 	xmlDocActivateProduction = serviceActivateProduction(processActivateProduction, productionId)
