@@ -484,6 +484,13 @@ def getFileElements(fileID):
     connection.close()
     return result
 
+def getFileElementByName(fileId, elementName):
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    query = "select * from element where file_id=? and name=?"
+    result = connection.execute(query, [fileId, elementName]).fetchall()
+    connection.close()
+    return result
+
 def getFileReferences(fileID):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     query = "select li_name, substr(name,0,2) as etype, name, reference_file_id from element where type in ('ID', 'IM') and file_id=?;"
