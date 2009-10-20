@@ -685,7 +685,12 @@ function startRenameElement(elementId) {
 
 function refactorCallback() {
 	if ( xmlRef.readyState != 4 ) return ;
-	document.location.href="refactor.html"
+	messages = eval(xmlRef.responseText)
+	if (messages.length == 0) {
+		document.location.href="refactor.html"
+	} else {
+		alert(messages[0].message);
+	}
 }
 
 function processD() {

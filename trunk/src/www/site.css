@@ -90,7 +90,7 @@ input, select {
 }
 table {
 	background-color:#ffffff;
-	border:#000000 solid 1px;
+	border:#607090 solid 1px;
 	border-collapse: collapse;
 
 }
@@ -122,6 +122,10 @@ table tfoot {
 tfoot td {
 	padding-top:10px;
 }
+tfoot a {
+	color:#607090;
+}
+
 td {
 	padding-left:3px;
 	padding-right:3px;
