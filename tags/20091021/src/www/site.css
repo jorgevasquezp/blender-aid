@@ -1,0 +1,268 @@
+body {
+	background: #ffffff;
+	font-size:medium;
+	font-family: Verdana;
+}
+div#top-navigation a {
+	color:#607090;
+	font-size:small;
+	font-weight:bold;
+	text-decoration:none;
+}
+div.page-header {
+	background-color:#041060;
+	color:#ffffff;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-left:8px;
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
+
+}
+div.page-header span.production-location {
+	font-size:x-small;
+}
+h1 {
+	font-size:x-large;
+}
+h2 {
+	font-size:large;
+	margin-left:24px;
+	color:#607090;
+}
+label.inset100 {
+	width:100px;	
+}
+p{
+	margin-top:0px;
+}
+form {
+	background: #8d8d8d;
+	border:solid #4e4e4e 1px;
+	padding-top:10px;
+}
+fieldset {
+	border-left:none;
+	border-right:none;
+	border-top:none;
+	border-bottom-color:#4e4e4e;
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+	margin-left:10px;
+	margin-right:10px;
+	margin-top:0px;
+	margin-bottom:10px;
+	padding-top:5px;
+	padding-bottom:10px;
+}
+input.large {
+	width:490px;
+/*	background: #545454 !important;*/
+}
+legend {
+	color:#000000;
+	font-weight:bold;
+	font-size:small;
+}
+legend.open {
+	cursor:pointer;
+	background-image:url(images/open.png);
+	background-position:0px 0px;
+	background-repeat: no-repeat;
+	padding-left:16px;
+}
+legend.close {
+	cursor:pointer;
+	background-image:url(images/close.png);
+	background-position:0px 0px;
+	background-repeat: no-repeat;
+	padding-left:16px;
+}
+input {
+	margin-top:3px;
+}
+label {
+	width:150px;
+	float:left;
+}
+
+input, select {
+}
+table {
+	background-color:#ffffff;
+	border:#607090 solid 1px;
+	border-collapse: collapse;
+
+}
+table tbody a {
+	color:#000000;
+}
+caption{
+	background:#ffffff;
+}
+th {
+	font-weight:bold;
+	text-align:left;
+	padding-bottom:10px;
+	padding-left:5px;
+	padding-right:5px;
+}
+th.sortable {
+	cursor:pointer;
+}
+tbody{
+	background:#ffffff;
+}
+tbody tr:hover {
+	background-color:#f18844;
+}
+table tfoot {
+	font-size:small;
+}
+tfoot td {
+	padding-top:10px;
+}
+tfoot a {
+	color:#607090;
+}
+
+td {
+	padding-left:3px;
+	padding-right:3px;
+}
+ul {
+	list-style-type:none;
+	padding-left:0px;
+}
+
+a img {
+	border:none;
+}
+/* tab-control header */
+ul.tabs-header {
+	margin-top:-52px;
+	padding-right:0px;
+	margin-right:0px;
+	float:right;
+	padding-right:25px;
+	
+}
+ul.tabs-header li {
+	float:left;
+	width:150px;
+	display:inline;
+	text-align:center;
+	height:24px;
+}
+ul.tabs-header a{
+	color:#ffffff;
+	font-weight:bold;
+	text-decoration:none;
+}
+ul.tabs-header li.selected {
+}
+div.tab2 {
+	margin-top:5px;
+}
+
+/* tab-control */
+ul.tabs {
+	display:block;
+	padding-right:0px;
+	margin-right:0px;
+	float:none;
+	padding-left:25px;
+
+}
+ul.tabs li {
+	float:left;
+	width:200px;
+	display:inline;
+	text-align:left;
+}
+ul.tabs li.selected {
+	color:#808080
+}
+ul.tabs li > a {
+	color:#000000;
+	text-decoration:none;
+	font-weight:bold;
+
+}
+ul.tabs li > a.selected {
+	color:#808080;
+}
+
+div.tab {
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+	margin-left:10px;
+	margin-right:10px;
+	margin-bottom:10px;
+	margin-top:40px;
+	background-color:#ffffff;
+	color:#000000;
+	display:block;
+	float:none;
+}
+
+span.pages {
+	margin-left:50px;
+}
+
+div.outerlayer div.messagebox {
+	position:fixed;
+	left:50%;
+	margin-top: -35px;
+	margin-left: -150px;
+	width:300px;
+	height:70px;
+	top:50%;
+	background-color:#ffffff;
+	border: #000000 solid 1px;
+	padding:32px;
+	-moz-border-radius: 10px;
+}
+
+span.progressbar {
+	width:100%;
+	height:16px;
+	border:#000000 solid 1px;
+	background-color:#8d8d8d;
+	display:block;
+}
+span.progressindicator {
+	height:16px;
+	margin-top:-1px;
+	margin-left:-1px;
+	border:#000000 solid 1px;
+	background-color:  #fff0d6;
+	display:block;
+}
+
+div.outerlayer {
+	position:fixed;
+	left:0px;
+	width:100%;
+	height:100%;
+	top:0px;
+	background-color:#000000;
+	opacity:0.85;
+
+}
+div.outerlayer div.layer {
+	position:fixed;
+	left:50%;
+	margin-top: -200px;
+	margin-left: -325px;
+	width:650px;
+	top:50%;
+	background-color:#ffffff;
+	border: #000000 solid 1px;
+	padding:32px;
+	-moz-border-radius: 10px;
+	opacity:2.0;
+}
+
