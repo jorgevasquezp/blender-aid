@@ -1,6 +1,5 @@
 <html><head>
-<title>Blender-aid</title>
-<link rel="stylesheet" type="text/css" href="${css}">
+<title>Blender-aid</title> <link rel="stylesheet" type="text/css" href="${css}">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
  
  
@@ -177,6 +176,26 @@
 
 </div>
 
+<!--
+	chose production layer
+-->
+
+<div id="productionsLayer" class="outerlayer" style="display:none;">
+<div class="layer">
+<a style="float:right" href="#" onclick="javascript:cancelSelectProduction();return false;"><img src="images/delete.png"></img></a>
+<p>Select your production
+<ul id="productions">
+</ul>
+</p>
+
+
+Add new production
+<div>
+<label>name:</label><input id="productionname"></input><br/>
+<label>location:</label><input id="productionlocation" class="large"></input><br/>
+<a href="#" onclick="javascript:addProduction();return false;" >Add</a>
+</div>
+</div></div>
 <script>
 tab = document.getElementById("tabs-header")
 initTab(tab, "tab")
@@ -288,7 +307,12 @@ function process() {
 	if ( xmlDoc.readyState != 4 ) return ;
 	result = eval(xmlDoc.responseText)
 	production = result[0];
+	if (production == null) {
+		showSelectProduction()
+		return
+	}
 	selectedProductionId=production.production_id;
+
 	files = result[1]
 	scenes = result[2]
 	missing = result[3]
@@ -304,7 +328,8 @@ function process() {
 	tableErrors.setItems(missing);
 	tableErrors.update();
 }
-function sizeDom(item, column, td) {
+
+function sizeDom(item, column, td) {
 	return document.createTextNode(eval("item."+column[2])+"%");
 }
 
@@ -407,30 +432,6 @@ function showProductionView() {
 	selectedFileId=-1;
 }
 
-
-</script>
-
-<!--
-	chose production layer
--->
-
-<div id="productionsLayer" class="outerlayer" style="display:none;">
-<div class="layer">
-<a style="float:right" href="#" onclick="javascript:cancelSelectProduction();return false;"><img src="images/delete.png"></img></a>
-<p>Select your production
-<ul id="productions">
-</ul>
-</p>
-
-
-Add new production
-<div>
-<label>name:</label><input id="productionname"></input><br/>
-<label>location:</label><input id="productionlocation" class="large"></input><br/>
-<a href="#" onclick="javascript:addProduction();return false;" >Add</a>
-</div>
-</div></div>
-<script>
 function createLink(item) {
 	li = document.createElement("li")
 	
