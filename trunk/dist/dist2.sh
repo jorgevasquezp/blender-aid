@@ -32,6 +32,7 @@ echo == remove unwanted sources ==
 mv settings.py settings.tmp
 rm *.py
 mv settings.tmp settings.py
+chmod +x server.py
 
 cd ..
 echo == make archives ==

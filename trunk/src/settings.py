@@ -32,7 +32,7 @@ SQLITE3_CONNECTIONURL="/var/tmp/sql.bin"
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="20091021"
+VERSION="20091022"
 
 #additional description of the release
 VERSION_DESCRIPTION="October 2009"

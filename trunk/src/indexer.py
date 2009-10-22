@@ -144,10 +144,10 @@ step 4: determine dependancies
         #fill direct references
         for dbFile in connection.execute("select id, location from file where production_id=?", [productionId]).fetchall():
             #update texture
-            connection.execute("update element set reference_file_id=? where li_name=? and type='IM'", dbFile);
+            connection.execute("update element set reference_file_id=? where li_name=? and type='IM' and file_id in (select id from file where production_id=?)", [dbFile[0], dbFile[1], productionId]);
             
             #update library
-            connection.execute("update element set reference_file_id=? where li_name=? and type='LI'", dbFile);
+            connection.execute("update element set reference_file_id=? where li_name=? and type='LI' and file_id in (select id from file where production_id=?)", [dbFile[0], dbFile[1], productionId]);
 #        connection.commit()
         #fill in-direct references
         #update id
@@ -423,7 +423,7 @@ def getFile(fileId):
     connection.close()
     return result
 
-SQL_PRODUCTION_ALL = """select * from production"""
+SQL_PRODUCTION_ALL = """select * from production order by name"""
 def getAllProductions():
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)    
     result = connection.execute(SQL_PRODUCTION_ALL, []).fetchall();

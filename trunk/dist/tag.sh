@@ -1,1 +1,1 @@
-svn copy https://blender-aid.googlecode.com/svn/trunk/ https://blender-aid.googlecode.com/svn/tags/20091012
+svn copy https://blender-aid.googlecode.com/svn/trunk/ https://blender-aid.googlecode.com/svn/tags/20091022

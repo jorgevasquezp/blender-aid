@@ -11,7 +11,7 @@ grouplibrary = "materiallink.blend"
 groupidname = "GRTestGroup"
 
 tempfile = "temp.blend"
-blenderlocation="d:\\blender\\blender.exe"
+blenderlocation="blender"
 
 def trim(a):
     return a.split("\0")[0]
