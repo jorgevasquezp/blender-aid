@@ -617,7 +617,11 @@ function processFileView() {
 		apreview = document.getElementById("apreview")
 		apreview.setAttribute("href", "/download/file?file_id="+selectedFileId+"&production_id="+selectedProductionId)
 
+		document.getElementById("blend-settings").setAttribute("style", "display:none;")
+		document.getElementById("blend-elements").setAttribute("style", "display:none;")
+		document.getElementById("blend-uses").setAttribute("style", "display:none;")
 		document.getElementById("image-settings").setAttribute("style", "display:block;")
+
 		tab.hideTabLink("linkElements");
 	} else {
 	}
