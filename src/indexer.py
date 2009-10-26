@@ -436,15 +436,28 @@ def insertProduction(productionName, productionLocation):
     result = connection.execute(query, [productionName, productionLocation]);
     connection.commit();
     connection.close()
-    
+
+SQL_ELEMENT_DELETE = """delete from element where element.file_id in (select id from file where production_id=?)"""
+SQL_FILE_DELETE = """delete from file where production_id=?"""
+SQL_PRODUCTION_DELETE = """delete from production where id=?"""
+
 def deleteProduction(productionId):
+    """ delete a production from the cache
+"""
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = """delete from element where element.file_id in (select id from file where production_id=?)"""
-    result = connection.execute(query, [productionId]);
-    query = """delete from file where production_id=?"""
-    result = connection.execute(query, [productionId]);
-    query = """delete from production where id=?"""
-    result = connection.execute(query, [productionId]);
+    result = connection.execute(SQL_ELEMENT_DELETE, [productionId]);
+    result = connection.execute(SQL_FILE_DELETE, [productionId]);
+    result = connection.execute(SQL_PRODUCTION_DELETE, [productionId]);
+    connection.commit();
+    connection.close()
+    
+def deleteElements(productionId):
+    """ delete all elements and files from an production inside the cache.
+this method is usefull for debugging and refreshing the index-cache.
+"""
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    result = connection.execute(SQL_ELEMENT_DELETE, [productionId]);
+    result = connection.execute(SQL_FILE_DELETE, [productionId]);
     connection.commit();
     connection.close()
 

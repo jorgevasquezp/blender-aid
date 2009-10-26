@@ -20,6 +20,10 @@
 
 # 06-10-2009: 
 #  jbakker - adding support for python 3.0
+# 26-10-2009:
+#  jbakker - adding caching of the SDNA records.
+#  jbakker - adding caching for file block lookup
+#  jbakker - increased performance for readstring
 
 ######################################################
 # Importing modules
@@ -105,7 +109,9 @@ def WriteString(handle, astring, fieldlen):
 #    ReadString reads a String of given length from a file handle
 ######################################################
 def ReadString(handle, length):
-    return handle.read(length).decode("iso-8859-1", "ignore")
+    return struct.unpack(str(length)+"s", handle.read(length))[0]
+
+#    return handle.read(length).decode("iso-8859-1", "ignore")
 
 ######################################################
 #    ReadString0 reads a zero terminating String from a file handle
@@ -165,6 +171,7 @@ def Allign(handle):
 ######################################################
 # module classes
 ######################################################
+DNACatalogCache={}
 
 ######################################################
 #    BlendFile
@@ -179,26 +186,37 @@ class BlendFile:
         self.handle=handle
         self.Header = BlendFileHeader(handle)
         self.Blocks = []
+        self.CodeIndex = {}
+        
         aBlock = BlendFileBlock(handle, self)
         while aBlock.Header.Code != "ENDB":
             if aBlock.Header.Code == "DNA1":
-                self.Catalog = DNACatalog(self.Header, handle)
+                dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Header.Size)
+                if dnaid in DNACatalogCache:
+                    self.Catalog = DNACatalogCache[dnaid]
+                    aBlock.Header.skip(handle)
+                else:
+                    self.Catalog = DNACatalog(self.Header, handle)
+                    DNACatalogCache[dnaid] = self.Catalog
             else:
-#                if aBlock.Header.Code <> "DATA":
-#                    log.debug(aBlock.Header.Code)
                 aBlock.Header.skip(handle)
                 
             self.Blocks.append(aBlock)
+            
+            if aBlock.Header.Code not in self.CodeIndex:
+                self.CodeIndex[aBlock.Header.Code] = []
+            self.CodeIndex[aBlock.Header.Code].append(aBlock)
+                
             aBlock = BlendFileBlock(handle, self)
         self.Modified=False
         self.Blocks.append(aBlock)
         
     def FindBlendFileBlocksWithCode(self, code):
-        result = []
-        for block in self.Blocks:
-            if block.Header.Code.startswith(code) or block.Header.Code.endswith(code):
-                result.append(block)
-        return result
+        if len(code) == 2:
+            code = code
+        if code not in self.CodeIndex:
+            return []
+        return self.CodeIndex[code]
     
     def FindBlendFileBlockWithOffset(self, offset):
         for block in self.Blocks:
@@ -283,7 +301,7 @@ class BlendFileHeader:
 class FileBlockHeader:
 
     def __init__(self, handle, header):
-        self.Code = ReadString(handle, 4).strip()
+        self.Code = ReadString(handle, 4).split("\0")[0]
         if self.Code!="ENDB":
             self.Size = ReadUInt(handle, header)
             self.OldAddress = ReadPointer(handle, header)
@@ -315,7 +333,6 @@ class DNACatalog:
         self.Names=[]
         self.Types=[]
         self.Structs=[]
-        self.Header = header
         SDNA = ReadString(handle, 4)
         NAME = ReadString(handle, 4)
         numberOfNames = ReadUInt(handle, header)
@@ -511,3 +528,5 @@ def blendPath2AbsolutePath(productionFile, blenderPath):
         
     
     return blenderPath
+
+
