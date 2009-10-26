@@ -24,7 +24,7 @@ def generateMaterialThumbnails(filename):
     basename=os.path.basename(filename)
     relpath = os.path.relpath(filename)
 
-    for block in bfile.FindBlendFileBlocksWithCode("MA\0\0"):
+    for block in bfile.FindBlendFileBlocksWithCode("MA"):
         materialname = trim(block.Get("id.name"))
         materialnames.append(materialname)
         
@@ -68,7 +68,7 @@ def generateGroupThumbnails(filename):
     basename=os.path.basename(filename)
     relpath = os.path.relpath(filename)
 
-    for block in bfile.FindBlendFileBlocksWithCode("GR\0\0"):
+    for block in bfile.FindBlendFileBlocksWithCode("GR"):
         groupname = trim(block.Get("id.name"))
         groupnames.append(groupname)
         
