@@ -6,7 +6,7 @@ def test():
     production=indexer.getActiveProduction()
     indexer.deleteElements(production[0])
     indexer.updateIndex(production[0])
-    
+
 prof = hotshot.Profile("blendfile")
 benchtime = prof.runcall(test)
 prof.close()

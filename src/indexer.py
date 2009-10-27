@@ -216,7 +216,7 @@ def indexNewFile(connection, productionId, productionDir, file):
         for block in bf.FindBlendFileBlocksWithCode("SC"):
             scId = firstElementId + offsetElementId
             offsetElementId = offsetElementId + 1 
-            if block.Header.OldAddress == bfCurrentScenePointer:
+            if block.OldAddress == bfCurrentScenePointer:
                 bfCurrentSceneId = scId
 
             scName = block.Get("id.name");
@@ -261,8 +261,8 @@ def indexNewFile(connection, productionId, productionDir, file):
                 scName[0:2],
             ])
         for block in bf.FindBlendFileBlocksWithCode("OB"):
-            sdna = block.Header.SDNAIndex
-            dnaIndex = block.Header.SDNAIndex
+            #sdna = block.SDNAIndex
+            dnaIndex = block.SDNAIndex
             dnaStruct = block.File.Catalog.Structs[dnaIndex]
             if dnaStruct.Type.Name == 'Object':
                 scId = firstElementId + offsetElementId
@@ -321,7 +321,7 @@ def indexNewFile(connection, productionId, productionDir, file):
             scId = firstElementId + offsetElementId
             offsetElementId = offsetElementId + 1 
 
-            liOldAddress = block.Header.OldAddress
+            liOldAddress = block.OldAddress
             libref[liOldAddress] = scId
             scName = block.Get("id.name");        
             liName = block.Get("name");
