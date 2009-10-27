@@ -334,7 +334,7 @@ class RenameIDElement(Task):
             absPath = blendfile.blendPath2AbsolutePath(fileLocation, relPath)
             normPath = os.path.normpath(absPath)
             if normPath==absRefLoc:
-                libRef = libraryblock.Header.OldAddress
+                libRef = libraryblock.OldAddress
 
         for idblock in handle.FindBlendFileBlocksWithCode("ID"):
             lib = idblock.Get("lib")

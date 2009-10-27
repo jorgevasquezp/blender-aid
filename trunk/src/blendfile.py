@@ -24,6 +24,9 @@
 #  jbakker - adding caching of the SDNA records.
 #  jbakker - adding caching for file block lookup
 #  jbakker - increased performance for readstring
+# 27-10-2009:
+#  jbakker - remove FileBlockHeader class (reducing memory print,
+#            increasing performance)
 
 ######################################################
 # Importing modules
@@ -185,27 +188,28 @@ class BlendFile:
         log.debug("initializing reading blend-file")
         self.handle=handle
         self.Header = BlendFileHeader(handle)
+        self.BlockHeaderStruct = self.Header.CreateBlockHeaderStruct()
         self.Blocks = []
         self.CodeIndex = {}
         
         aBlock = BlendFileBlock(handle, self)
-        while aBlock.Header.Code != "ENDB":
-            if aBlock.Header.Code == "DNA1":
-                dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Header.Size)
+        while aBlock.Code != "ENDB":
+            if aBlock.Code == "DNA1":
+                dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
                 if dnaid in DNACatalogCache:
                     self.Catalog = DNACatalogCache[dnaid]
-                    aBlock.Header.skip(handle)
+                    aBlock.skip(handle)
                 else:
                     self.Catalog = DNACatalog(self.Header, handle)
                     DNACatalogCache[dnaid] = self.Catalog
             else:
-                aBlock.Header.skip(handle)
+                aBlock.skip(handle)
                 
             self.Blocks.append(aBlock)
             
-            if aBlock.Header.Code not in self.CodeIndex:
-                self.CodeIndex[aBlock.Header.Code] = []
-            self.CodeIndex[aBlock.Header.Code].append(aBlock)
+            if aBlock.Code not in self.CodeIndex:
+                self.CodeIndex[aBlock.Code] = []
+            self.CodeIndex[aBlock.Code].append(aBlock)
                 
             aBlock = BlendFileBlock(handle, self)
         self.Modified=False
@@ -220,7 +224,7 @@ class BlendFile:
     
     def FindBlendFileBlockWithOffset(self, offset):
         for block in self.Blocks:
-            if block.Header.OldAddress == offset:
+            if block.OldAddress == offset:
                 return block;
         return None;
     
@@ -238,20 +242,38 @@ class BlendFile:
 class BlendFileBlock:
     def __init__(self, handle, afile):
         self.File = afile
-        self.Header = FileBlockHeader(handle, afile.Header)
-        
+        header = afile.Header
+
+        blockheader = afile.BlockHeaderStruct.unpack(handle.read(afile.BlockHeaderStruct.size))
+        self.Code = blockheader[0].split("\0")[0]
+        if self.Code!="ENDB":
+            self.Size = blockheader[1]
+            self.OldAddress = blockheader[2]
+            self.SDNAIndex = blockheader[3]
+            self.Count = blockheader[4]
+            self.FileOffset = handle.tell()
+        else:
+            self.Size = 0
+            self.OldAddress = 0
+            self.SDNAIndex = 0
+            self.Count = 0
+            self.FileOffset = 0
+
     def Get(self, path):
-        dnaIndex = self.Header.SDNAIndex
+        dnaIndex = self.SDNAIndex
         dnaStruct = self.File.Catalog.Structs[dnaIndex]
-        self.File.handle.seek(self.Header.FileOffset, os.SEEK_SET)
+        self.File.handle.seek(self.FileOffset, os.SEEK_SET)
         return dnaStruct.GetField(self.File.Header, self.File.handle, path)
 
     def Set(self, path, value):
-        dnaIndex = self.Header.SDNAIndex
+        dnaIndex = self.SDNAIndex
         dnaStruct = self.File.Catalog.Structs[dnaIndex]
-        self.File.handle.seek(self.Header.FileOffset, os.SEEK_SET)
+        self.File.handle.seek(self.FileOffset, os.SEEK_SET)
         self.File.Modified=True
         return dnaStruct.SetField(self.File.Header, self.File.handle, path, value)
+
+    def skip(self, handle):
+        handle.read(self.Size)
 
 ######################################################
 #    BlendFileHeader allocates the first 12 bytes of a blend file
@@ -285,38 +307,18 @@ class BlendFileHeader:
         log.debug(tVersion)
         self.Version = int(tVersion)
         log.debug(self.Magic+" "+str(self.Version)+" "+str(self.PointerSize)+" "+str(self.LittleEndianness))
-
-
-######################################################
-#    FileBlockHeader contains the information in a file-block-header
-#    the class is needed for searching to the correct file-block (containing Code: DNA1)
-#
-#    Code=str
-#    Size=int
-#    OldAddress=pointer
-#    SDNAIndex=int
-#    Count=int
-#    FileOffset=file pointer of datablock
-######################################################
-class FileBlockHeader:
-
-    def __init__(self, handle, header):
-        self.Code = ReadString(handle, 4).split("\0")[0]
-        if self.Code!="ENDB":
-            self.Size = ReadUInt(handle, header)
-            self.OldAddress = ReadPointer(handle, header)
-            self.SDNAIndex = ReadUInt(handle, header)
-            self.Count = ReadUInt(handle, header)
-            self.FileOffset = handle.tell()
+        
+    def CreateBlockHeaderStruct(self):
+        res = self.StructPre #endianness
+        res = res + "4s" #Code
+        res = res + "I" #Size
+        if self.PointerSize==4:
+            res = res + "I"
         else:
-            self.Size = ReadUInt(handle, header)
-            self.OldAddress = 0
-            self.SDNAIndex = 0
-            self.Count = 0
-            self.FileOffset = handle.tell()
-
-    def skip(self, handle):
-        handle.read(self.Size)
+            res = res + "Q" #Pointer
+        res = res + "I" #SDNA
+        res = res + "I" #Count
+        return struct.Struct(res)
         
 ######################################################
 #    DNACatalog is a catalog of all information in the DNA1 file-block
@@ -497,16 +499,16 @@ class DNAField:
             return self.Type.Size*self.Name.ArraySize()
 
     def DecodeField(self, header, handle, path):
-        if path == "":
+        if len(path) == 0:
             if self.Name.IsPointer():
                 return ReadPointer(handle, header)
-            if self.Type.Name=="int":
+            elif self.Type.Name=="int":
                 return ReadInt(handle, header)
-            if self.Type.Name=="short":
+            elif self.Type.Name=="short":
                 return ReadShort(handle, header)
-            if self.Type.Name=="float":
+            elif self.Type.Name=="float":
                 return ReadFloat(handle, header)
-            if self.Type.Name=="char":
+            elif self.Type.Name=="char":
                 return ReadString(handle, self.Name.ArraySize())
         else:
             return self.Type.Structure.GetField(header, handle, path)
