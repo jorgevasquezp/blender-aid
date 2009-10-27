@@ -111,46 +111,57 @@ def WriteString(handle, astring, fieldlen):
 ######################################################
 #    ReadString reads a String of given length from a file handle
 ######################################################
+STRING=[]
+for i in range(0, 250):
+    STRING.append(struct.Struct(str(i)+"s"))
+                  
 def ReadString(handle, length):
-    return struct.unpack(str(length)+"s", handle.read(length))[0]
-
-#    return handle.read(length).decode("iso-8859-1", "ignore")
+    st = STRING[length]    
+    return st.unpack(handle.read(st.size))[0]
 
 ######################################################
 #    ReadString0 reads a zero terminating String from a file handle
 ######################################################
 def ReadString0(handle):
     Result = ""
-    S = ReadString(handle, 1)
+    st = STRING[1]
+    S = st.unpack(handle.read(1))[0]
     while S!="\0":
         Result=Result+S
-        S=ReadString(handle, 1)
+        S=st.unpack(handle.read(1))[0]
     return Result
 
 ######################################################
 #    ReadUShort reads an unsigned short from a file handle
 ######################################################
+USHORT=[struct.Struct("<H"), struct.Struct(">H")]
 def ReadUShort(handle, fileheader):
-    return struct.unpack(fileheader.StructPre+"H", handle.read(2))[0]
+    us = USHORT[fileheader.LittleEndiannessIndex]
+    return us.unpack(handle.read(us.size))[0]
 
 ######################################################
 #    ReadUInt reads an unsigned integer from a file handle
 ######################################################
+UINT=[struct.Struct("<I"), struct.Struct(">I")]
 def ReadUInt(handle, fileheader):
-    return struct.unpack(fileheader.StructPre+"I", handle.read(4))[0]
+    us = UINT[fileheader.LittleEndiannessIndex]
+    return us.unpack(handle.read(us.size))[0]
 
 def ReadInt(handle, fileheader):
     return struct.unpack(fileheader.StructPre+"i", handle.read(4))[0]
 def ReadFloat(handle, fileheader):
     return struct.unpack(fileheader.StructPre+"f", handle.read(4))[0]
-def ReadShort(handle, fileheader):
-    return struct.unpack(fileheader.StructPre+"h", handle.read(2))[0]
 
-######################################################
-#    ReadULong reads an unsigned long from a file handle
-######################################################
+SSHORT=[struct.Struct("<h"), struct.Struct(">h")]
+def ReadShort(handle, fileheader):
+    us = SSHORT[fileheader.LittleEndiannessIndex]
+    return us.unpack(handle.read(us.size))[0]
+
+ULONG=[struct.Struct("<Q"), struct.Struct(">Q")]
 def ReadULong(handle, fileheader):
-    return struct.unpack(fileheader.StructPre+"Q", handle.read(8))[0]
+    us = ULONG[fileheader.LittleEndiannessIndex]
+    return us.unpack(handle.read(us.size))[0]
+
 
 ######################################################
 #    ReadPointer reads an pointerfrom a file handle
@@ -198,12 +209,12 @@ class BlendFile:
                 dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
                 if dnaid in DNACatalogCache:
                     self.Catalog = DNACatalogCache[dnaid]
-                    aBlock.skip(handle)
+                    handle.read(aBlock.Size)
                 else:
                     self.Catalog = DNACatalog(self.Header, handle)
                     DNACatalogCache[dnaid] = self.Catalog
             else:
-                aBlock.skip(handle)
+                handle.read(aBlock.Size)
                 
             self.Blocks.append(aBlock)
             
@@ -272,9 +283,6 @@ class BlendFileBlock:
         self.File.Modified=True
         return dnaStruct.SetField(self.File.Header, self.File.handle, path, value)
 
-    def skip(self, handle):
-        handle.read(self.Size)
-
 ######################################################
 #    BlendFileHeader allocates the first 12 bytes of a blend file
 #    it contains information about the hardware architecture
@@ -299,8 +307,10 @@ class BlendFileHeader:
         if tEndianness=="v":
             self.LittleEndianness=True
             self.StructPre="<"
+            self.LittleEndiannessIndex=0
         if tEndianness=="V":
             self.LittleEndianness=False
+            self.LittleEndiannessIndex=1
             self.StructPre=">"
 
         tVersion = ReadString(handle, 3)
@@ -387,6 +397,10 @@ class DNAName:
 
     def __init__(self, aName):
         self.Name = aName
+        self.ShortName = self.DetermineShortName()
+        self.IsPointer = self.DetermineIsPointer()
+        self.IsMethodPointer = self.DetermineIsMethodPointer()
+        self.ArraySize = self.DetermineArraySize()
         
     def AsReference(self, parent):
         if parent == None:
@@ -394,10 +408,10 @@ class DNAName:
         else:
             Result = parent+"."
             
-        Result = Result + self.ShortName()
+        Result = Result + self.ShortName
         return Result
 
-    def ShortName(self):
+    def DetermineShortName(self):
         Result = self.Name;
         Result = Result.replace("*", "")
         Result = Result.replace("(", "")
@@ -405,15 +419,16 @@ class DNAName:
         Index = Result.find("[")
         if Index != -1:
             Result = Result[0:Index]
+        self._SN = Result
         return Result
         
-    def IsPointer(self):
+    def DetermineIsPointer(self):
         return self.Name.find("*")>-1
 
-    def IsMethodPointer(self):
+    def DetermineIsMethodPointer(self):
         return self.Name.find("(*")>-1
 
-    def ArraySize(self):
+    def DetermineArraySize(self):
         Result = 1
         Temp = self.Name
         Index = Temp.find("[")
@@ -457,7 +472,7 @@ class DNAStructure:
         rest = splitted[2]
         offset = 0;
         for field in self.Fields:
-            if field.Name.ShortName() == name:
+            if field.Name.ShortName == name:
                 handle.seek(offset, os.SEEK_CUR)
                 return field.DecodeField(header, handle, rest)
             else:
@@ -471,7 +486,7 @@ class DNAStructure:
         rest = splitted[2]
         offset = 0;
         for field in self.Fields:
-            if field.Name.ShortName() == name:
+            if field.Name.ShortName == name:
                 handle.seek(offset, os.SEEK_CUR)
                 return field.EncodeField(header, handle, rest, value)
             else:
@@ -493,14 +508,14 @@ class DNAField:
         self.Name = aName
         
     def Size(self, header):
-        if self.Name.IsPointer() or self.Name.IsMethodPointer():
-            return header.PointerSize*self.Name.ArraySize()
+        if self.Name.IsPointer or self.Name.IsMethodPointer:
+            return header.PointerSize*self.Name.ArraySize
         else:
-            return self.Type.Size*self.Name.ArraySize()
+            return self.Type.Size*self.Name.ArraySize
 
     def DecodeField(self, header, handle, path):
         if len(path) == 0:
-            if self.Name.IsPointer():
+            if self.Name.IsPointer:
                 return ReadPointer(handle, header)
             elif self.Type.Name=="int":
                 return ReadInt(handle, header)
@@ -509,14 +524,14 @@ class DNAField:
             elif self.Type.Name=="float":
                 return ReadFloat(handle, header)
             elif self.Type.Name=="char":
-                return ReadString(handle, self.Name.ArraySize())
+                return ReadString(handle, self.Name.ArraySize)
         else:
             return self.Type.Structure.GetField(header, handle, path)
 
     def EncodeField(self, header, handle, path, value):
         if path == "":
             if self.Type.Name=="char":
-                return WriteString(handle, value, self.Name.ArraySize())
+                return WriteString(handle, value, self.Name.ArraySize)
         else:
             return self.Type.Structure.SetField(header, handle, path, value)
 
