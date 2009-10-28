@@ -16,13 +16,17 @@ echo == clean up unwanted resources ==
 cd $dirname
 rm *~
 rm *.pyc
+rm blendfileprofiler.*
 rm .svn -Rf
 cd www
+rm *~
 rm .svn -Rf
 cd script
+rm *~
 rm .svn -Rf
 cd ..
 cd images
+rm *~
 rm .svn -Rf
 cd ..
 cd ..
