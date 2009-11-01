@@ -206,7 +206,7 @@ def indexNewFile(connection, productionId, productionDir, file):
         bfCurrentScenePointer = None
         bfElementId = firstElementId
         offsetElementId = offsetElementId + 1
-        
+        bfCurrentSceneId = None
         for block in bf.FindBlendFileBlocksWithCode("GLOB"):
             bfCurrentScenePointer = block.Get("curscene")
             #flags=block.Get("fileflags")

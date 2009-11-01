@@ -500,10 +500,13 @@ function processActivateProduction() {
 	fillSpan("spanProductionName", "");
 	fillSpan("spanProductionLocation", "");
 	tableFiles.setItems([]);
+	tableFiles.loading=true;
 	tableFiles.update();	
 	tableScenes.setItems([]);
+	tableScenes.loading=true;
 	tableScenes.update();
 	tableErrors.setItems([]);
+	tableErrors.loading=true;
 	tableErrors.update();
 	xmlDoc = serviceProductionView(process)
 	showProductionView();
@@ -519,10 +522,13 @@ function cancelSelectProduction() {
 	fillSpan("spanProductionLocation", "");
 
 	tableFiles.setItems([]);
+	tableFiles.loading=true;
 	tableFiles.update();	
 	tableScenes.setItems([]);
+	tableScenes.loading=true;
 	tableScenes.update();
 	tableErrors.setItems([]);
+	tableErrors.loading=true;
 	tableErrors.update();
 	xmlDoc = serviceProductionView(process)
 	showProductionView();
@@ -573,6 +579,14 @@ tableUsedby.update();
 xmlDocFileView=null
 function selectFile(fileId) {
 	selectedFileId = fileId
+	tableElements.loading=true;
+	tableElements.setItems([])
+	tableElements.update();
+	tableReferences.loading=true;
+	tableReferences.setItems([])
+	tableReferences.update();
+	tableUsedby.loading=true;
+	tableUsedby.setItems([])
 	document.getElementById("filesView").setAttribute("style", "display:block");
 	document.getElementById("productionView").setAttribute("style", "display:none");
 	xmlDocFileView = serviceFileView(processFileView, selectedProductionId, fileId);
@@ -775,6 +789,9 @@ function updateD(){
 
 	view = selectView.value
 	aGraph.setAttribute("href", "/svg/1/"+view+"/"+filter+"/"+display+"/"+selectedFileId)
+	tableD.setItems([])
+	tableD.loading=true;
+	tableD.update()
 	xmlDep=serviceDependancies(processD, 1, view, filter, display, selectedFileId)
 }
 
