@@ -76,17 +76,14 @@ step 4: determine dependancies
         for file in files:
             if file.endswith(".blend") or file.endswith(".png") or file.endswith(".gif") or file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".tga") or file.endswith(".exr"):
                 absFile = os.path.join(root, file)
-                #log.debug("adding "+absFile)
                 filesOnFileSystem.append([absFile, int(os.path.getmtime(absFile))])
             else:
-                #log.warning("!!!skipping:" +file);
                 pass
 
 # step 1b: make a list of all files already indexed
     fileInDatabase =[]
     for file in connection.execute("select * from file where production_id = ?", [productionId]).fetchall():
         absFile = os.path.join(productionDir, file[3])        
-        #log.debug("adding "+absFile)        
         fileInDatabase.append((absFile, int(file[4])))
         
 # step 2a: check which files needs to be updated (are changed)
@@ -95,8 +92,6 @@ step 4: determine dependancies
         for dbFile in fileInDatabase:
             if fsFile[0] == dbFile[0]:
                 if fsFile[1]>dbFile[1]:
-                    # file has been changed
-                    log.debug("modified: "+str(fsFile))
                     fileToBeUpdated.append(fsFile)
                     
 # step 2b: check which files are new files
@@ -107,7 +102,6 @@ step 4: determine dependancies
             if fsFile[0] == dbFile[0]:
                 existInDb=True
         if not existInDb:
-            log.debug("new: "+str(fsFile))
             fileToBeAdded.append(fsFile)
     
 # step 2c: check which files have been removed
@@ -118,7 +112,6 @@ step 4: determine dependancies
             if fsFile[0] == dbFile[0]:
                 existOnFS=True
         if not existOnFS:
-            log.debug("remove: "+str(dbFile))
             fileToBeRemoved.append(dbFile)
 
 #step 3a: index new files
@@ -138,7 +131,6 @@ step 4: determine dependancies
 #step 4: determine dependancies
 #do only when changes have happened
     if len(fileToBeAdded)+ len(fileToBeRemoved)+len(fileToBeUpdated) > 0:
-        log.debug("update dependancies");
         #clear all reference file id from a production
         connection.execute("update element set reference_file_id=null where file_id in (select id from file where production_id=?)", [productionId]);
         #fill direct references
@@ -264,7 +256,7 @@ def indexNewFile(connection, productionId, productionDir, file):
             #sdna = block.SDNAIndex
             dnaIndex = block.SDNAIndex
             dnaStruct = block.File.Catalog.Structs[dnaIndex]
-            if dnaStruct.Type.Name == 'Object':
+            if dnaStruct.Type[0] == 'Object':
                 scId = firstElementId + offsetElementId
                 offsetElementId = offsetElementId + 1 
 
