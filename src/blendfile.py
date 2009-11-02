@@ -30,6 +30,8 @@
 # 28-10-2009:
 #  jbakker - reduce far-calls by joining setfield with encode and
 #            getfield with decode
+# 02-11-2009:
+#  jbakker - python 3 compatibility added
 
 
 ######################################################
@@ -42,7 +44,7 @@ import gzip
 import tempfile
 
 log = logging.getLogger("blendfile")
-
+FILE_BUFFER_SIZE=1024*1024
 ######################################################
 # module global routines
 ######################################################
@@ -70,10 +72,10 @@ def openBlendFile(filename, access="rb"):
         log.debug("decompressing started")
         fs = gzip.open(filename, "rb")
         handle = tempfile.TemporaryFile()
-        data = fs.read(1024*1024) 
+        data = fs.read(FILE_BUFFER_SIZE) 
         while data: 
             handle.write(data) 
-            data = fs.read(1024*1024) 
+            data = fs.read(FILE_BUFFER_SIZE) 
         log.debug("decompressing finished")
         fs.close()
         log.debug("resetting decompressed file")
@@ -92,10 +94,10 @@ def closeBlendFile(afile):
         handle.seek(os.SEEK_SET, 0)
         log.debug("compressing started")
         fs = gzip.open(afile.originalfilename, "wb")
-        data = handle.read(1024*1024) 
+        data = handle.read(FILE_BUFFER_SIZE) 
         while data: 
             fs.write(data) 
-            data = handle.read(1024*1024) 
+            data = handle.read(FILE_BUFFER_SIZE) 
         fs.close()
         log.debug("compressing finished")
         
@@ -120,20 +122,20 @@ for i in range(0, 250):
     STRING.append(struct.Struct(str(i)+"s"))
                   
 def ReadString(handle, length):
-    st = STRING[length]    
-    return st.unpack(handle.read(st.size))[0]
+    st = STRING[length]
+    return st.unpack(handle.read(st.size))[0].decode("iso-8859-1")
 
 ######################################################
 #    ReadString0 reads a zero terminating String from a file handle
 ######################################################
-def ReadString0(handle):
-    Result = ""
-    st = STRING[1]
-    S = st.unpack(handle.read(1))[0]
-    while S!="\0":
-        Result=Result+S
-        S=st.unpack(handle.read(1))[0]
-    return Result
+def ReadString0(data, offset):
+    add = 0
+    while data[offset+add]!="\0":
+        add+=1
+
+    st = STRING[add]
+    S=st.unpack_from(data, offset)[0].decode("iso-8859-1")
+    return S
 
 ######################################################
 #    ReadUShort reads an unsigned short from a file handle
@@ -182,11 +184,11 @@ def ReadPointer(handle, header):
 ######################################################
 #    Allign alligns the filehandle on 4 bytes
 ######################################################
-def Allign(handle):
-    offset = handle.tell()
+def Allign(offset):
     trim = offset % 4
     if trim != 0:
-        handle.read(4-trim)
+        offset = offset + (4-trim)
+    return offset
 
 ######################################################
 # module classes
@@ -217,7 +219,7 @@ class BlendFile:
                     self.Catalog = DNACatalogCache[dnaid]
                     handle.read(aBlock.Size)
                 else:
-                    self.Catalog = DNACatalog(self.Header, handle)
+                    self.Catalog = DNACatalog(self.Header, aBlock, handle)
                     DNACatalogCache[dnaid] = self.Catalog
             else:
                 handle.read(aBlock.Size)
@@ -262,7 +264,7 @@ class BlendFileBlock:
         header = afile.Header
 
         blockheader = afile.BlockHeaderStruct.unpack(handle.read(afile.BlockHeaderStruct.size))
-        self.Code = blockheader[0].split("\0")[0]
+        self.Code = blockheader[0].decode().split("\0")[0]
         if self.Code!="ENDB":
             self.Size = blockheader[1]
             self.OldAddress = blockheader[2]
@@ -308,22 +310,22 @@ class BlendFileHeader:
         log.debug("reading blend-file-header")
         values = FILEHEADER.unpack(handle.read(FILEHEADER.size))
         self.Magic = values[0]
-        tPointerSize = values[1]
+        tPointerSize = values[1].decode()
         if tPointerSize=="-":
             self.PointerSize=8
-        if tPointerSize=="_":
+        elif tPointerSize=="_":
             self.PointerSize=4
-        tEndianness = values[2]
+        tEndianness = values[2].decode()
         if tEndianness=="v":
             self.LittleEndianness=True
             self.StructPre="<"
             self.LittleEndiannessIndex=0
-        if tEndianness=="V":
+        elif tEndianness=="V":
             self.LittleEndianness=False
             self.LittleEndiannessIndex=1
             self.StructPre=">"
 
-        tVersion = values[3]
+        tVersion = values[3].decode()
         self.Version = int(tVersion)
         
     def CreateBlockHeaderStruct(self):
@@ -339,57 +341,70 @@ class BlendFileHeader:
 ######################################################
 class DNACatalog:
 
-    def __init__(self, header, handle):
+    def __init__(self, header, block, handle):
         log.debug("building DNA catalog")
         shortstruct = USHORT[header.LittleEndiannessIndex]
+        shortstruct2 = struct.Struct(USHORT[header.LittleEndiannessIndex].format+"H")
         intstruct = UINT[header.LittleEndiannessIndex]
-        
+        data = handle.read(block.Size)
         self.Names=[]
         self.Types=[]
         self.Structs=[]
-        SDNA = handle.read(4)
-        NAME = handle.read(4)
-        numberOfNames = intstruct.unpack(handle.read(4))[0]
+        
+        offset = 8;
+        numberOfNames = intstruct.unpack_from(data, offset)[0]
+        offset += 4
+        
         log.debug("building #"+str(numberOfNames)+" names")
         for i in range(numberOfNames):
-            tName = ReadString0(handle)
+            tName = ReadString0(data, offset)
+            offset = offset + len(tName) + 1
             self.Names.append(DNAName(tName))
 
-        Allign(handle)
-        TYPE = handle.read(4)
-        numberOfTypes = intstruct.unpack(handle.read(4))[0]
+        offset = Allign(offset)
+        offset += 4
+        numberOfTypes = intstruct.unpack_from(data, offset)[0]
+        offset += 4
         log.debug("building #"+str(numberOfTypes)+" types")
         for i in range(numberOfTypes):
-            tType = ReadString0(handle)
-            self.Types.append(DNAType(tType))
+            tType = ReadString0(data, offset)
+            offset += (len(tType) + 1)
+            self.Types.append([tType, 0, None])
 
-        Allign(handle)
-        TLEN = handle.read(4)
+        offset = Allign(offset)
+        offset += 4
         log.debug("building #"+str(numberOfTypes)+" type-lengths")
         for i in range(numberOfTypes):
-            tLen = shortstruct.unpack(handle.read(2))[0]
-            self.Types[i].Size = tLen
+            tLen = shortstruct.unpack_from(data, offset)[0]
+            offset = offset + 2
+            self.Types[i][1] = tLen
 
-        Allign(handle)
-        STRC = handle.read(4)
-        numberOfStructures = intstruct.unpack(handle.read(4))[0]
+        offset = Allign(offset)
+        offset += 4
+        numberOfStructures = intstruct.unpack_from(data, offset)[0]
+        offset += 4
         log.debug("building #"+str(numberOfStructures)+" structures")
         for structureIndex in range(numberOfStructures):
-            tType = shortstruct.unpack(handle.read(2))[0]
+            d = shortstruct2.unpack_from(data, offset)
+            tType = d[0]
+            offset += 4
             Type = self.Types[tType]
             structure = DNAStructure(Type)
             self.Structs.append(structure)
 
-            numberOfFields = shortstruct.unpack(handle.read(2))[0]
+            numberOfFields = d[1]
+
             for fieldIndex in range(numberOfFields):
-                fTypeIndex = shortstruct.unpack(handle.read(2))[0]
-                fNameIndex = shortstruct.unpack(handle.read(2))[0]
+                d2 = shortstruct2.unpack_from(data, offset)
+                fTypeIndex = d2[0]
+                fNameIndex = d2[1]
+                offset += 4
                 fType = self.Types[fTypeIndex]
                 fName = self.Names[fNameIndex]
                 if fName.IsPointer or fName.IsMethodPointer:
                     fsize = header.PointerSize*fName.ArraySize
                 else:
-                    fsize = fType.Size*fName.ArraySize
+                    fsize = fType[1]*fName.ArraySize
                 structure.Fields.append([fType, fName, fsize])
 
 ######################################################
@@ -445,18 +460,6 @@ class DNAName:
         return Result
 
 ######################################################
-#    DNAType is a C-type stored in the DNA
-#
-#    Name=str
-#    Size=int
-#    Structure=DNAStructure
-######################################################
-class DNAType:
-    def __init__(self, aName):
-        self.Name = aName
-        self.Structure=None
-
-######################################################
 #    DNAType is a C-type structure stored in the DNA
 #
 #    Type=DNAType
@@ -466,7 +469,7 @@ class DNAStructure:
 
     def __init__(self, aType):
         self.Type = aType
-        self.Type.Structure = self
+        aType[2] = self
         self.Fields=[]
         
     def GetField(self, header, handle, path):
@@ -483,16 +486,16 @@ class DNAStructure:
                     
                     if fname.IsPointer:
                         return ReadPointer(handle, header)
-                    elif ftype.Name=="int":
+                    elif ftype[0]=="int":
                         return ReadInt(handle, header)
-                    elif ftype.Name=="short":
+                    elif ftype[0]=="short":
                         return ReadShort(handle, header)
-                    elif ftype.Name=="float":
+                    elif ftype[0]=="float":
                         return ReadFloat(handle, header)
-                    elif ftype.Name=="char":
+                    elif ftype[0]=="char":
                         return ReadString(handle, fname.ArraySize)
                 else:
-                    return ftype.Structure.GetField(header, handle, rest)
+                    return ftype[2].GetField(header, handle, rest)
         
             else:
                 offset += field[2]
@@ -510,10 +513,10 @@ class DNAStructure:
                 handle.seek(offset, os.SEEK_CUR)
                 ftype = field[0]
                 if len(rest)==0:
-                    if ftype.Name=="char":
+                    if ftype[0]=="char":
                         return WriteString(handle, value, fname.ArraySize)
                 else:
-                    return ftype.Structure.SetField(header, handle, rest, value)
+                    return ftype[2].SetField(header, handle, rest, value)
             else:
                 offset += field[2]
 
