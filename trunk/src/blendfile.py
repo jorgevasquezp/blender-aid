@@ -42,6 +42,7 @@ import struct
 import logging
 import gzip
 import tempfile
+import sys
 
 log = logging.getLogger("blendfile")
 FILE_BUFFER_SIZE=1024*1024
@@ -128,9 +129,14 @@ def ReadString(handle, length):
 ######################################################
 #    ReadString0 reads a zero terminating String from a file handle
 ######################################################
+ZEROTESTER = 0
+if sys.version_info < (3, 0):
+    ZEROTESTER="\0"
+
 def ReadString0(data, offset):
     add = 0
-    while data[offset+add]!="\0":
+
+    while data[offset+add]!=ZEROTESTER:
         add+=1
 
     st = STRING[add]
@@ -217,12 +223,12 @@ class BlendFile:
                 dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
                 if dnaid in DNACatalogCache:
                     self.Catalog = DNACatalogCache[dnaid]
-                    handle.read(aBlock.Size)
+                    handle.seek(aBlock.Size, os.SEEK_CUR)
                 else:
                     self.Catalog = DNACatalog(self.Header, aBlock, handle)
                     DNACatalogCache[dnaid] = self.Catalog
             else:
-                handle.read(aBlock.Size)
+                handle.seek(aBlock.Size, os.SEEK_CUR)
                 
             self.Blocks.append(aBlock)
             
@@ -344,7 +350,7 @@ class DNACatalog:
     def __init__(self, header, block, handle):
         log.debug("building DNA catalog")
         shortstruct = USHORT[header.LittleEndiannessIndex]
-        shortstruct2 = struct.Struct(USHORT[header.LittleEndiannessIndex].format+"H")
+        shortstruct2 = struct.Struct(str(USHORT[header.LittleEndiannessIndex].format.decode()+'H'))
         intstruct = UINT[header.LittleEndiannessIndex]
         data = handle.read(block.Size)
         self.Names=[]

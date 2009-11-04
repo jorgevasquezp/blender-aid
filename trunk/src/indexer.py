@@ -159,18 +159,13 @@ def indexExistingFile(connection, productionId, productionDir, file):
     
 def indexOldFile(connection, productionId, productionDir, file):
     """remove a file from production scope"""
-    log.info("remove file "+file);
     relpath = _relpath(file, productionDir)
-# find file
     dbFile = connection.execute("select id from file where location=?", [relpath]).fetchone()
     connection.execute("delete from element where file_id=?", dbFile)
     connection.execute("delete from file where id=?", dbFile)
-#    connection.commit()
-    
 
 def indexNewFile(connection, productionId, productionDir, file):
     """index a new file"""
-    log.info("indexing file "+file);
     newId = connection.execute("select max(id)+1 from file").fetchone()[0]
     if newId == None:
         newId=0;
@@ -183,6 +178,8 @@ def indexNewFile(connection, productionId, productionDir, file):
         int(os.path.getmtime(file))])
 
     if file.endswith(".blend"):
+        log.info("indexing file "+file);
+
         bf=blendfile.openBlendFile(file)
         
 # index the file
