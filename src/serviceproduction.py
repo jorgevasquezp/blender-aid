@@ -177,6 +177,7 @@ def errorToObject(err):
     result["file_location"]=err[1]
     result["missing_file_location"]=err[2]
     result["file_id"]=err[0]
+    result["element_id"]=err[3]
     return result
 
 def fileDetailToObject(file):

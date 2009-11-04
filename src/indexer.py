@@ -619,22 +619,22 @@ def getConsistencyErrors(productionId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     result = []
     #missing libraries.
-    query = """select file.location, element.li_name, element.file_id from element, file where element.type='LI' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
+    query = """select file.location, element.li_name, element.file_id, element.id from element, file where element.type='LI' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
     tempresult = connection.execute(query, [productionId]).fetchall();
     for line in tempresult:
-        result.append([line[2],line[0],line[1]])
+        result.append([line[2],line[0],line[1], line[3]])
 
-    query = """select file.location, element.li_name, element.file_id, element.name from element, file where element.type='ID' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
-    tempresult = connection.execute(query, [productionId]).fetchall();
-    for line in tempresult:
-        result.append([line[2],line[0],line[1]+"#"+line[3]])
+#    query = """select file.location, element.li_name, element.file_id, element.name from element, file where element.type='ID' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
+#    tempresult = connection.execute(query, [productionId]).fetchall();
+#    for line in tempresult:
+#        result.append([line[2],line[0],line[1]+"#"+line[3]])
 
-    query = """select file.location, element.li_name, element.file_id from element, file where element.type='IM' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
+    query = """select file.location, element.li_name, element.file_id, element.id from element, file where element.type='IM' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
     tempresult = connection.execute(query, [productionId]).fetchall();
     for line in tempresult:
         if line[1] != None and len(line[1])>0:
             if line[1]!='Untitled':
-                result.append([line[2],line[0],line[1]])
+                result.append([line[2],line[0],line[1], line[3]])
     
     connection.close()
     return result
