@@ -292,10 +292,20 @@ function elementIconFactory(item, column, td) {
 
 	return atag
 }
-function elementActionsFactory(item, column, td) {
+
+function elementActionsFactory(item, column, td) {
 	atag = document.createElement("a");
 	atag.setAttribute("href", "#");
 	atag.setAttribute("onclick", "javascript:startRenameElement("+item.element_id+");return false;");
-	atag.appendChild(document.createTextNode("Rename"))
-	return atag;
+	atag.appendChild(document.createTextNode("Rename"))
+ 	return atag;
 }
+function missingActionsFactory(item, column, td) {
+	atag = document.createElement("a");
+	atag.setAttribute("href", "#");
+	atag.setAttribute("onclick", "javascript:startRenameElement("+item.element_id+");return false;");
+	atag.appendChild(document.createTextNode("Solve"))
+ 	return atag;
+}
+
+
