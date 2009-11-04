@@ -17,7 +17,8 @@
 # ***** END GPL LICENCE BLOCK *****
 #
 # (c) 2009, At Mind B.V. - Jeroen Bakker
-
+# 4-11-2009
+#  jbakker: fixed sqlite3 substr
 
 ######################################################
 # Importing modules
@@ -495,14 +496,14 @@ def getFileElementByName(fileId, elementName):
 
 def getFileReferences(fileID):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = "select li_name, substr(name,0,2) as etype, name, reference_file_id from element where type in ('ID', 'IM') and file_id=?;"
+    query = "select li_name, substr(name,1,2) as etype, name, reference_file_id from element where type in ('ID', 'IM') and file_id=?;"
     result = connection.execute(query, [fileID]).fetchall()
     connection.close()
     return result
 
 def getFileUsedBy(fileID):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = "select file.location, substr(element.name,0,2) as etype, element.name, file_id from element, file where file.id=element.file_id and type in ('ID', 'IM') and reference_file_id=?;"
+    query = "select file.location, substr(element.name,1,2) as etype, element.name, file_id from element, file where file.id=element.file_id and type in ('ID', 'IM') and reference_file_id=?;"
     result = connection.execute(query, [fileID]).fetchall()
     connection.close()
     return result
@@ -521,13 +522,13 @@ def getUncompressedFiles(productionId):
 def queryDependancy(productionId, filter):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     if filter=="all":
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id =file.id and element.type in ('ID','IM') and file.production_id=?;"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id =file.id and element.type in ('ID','IM') and file.production_id=?;"
     else:
         f=[]
         for t in filter.split(","):
             f.append("'"+t+"'")
         nFilter = ",".join(f)
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id =file.id and element.type in ('ID','IM') and file.production_id=? and etype in ("+nFilter+");"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id =file.id and element.type in ('ID','IM') and file.production_id=? and etype in ("+nFilter+");"
         
     result = connection.execute(query, [productionId]).fetchall()
     connection.close()
@@ -540,13 +541,13 @@ def queryDependancyUses(productionId, fileId, filter):
     result = []
     
     if filter=="all":
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=?;"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=?;"
     else:
         f=[]
         for t in filter.split(","):
             f.append("'"+t+"'")
         nFilter = ",".join(f)
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=? and etype in ("+nFilter+");"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=? and etype in ("+nFilter+");"
             
     while len(todo)!=0:
         item = todo.pop()
@@ -568,13 +569,13 @@ def queryDependancyUsed(productionId, fileId, filter):
     result = []
     
     if filter=="all":
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=?;"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=?;"
     else:
         f=[]
         for t in filter.split(","):
             f.append("'"+t+"'")
         nFilter = ",".join(f)
-        query="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=? and etype in ("+nFilter+");"
+        query="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=? and etype in ("+nFilter+");"
             
     while len(todo)!=0:
         item = todo.pop()
@@ -595,15 +596,15 @@ def queryDependancyNeighbour(productionId, fileId, filter):
     result = []
     
     if filter=="all":
-        query1="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=?;"
-        query2="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=?;"
+        query1="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=?;"
+        query2="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=?;"
     else:
         f=[]
         for t in filter.split(","):
             f.append("'"+t+"'")
         nFilter = ",".join(f)
-        query1="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=? and etype in ("+nFilter+");"
-        query2="select file.location, element.li_name, substr(element.name, 0, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=? and etype in ("+nFilter+");"
+        query1="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and element.reference_file_id=? and etype in ("+nFilter+");"
+        query2="select file.location, element.li_name, substr(element.name, 1, 2) as etype, element.name, element.file_id, element.reference_file_id from element, file where element.file_id=file.id and element.type in ('ID','IM') and file.id=? and etype in ("+nFilter+");"
             
     
     for line in connection.execute(query1, [fileId]).fetchall():
