@@ -171,12 +171,12 @@ def indexNewFile(connection, productionId, productionDir, file):
     if newId == None:
         newId=0;
     
-    connection.execute("insert into file values (?,?,?,?,?)", 
+    connection.execute("insert into file values (?,?,?,?,?,?)", 
         [newId, 
         productionId, 
         os.path.basename(file), 
         _relpath(file, productionDir), 
-        int(os.path.getmtime(file))])
+        int(os.path.getmtime(file)), int(os.path.getsize(file))])
 
     if file.endswith(".blend"):
         log.info("indexing file "+file);
@@ -655,7 +655,8 @@ def setup():
         production_id int,
         name text,
         location text,
-        lastupdate bigint
+        lastupdate bigint,
+        length bigint
     )""")
     connection.execute("""create table if not exists element (
         id int primary key,
