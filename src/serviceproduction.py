@@ -23,6 +23,7 @@
 # Importing modules
 ######################################################
 import indexer
+from datetime import datetime
 try:
     import json
 except:
@@ -126,6 +127,8 @@ def fileToObject(file):
     result["file_id"]=file[0]
     result["file_name"]=file[2]
     result["file_location"]=file[3]
+    result["file_timestamp"]=file[4]*1000
+    result["file_size"]=file[5]
     return result
 
 def scenesToObject(scenes):

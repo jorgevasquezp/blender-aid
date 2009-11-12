@@ -134,6 +134,13 @@ function endiannessFactory(item, column, td) {
 	return document.createTextNode(value);
 }
 
+function dateFactory(item, column, td) {
+	tim = eval("item."+column[2])
+	dt = new Date()
+	dt.setTime(tim)
+	
+	return document.createTextNode(dt.toLocaleString())
+}
 function linkFactoryFile(item, column, td) {
 	node = defaultDom(item, column, td);
 	if (item.file_id!=null) {

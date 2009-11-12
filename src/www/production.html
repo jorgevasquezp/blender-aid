@@ -237,6 +237,8 @@ initTable(tableFiles, "tableFiles");
 tableFiles.setCaption("Files");
 tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableFiles.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
+tableFiles.addColumn("size", "size", "file_size", true);
+tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
 tableFiles.pageitems=20;
 tableFiles.filter=filter;
 tableFiles.update();
