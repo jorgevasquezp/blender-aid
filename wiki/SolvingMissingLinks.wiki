@@ -33,7 +33,10 @@ This list can be large. so a filter is handy
 = Re-factoring = 
 When a file has been selected the re-factoring process will be started.
 
-= Technical =
+= Technical design =
+== presentation layer ==
+== logic layer ==
+== database layer ==
 
 select all files who matches the aspect closely
 
