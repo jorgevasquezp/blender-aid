@@ -37,15 +37,18 @@ When a file has been selected the re-factoring process will be started.
 
 select all files who matches the aspect closely
 
-{{{select file.*, count(*) from element el, file where file.id=el.file_id and el.type<>'BF' and el.name in ('OB1', 'OB2', 'OB3') group by el.blendfile_id order by count(*) desc;}}}
+{{{select file.*, count(*)/3.0 from element el, file where file.id=el.file_id and el.type<>'BF' and el.name in ('OB1', 'OB2', 'OB3') group by el.blendfile_id order by count(*) desc;
+}}}
 
 results into:
 {{{
-13|1|fuzz_font.blend|menus/fuzz_font.blend|1228589776|68247|3
-2|1|bumblebee.blend|franci_test/bumblebee.blend|1239435940|248730|2
-51|1|frankie.blend|chars/frankie.blend|1246857967|412706|2
+13|1|fuzz_font.blend|menus/fuzz_font.blend|1228589776|68247|1.0
+2|1|bumblebee.blend|franci_test/bumblebee.blend|1239435940|248730|0.666666666666667
+51|1|frankie.blend|chars/frankie.blend|1246857967|412706|0.666666666666667
 }}}
 
 file 13 is a 100% match 3/3
 file 2 and 51 are a 66% match 2/3
 files with 0% match will not be shown
+
+TODO: onlu use the parameter of the LI what really is missing in stead of the list of objects. perhaps 2 sql statements
