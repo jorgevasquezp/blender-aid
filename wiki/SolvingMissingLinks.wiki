@@ -44,5 +44,8 @@ results into:
 13|1|fuzz_font.blend|menus/fuzz_font.blend|1228589776|68247|3
 2|1|bumblebee.blend|franci_test/bumblebee.blend|1239435940|248730|2
 51|1|frankie.blend|chars/frankie.blend|1246857967|412706|2
-
 }}}
+
+file 13 is a 100% match 3/3
+file 2 and 51 are a 66% match 2/3
+files with 0% match will not be shown
