@@ -42,6 +42,7 @@ select file.*, count(*)/3.0 from element el, file where file.id=el.file_id and e
 }}}
 
 results into:
+||*file.id*||*file.name*||*file.location*||*file.timestamp*||*file.size*||*percentage match*||
 ||13||1||fuzz_font.blend||menus/fuzz_font.blend||1228589776||68247||1.0||
 ||51||1||frankie.blend||chars/frankie.blend||1246857967||412706||0.666666666666667||
 ||2||1||bumblebee.blend||franci_test/bumblebee.blend||1239435940||248730||0.666666666666667||
