@@ -42,7 +42,9 @@ select all files who matches the aspect closely
 
 {{{
 select element.name from element where library_id=? and type='ID'
-
+}}}
+the result of this query has to integrated with the next query meaning the /3.0 will be replaced by the floating representation of the rowcount and the list of objectnames are the concat of the result.
+{{{
 select file.*, count(*)/3.0 from element el, file where file.id=el.file_id and el.type<>'BF' and el.name in ('OB1', 'OB2', 'OB3') and file.production_id=1 group by el.blendfile_id order by count(*) desc, file.location;
 }}}
 
