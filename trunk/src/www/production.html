@@ -316,6 +316,7 @@ function updateFacets() {
 
 selectedProductionId=-1
 selectedFileId=-1
+selectedElementId = -1
 xmlDoc = serviceProductionView(process)
   
 function process() {
@@ -591,10 +592,6 @@ tableUsedby.addColumn("element_name", "name", "element_name", true);
 tableUsedby.pageitems=20;
 tableUsedby.update(); 
 
-tableSolutions = document.getElementById("solutions")
-initTable(tableSolutions, "tableSolutions")
-tableSolutions.addColumn("file_location", "file", "file_location", true)
-tableSolutions.addColumn("match", "match", "match", true, null, percentageFactory)
 
 xmlDocFileView=null
 function selectFile(fileId) {
@@ -819,10 +816,17 @@ function showOpenFileHelp() {
 	alert("Copy the link location and open the link in a file browser or equilivant.");
 }
 
+// solve missing links
+tableSolutions = document.getElementById("solutions")
+initTable(tableSolutions, "tableSolutions")
+tableSolutions.addColumn("file_location", "file", "file_location", true, null, solveLinkFactory)
+tableSolutions.addColumn("match", "match", "match", true, null, percentageFactory)
+
 function selectMissingLinkSolution(elementId) {
 	tableSolutions.setItems([])
 	tableSolutions.loading=true
 	tableSolutions.update()
+	selectedElementId = elementId
 
 	xmlSolution = serviceMissingLinkSolutions( processSolutionCallback, selectedProductionId, elementId )
 }
@@ -836,6 +840,12 @@ function processSolutionCallback() {
 }
 function cancelSelectSolution() {
 	document.getElementById("missingLayer").setAttribute("style", "display:none;")
+}
+
+function startSolveMissingLink(fileId) {
+	document.getElementById("missingLayer").setAttribute("style", "display:none;")
+	xmlRef = serviceStartSolveMissingLink(refactorCallback, selectedProductionId, selectedElementId, fileId);
+	
 }
 </script>
  </body></html>

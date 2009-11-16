@@ -156,6 +156,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         session = getSession(self.client_address[0])
         line = self.rfile.readline().decode();
+
         req = json.loads(line)
         log.info(servicename)
         if servicename=="/service/metafromproductionfiles":
@@ -193,6 +194,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             
         elif servicename=="/service/missinglinksolutions":
             servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
+        elif servicename=="/service/solvemissinglink":
+            servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
 
 # minimal web server.  serves files relative to the
 # current directory.
