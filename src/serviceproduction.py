@@ -156,9 +156,13 @@ def sceneToObject(scene):
     result["scene_outputtype"]=scene[12]
     result["scene_startframe"]=scene[6]
     result["scene_endframe"]=scene[7]
-    result["scene_step"]=1
-#       wfile.write("\"scene_step\":"+str(scene[6])+",");
-    result["scene_rt"]=1
+    step = scene[8]
+    if step==None:
+        step=1
+    elif step==0:
+        step=1
+        
+    result["scene_step"] = step
     result["scene_xparts"]=scene[9]
     result["scene_yparts"]=scene[10]
     result["scene_active"]=scene[11]
@@ -252,15 +256,6 @@ def usedbyToObject(usedby):
     result["element_name"]=usedby[2]
     result["element_type"]=usedby[1]
     return result   
-
-#def handleGet(wfile, request, session):
-#    productionId=int(request["production_id"])
-#    production = indexer.getProduction(productionId)
-#    wfile.write("[{");
-#    wfile.write("\"production_id\":\""+str(production[0])+"\",");
-#    wfile.write("\"production_name\":\""+production[1]+"\",");
-#    wfile.write("\"production_location\":\""+production[2]+"\"");
-#    wfile.write("}]\r\n");
     
 def handleDelete(wfile, request, session):
     productionId=int(request["production_id"])
@@ -272,98 +267,3 @@ def handleAdd(wfile, request, session):
     productionLocation=request["production_location"]
     indexer.insertProduction(productionName, productionLocation);
     wfile.write("[]\r\n".encode());
-    
-#def handleGetFileDetails(wfile, request, session):
-#    fileId=int(request["file_id"])
-#    file = indexer.getFileDetails(fileId)
-#    if file != None:
-#        wfile.write("[{");
-#        wfile.write("\"file_id\":"+str(file[0])+",");
-#        wfile.write("\"file_name\":\""+file[1]+"\",");
-#        wfile.write("\"file_location\":\""+file[2]+"\",");
-#        wfile.write("\"scene_name\":\""+file[3]+"\",");
-#        wfile.write("\"scene_resolution\":\""+str(file[4])+"x"+str(file[5])+"\",");
-#        wfile.write("\"scene_outputtype\":\""+file[6]+"\",");
-#        wfile.write("\"scene_xparts\":"+str(file[7])+",");
-#        wfile.write("\"scene_yparts\":"+str(file[8])+",");
-#        wfile.write("\"scene_startframe\":"+str(file[9])+",");
-#        wfile.write("\"scene_endframe\":"+str(file[10]));
-#        wfile.write("}]\r\n");
-#    else:
-#        file = indexer.getFile(fileId)
-#        wfile.write("[{");
-#        wfile.write("\"file_id\":"+str(file[0])+",");
-#        wfile.write("\"file_name\":\""+file[2]+"\",");
-#        wfile.write("\"file_location\":\""+file[3]+"\"");
-#        wfile.write("}]\r\n");
-
-#def handleGetFiles(wfile, request, session):
-#    productionId=int(request["production_id"])
-#    indexer.updateIndex(productionId)
-#    items = indexer.getProductionFiles(productionId)
-#    wfile.write("[");
-#    first = True;
-#    for item in items:
-#        if first:
-#            first=False
-#        else:
-#            wfile.write(",");
-#        
-#        wfile.write("{");
-#        wfile.write("\"file_id\":"+str(item[0])+",");
-#        wfile.write("\"file_name\":\""+item[2]+"\",");
-#        wfile.write("\"file_location\":\""+item[3]+"\"");
-#        wfile.write("}\r\n");
-#
-#    wfile.write("]");
-    
-#def handleGetElements(wfile, request, session):
-#    fileId=int(request["file_id"])
-#    elements = indexer.getFileElements(fileId)
-#    references = indexer.getFileReferences(fileId)
-#    usedby = indexer.getFileUsedBy(fileId)
-#    wfile.write("[[")
-#    first = True;
-#    for item in elements:
-#        if first:
-#            first=False
-#        else:
-#            wfile.write(",");
-#        wfile.write("{")
-#        wfile.write("\"element_id\":"+str(item[0])+",")
-#        wfile.write("\"element_name\":\""+item[5]+"\",")
-#        wfile.write("\"element_type\":\""+item[6]+"\"")
-#        wfile.write("}")
-#   
-#    wfile.write("],[")
-#    first = True;
-#    for item in references:
-#        if first:
-#            first=False
-#        else:
-#            wfile.write(",");
-#        wfile.write("{")
-#        if item[3] != None:
-#            wfile.write("\"file_id\":"+str(item[3])+",")
-#        else:
-#            wfile.write("\"file_id\":null,")
-#            
-#        wfile.write("\"file_location\":\""+item[0]+"\",")
-#        wfile.write("\"element_name\":\""+item[2]+"\",")
-#        wfile.write("\"element_type\":\""+item[1]+"\"")
-#        wfile.write("}")
-#        
-#    wfile.write("],[")
-#    first = True;
-#    for item in usedby:
-#        if first:
-#            first=False
-#        else:
-#            wfile.write(",");
-#        wfile.write("{")
-#        wfile.write("\"file_id\":"+str(item[3])+",")
-#        wfile.write("\"file_location\":\""+item[0]+"\",")
-#        wfile.write("\"element_name\":\""+item[2]+"\",")
-#        wfile.write("\"element_type\":\""+item[1]+"\"")
-#        wfile.write("}")    
-#    wfile.write("]]")

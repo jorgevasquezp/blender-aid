@@ -294,8 +294,12 @@ def indexNewFile(connection, productionId, productionDir, file):
             scName = block.Get("id.name");        
             liName = block.Get("name");        
             liName = liName.split("\0")[0];
+            liFilename = liName
             liName = determineProductionLocation(productionDir, file, liName)
-            if liName != None and liName != '':
+            if liName != None \
+            and liName != '' \
+            and (not liName.endswith('Untitled')) \
+            and liName != 'Render Result':
             
                 connection.execute("insert into element (id, file_id, blendfile_id, name, type, li_name, li_filename) values (?,?,?,?,?,?,?)", 
                     [scId, 
@@ -304,7 +308,7 @@ def indexNewFile(connection, productionId, productionDir, file):
                     scName, 
                     scName[0:2],
                     liName, 
-                    liName
+                    liFilename
                 ])
         
         libref = dict()
@@ -461,10 +465,17 @@ def getReferenceToElement(productionId, fileId, elementName):
     connection.close()
     return result
 
-SQL_ELEMENT_DETAILS="""select id, type, name from element where id=?"""
+SQL_ELEMENT_DETAILS="""select id, type, name, file_id from element where id=?"""
 def getElementDetails(elementId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     result = connection.execute(SQL_ELEMENT_DETAILS, [elementId]).fetchone();
+    connection.close()
+    return result
+
+SQL_ELEMENT="""select * from element where id=?"""
+def getElement(elementId):
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    result = connection.execute(SQL_ELEMENT, [elementId]).fetchone();
     connection.close()
     return result
 
@@ -701,7 +712,6 @@ def setup():
         sc_startframe int,
         sc_endframe int,
         sc_framestep int,
-        sc_layers int, 
         li_name text, 
         li_filename text
         
@@ -717,3 +727,10 @@ def setup():
     connection.commit()
     connection.close()
     
+INDEX_ELEMENT_LI_FILENAME = 23
+INDEX_FILE_NAME = 2
+INDEX_FILE_LOCATION = 3
+INDEX_ELEMENT_FILE_ID = 1
+INDEX_ELEMENT_NAME = 5
+INDEX_ELEMENT_TYPE = 6
+INDEX_ELEMENT_LI_NAME = 22
