@@ -257,6 +257,23 @@ def handleRollbackCurrentTasks(wfile, request, session):
             task.status=ROLLBACK
     session["tasks"]=None
 
+def handleGetMissingLinkSolutions(wfile, request, session):
+    productionId=int(session["production_id"])
+    elementId=int(request["element_id"])
+    solutions = indexer.queryMissingLinkSolutions(productionId, elementId)
+    result = []
+    for solution in solutions:
+        obj={}
+        obj["file_id"] = solution[0]
+        obj["production_id"] = solution[1]
+        obj["file_name"] = solution[2]
+        obj["file_location"] = solution[3]
+        obj["file_timestamp"]=solution[4]*1000
+        obj["file_size"] = solution[5]
+        obj["match"] = solution[6]
+        result.append(obj)
+    wfile.write(json.dumps(result).encode())
+
 ######################################################
 # Tasks
 ######################################################
