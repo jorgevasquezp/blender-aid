@@ -523,18 +523,19 @@ def getUncompressedFiles(productionId):
 SQL_MISSING_LINK_INTERFACE = """select element.name from element where library_id=? and type='ID'"""
 SQL_MISSING_LINK_SOLUTION = """select file.*, count(*)/{0}.0 from element el, file where file.id=el.file_id and el.type<>'BF' and el.name in ({1}) and file.production_id=? group by el.blendfile_id order by count(*) desc, file.location;"""
 
-def queryMissingLinkSolution(productionId, libraryElementId):
+def queryMissingLinkSolutions(productionId, libraryElementId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     res1 = connection.execute(SQL_MISSING_LINK_INTERFACE, [libraryElementId]).fetchall()
     names = []
     
     for resline in res1:
-        names.append(resline[0])
+        names.append("\""+resline[0]+"\"")
 
     if len(names)==0:
         return []
     
     sql = SQL_MISSING_LINK_SOLUTION.format(len(names), ",".join(names))
+    print(sql)
     result = connection.execute(sql, [productionId]).fetchall()
     connection.close()
     return result

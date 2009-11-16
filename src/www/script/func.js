@@ -21,6 +21,14 @@ function serviceStartRenameFile(callback, productionId, fileId, newName) {
 	xmlDoc.send( "{\"production_id\":"+productionId+", \"file_id\":"+fileId+",\"new_filename\":\""+newName+"\"}\r\n" );
 	return xmlDoc;
 }
+function serviceMissingLinkSolutions(callback, productionId, elementId) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/missinglinksolutions", true );
+	xmlDoc.send( "{\"production_id\":"+productionId+", \"element_id\":"+elementId+"}\r\n" );
+	return xmlDoc;
+}
+
 function serviceStartRenameElement(callback, productionId, fileId, elementId, newName) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
@@ -310,7 +318,7 @@ function elementActionsFactory(item, column, td) {
 function missingActionsFactory(item, column, td) {
 	atag = document.createElement("a");
 	atag.setAttribute("href", "#");
-	atag.setAttribute("onclick", "javascript:startRenameElement("+item.element_id+");return false;");
+	atag.setAttribute("onclick", "javascript:selectMissingLinkSolution("+item.element_id+");return false;");
 	atag.appendChild(document.createTextNode("Solve"))
  	return atag;
 }

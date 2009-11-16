@@ -249,7 +249,7 @@ tableErrors.setCaption("Missing links");
 tableErrors.addColumn("icon", "", "icon", true, null, iconFactoryMissing);
 tableErrors.addColumn("missing", "missing file", "missing_file_location", true);
 tableErrors.addColumn("file_location", "used by", "file_location", true, null, linkFactoryFile);
-//tableErrors.addColumn("refactor", "actions", "element_id", true, false, missingActionsFactory);
+tableErrors.addColumn("refactor", "actions", "element_id", true, false, missingActionsFactory);
 tableErrors.pageitems=30;
 tableErrors.update();
 
@@ -802,5 +802,14 @@ function showOpenFileHelp() {
 	alert("Copy the link location and open the link in a file browser or equilivant.");
 }
 
+function selectMissingLinkSolution(elementId) {
+	xmlSolution = serviceMissingLinkSolutions( processSolutionCallback, selectedProductionId, elementId )
+}
+
+function processSolutionCallback() {
+	if ( xmlSolution .readyState != 4 ) return ;
+	solutions = eval(xmlSolution.responseText)
+	alert(solutions)
+}
 </script>
  </body></html>
