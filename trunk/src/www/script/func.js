@@ -149,6 +149,13 @@ function dateFactory(item, column, td) {
 	
 	return document.createTextNode(dt.toLocaleString())
 }
+
+function percentageFactory(item, column, td) {
+	per = eval("item."+column[2])
+	per = Math.round(per * 100)
+	return document.createTextNode(per+" %")
+}
+
 function linkFactoryFile(item, column, td) {
 	node = defaultDom(item, column, td);
 	if (item.file_id!=null) {

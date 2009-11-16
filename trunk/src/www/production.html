@@ -196,6 +196,18 @@ Add new production
 <a href="#" onclick="javascript:addProduction();return false;" >Add</a>
 </div>
 </div></div>
+
+<!--
+	chose solution
+-->
+
+<div id="missingLayer" class="outerlayer" style="display:none;">
+<div class="layer">
+<a style="float:right" href="#" onclick="javascript:cancelSelectSolution();return false;"><img src="images/delete.png"></img></a>
+<p>Select the link
+<table id="solutions"></table>
+</p>
+</div></div>
 <script>
 tab = document.getElementById("tabs-header")
 initTab(tab, "tab")
@@ -579,6 +591,11 @@ tableUsedby.addColumn("element_name", "name", "element_name", true);
 tableUsedby.pageitems=20;
 tableUsedby.update(); 
 
+tableSolutions = document.getElementById("solutions")
+initTable(tableSolutions, "tableSolutions")
+tableSolutions.addColumn("file_location", "file", "file_location", true)
+tableSolutions.addColumn("match", "match", "match", true, null, percentageFactory)
+
 xmlDocFileView=null
 function selectFile(fileId) {
 	selectedFileId = fileId
@@ -803,13 +820,22 @@ function showOpenFileHelp() {
 }
 
 function selectMissingLinkSolution(elementId) {
+	tableSolutions.setItems([])
+	tableSolutions.loading=true
+	tableSolutions.update()
+
 	xmlSolution = serviceMissingLinkSolutions( processSolutionCallback, selectedProductionId, elementId )
 }
 
 function processSolutionCallback() {
 	if ( xmlSolution .readyState != 4 ) return ;
 	solutions = eval(xmlSolution.responseText)
-	alert(solutions)
+	document.getElementById("missingLayer").setAttribute("style", "display:block;")
+	tableSolutions.setItems(solutions)
+	tableSolutions.update()
+}
+function cancelSelectSolution() {
+	document.getElementById("missingLayer").setAttribute("style", "display:none;")
 }
 </script>
  </body></html>
