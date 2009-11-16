@@ -79,7 +79,7 @@
 <li><input id="fac2" onchange="javascript:updateFacets()" type="checkbox">blender information (blender version, pointersize, endianness, compression)</li>
 <li><input id="fac3" onchange="javascript:updateFacets()" checked="true" type="checkbox">scene output information (resolution, size, output type)</li>
 <li><input id="fac4" onchange="javascript:updateFacets()" type="checkbox">scene frame information (frame step, start frame, end frame)</li>
-<li><input id="fac5" onchange="javascript:updateFacets()" type="checkbox">scene optimalization information (rt, xparts, yparts)</li>
+<li><input id="fac5" onchange="javascript:updateFacets()" type="checkbox">scene optimalization information (xparts, yparts)</li>
 </ul>
 </div>
 <div>
@@ -249,7 +249,7 @@ initTable(tableFiles, "tableFiles");
 tableFiles.setCaption("Files");
 tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableFiles.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
-tableFiles.addColumn("size", "size", "file_size", true);
+tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
 tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
 tableFiles.pageitems=20;
 tableFiles.filter=filter;
@@ -281,7 +281,6 @@ tableScenes.addColumn("output", "output", "scene_outputtype", true);
 tableScenes.addColumn("start", "start", "scene_startframe", false);
 tableScenes.addColumn("end", "end", "scene_endframe", false);
 tableScenes.addColumn("step", "step", "scene_step", false);
-tableScenes.addColumn("rt", "rt", "scene_rt", false);
 tableScenes.addColumn("xparts", "xparts", "scene_xparts", false);
 tableScenes.addColumn("yparts", "yparts", "scene_yparts", false);
 tableScenes.filter=filterScenes;
@@ -307,7 +306,6 @@ function updateFacets() {
 	tableScenes.setColumnVisibility("start", fac[3].checked);
 	tableScenes.setColumnVisibility("end", fac[3].checked);
 	tableScenes.setColumnVisibility("step", fac[3].checked);
-	tableScenes.setColumnVisibility("rt", fac[4].checked);
 	tableScenes.setColumnVisibility("xparts", fac[4].checked);
 	tableScenes.setColumnVisibility("yparts", fac[4].checked);
 	tableScenes.update();

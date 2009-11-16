@@ -159,6 +159,11 @@ function dateFactory(item, column, td) {
 	return document.createTextNode(dt.toLocaleString())
 }
 
+function filesizeFactory(item, column, td) {
+	result = defaultDom(item, column, td);
+	td.setAttribute("style", "text-align:right")
+	return result
+}
 function percentageFactory(item, column, td) {
 	per = eval("item."+column[2])
 	per = Math.round(per * 100)
