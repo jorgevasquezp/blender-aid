@@ -21,6 +21,15 @@ function serviceStartRenameFile(callback, productionId, fileId, newName) {
 	xmlDoc.send( "{\"production_id\":"+productionId+", \"file_id\":"+fileId+",\"new_filename\":\""+newName+"\"}\r\n" );
 	return xmlDoc;
 }
+
+function serviceStartSolveMissingLink(callback, productionId, elementId, fileId) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/solvemissinglink", true );
+	xmlDoc.send( "{\"production_id\":"+productionId+",\"file_id\":"+fileId+",\"element_id\":"+elementId+"}\r\n" );
+	return xmlDoc;
+}
+
 function serviceMissingLinkSolutions(callback, productionId, elementId) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
@@ -327,6 +336,14 @@ function missingActionsFactory(item, column, td) {
 	atag.setAttribute("href", "#");
 	atag.setAttribute("onclick", "javascript:selectMissingLinkSolution("+item.element_id+");return false;");
 	atag.appendChild(document.createTextNode("Solve"))
+ 	return atag;
+}
+
+function solveLinkFactory(item, column, td) {
+	atag = document.createElement("a");
+	atag.setAttribute("href", "#");
+	atag.setAttribute("onclick", "javascript:startSolveMissingLink("+item.file_id+");return false;");
+	atag.appendChild(document.createTextNode(eval("item."+column[2])))
  	return atag;
 }
 

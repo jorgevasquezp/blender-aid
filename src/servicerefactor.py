@@ -148,22 +148,19 @@ def handleStartRenameFile(wfile, request, session):
     session["tasks"]=tasks
     wfile.write("""[]""".encode())
     
-def handleStartRenameElement(wfile, request, session):
+def handleStartRenameFile(wfile, request, session):
     productionId=int(session["production_id"])
     production = indexer.getProduction(productionId)
     fileId=int(request["file_id"])
-    elementId=int(request["element_id"])
     fileDetails = indexer.getFile(fileId)
-    elementDetails = indexer.getElementDetails(elementId)
-    newElementName = request["new_name"]
-    
-    for row in indexer.getFileElementByName(fileId, newElementName): 
-        wfile.write("""[{"message":"Element already exists."}]""".encode())
+    newFilename = request["new_filename"]
+    if os.path.exists(os.path.join(os.path.dirname(os.path.join(production[2],fileDetails[3])),newFilename)):
+        wfile.write("""[{"message":"File already exists."}]""".encode())
         return
-    
+
     tasks = []
     filesDone = []
-    usedby = indexer.getReferenceToElement(productionId, fileId, elementDetails[2])
+    usedby = indexer.getFileUsedBy(fileId)
     
     bu = BackupFile()
     bu.fileId = fileId
@@ -172,20 +169,18 @@ def handleStartRenameElement(wfile, request, session):
     tasks.append(bu)
     
     for used in usedby:
-        ofileId = used[0]
+        ofileId = used[3]
         if ofileId not in filesDone:
             bu = BackupFile()
             bu.fileId = ofileId
             bu.fileDetails = indexer.getFile(ofileId)
             bu.productionDetails=production
             
-            ac = RenameIDElement()
+            ac = RenameLibrary()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
-            ac.elementDetails = elementDetails
             ac.referenceFileId = fileId
-            ac.newElementName = newElementName
-            ac.currentElementName = elementDetails[2]
+            ac.newFilename = newFilename
             ac.currentFilename = fileDetails[2]
             ac.currentFileLocation = fileDetails[3]
             ac.productionDetails=production
@@ -194,15 +189,24 @@ def handleStartRenameElement(wfile, request, session):
             tasks.append(bu)            
             tasks.append(ac)
 
-    bu = RenameElement()
+    bu = RenameFile()
     bu.fileId = fileId
     bu.fileDetails = fileDetails
-    bu.elementDetails = elementDetails
     bu.currentFilename = fileDetails[2]
-    bu.newElementName = newElementName
-    bu.productionDetails = production
+    bu.newFilename = newFilename
+    bu.productionDetails=production
     tasks.append(bu)
         
+    session["tasks"]=tasks
+    wfile.write("""[]""".encode())
+    
+def handleStartSolveMissingLink(wfile, request, session):
+    productionId=int(session["production_id"])
+    production = indexer.getProduction(productionId)
+    fileId=int(request["file_id"])
+    elementId=int(request["element_id"])
+    
+    tasks = []
     session["tasks"]=tasks
     wfile.write("""[]""".encode())
 
@@ -235,7 +239,6 @@ def handleExecuteCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
     for task in tasks:
         if task.status==INIT:
-            print("execute "+task.fileDetails[3]+": "+task.description())
             task.status=START
             task.execute()
             task.status=FIN
