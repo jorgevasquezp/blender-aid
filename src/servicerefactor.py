@@ -23,6 +23,7 @@
 # Importing modules
 ######################################################
 import indexer
+from factory import solutionToObject, solutionIDToObject
 import shutil
 import os
 import posixpath
@@ -207,11 +208,9 @@ def handleStartSolveMissingLink(wfile, request, session):
     elementId=int(request["element_id"])
     #determine orgiginal file if from elementid
     elementDetails = indexer.getElement(elementId)
+    elementType=elementDetails[indexer.INDEINDEX_ELEMENT_TYPE]
     orFileId = elementDetails[indexer.INDEX_ELEMENT_FILE_ID]
-
-    newFileDetails = indexer.getFile(fileId)
     orFileDetails = indexer.getFile(orFileId)
-    print(orFileDetails, newFileDetails)
     tasks = []
     bu = BackupFile()
     bu.fileId = orFileId
@@ -219,13 +218,26 @@ def handleStartSolveMissingLink(wfile, request, session):
     bu.productionDetails=production
     tasks.append(bu)
 
-    cl = ChangeLibrary()
-    cl.fileDetails = orFileDetails
-    cl.fileId = orFileId
-    cl.newFileDetails = newFileDetails
-    cl.productionDetails = production
-    cl.libraryDetails = elementDetails
-    tasks.append(cl)
+    if elementType=='ID':
+        newElementId=fileId
+        newElementDetails=indexer.getElement(newElementId)
+        cl = ChangeIDElement()
+        cl.fileDetails = orFileDetails
+        cl.fileId = orFileId
+        cl.productionDetails = production
+        cl.libraryDetails=indexer.getElement(elementDetails[indexer.INDEX_LIBRARY_ID])
+        cl.elementDetails=elementDetails[indexer.INDEX_ELEMENT_NAME]
+        cl.newName=newElementDetails[indexer.INDEX_ELEMENT_NAME]
+        tasks.append(cl)
+    else:
+        newFileDetails = indexer.getFile(fileId)
+        cl = ChangeLibrary()
+        cl.fileDetails = orFileDetails
+        cl.fileId = orFileId
+        cl.newFileDetails = newFileDetails
+        cl.productionDetails = production
+        cl.libraryDetails = elementDetails
+        tasks.append(cl)
     
     session["tasks"]=tasks
     wfile.write("""[]""".encode())
@@ -288,15 +300,11 @@ def handleGetMissingLinkSolutions(wfile, request, session):
     if elementDetails[indexer.INDEX_ELEMENT_TYPE] == 'LI':
         solutions = indexer.queryMissingLinkSolutions(productionId, elementId)
         for solution in solutions:
-            obj={}
-            obj["file_id"] = solution[0]
-            obj["production_id"] = solution[1]
-            obj["file_name"] = solution[2]
-            obj["file_location"] = solution[3]
-            obj["file_timestamp"]=solution[4]*1000
-            obj["file_size"] = solution[5]
-            obj["match"] = solution[6]
-            result.append(obj)
+            result.append(solutionToObject(solution))
+    elif elementDetails[indexer.INDEX_ELEMENT_TYPE] == 'ID':
+        solutions = indexer.queryMissingLinkSolutionsID(productionId, elementId)
+        for solution in solutions:
+            result.append(solutionIDToObject(solution))        
     elif elementDetails[indexer.INDEX_ELEMENT_TYPE] == 'IM':
         files = indexer.getProductionFiles(productionId)
         sfn = os.path.basename(elementDetails[indexer.INDEX_ELEMENT_LI_NAME].replace("\\", "/"))
@@ -305,15 +313,7 @@ def handleGetMissingLinkSolutions(wfile, request, session):
         for f in files:
             fname = f[indexer.INDEX_FILE_NAME]
             if fname == sfn:
-                obj={}
-                obj["file_id"] = f[0]
-                obj["production_id"] = f[1]
-                obj["file_name"] = f[2]
-                obj["file_location"] = f[3]
-                obj["file_timestamp"]=f[4]*1000
-                obj["file_size"] = f[5]
-                obj["match"] = 1
-                result.append(obj)
+                result.append(solutionToObject(f, 1.0))
             else:
                 if not fname.endswith(".blend"):
                     still.append(f)
@@ -322,15 +322,7 @@ def handleGetMissingLinkSolutions(wfile, request, session):
         for f in files:            
             fname = f[indexer.INDEX_FILE_NAME]
             if fname.startswith(extension[0]):
-                obj={}
-                obj["file_id"] = f[0]
-                obj["production_id"] = f[1]
-                obj["file_name"] = f[2]
-                obj["file_location"] = f[3]
-                obj["file_timestamp"]=f[4]*1000
-                obj["file_size"] = f[5]
-                obj["match"] = 0.75
-                result.append(obj)
+                result.append(solutionToObject(f, 0.75))
             else:
                 still.append(f)
         files = still
@@ -338,32 +330,16 @@ def handleGetMissingLinkSolutions(wfile, request, session):
         for f in files:            
             fname = f[indexer.INDEX_FILE_NAME]
             if fname.endswith(extension[1]):
-                obj={}
-                obj["file_id"] = f[0]
-                obj["production_id"] = f[1]
-                obj["file_name"] = f[2]
-                obj["file_location"] = f[3]
-                obj["file_timestamp"]=f[4]*1000
-                obj["file_size"] = f[5]
-                obj["match"] = 0.50
-                result.append(obj)
+                result.append(solutionToObject(f, 0.5))
             else:
                 still.append(f)
         for f in still:            
-            fname = f[indexer.INDEX_FILE_NAME]
-            obj={}
-            obj["file_id"] = f[0]
-            obj["production_id"] = f[1]
-            obj["file_name"] = f[2]
-            obj["file_location"] = f[3]
-            obj["file_timestamp"]=f[4]*1000
-            obj["file_size"] = f[5]
-            obj["match"] = 0.25
-            result.append(obj)
+            result.append(solutionToObject(f, 0.25))
             
             
     wfile.write(json.dumps(result).encode())
 
+    
 ######################################################
 # Tasks
 ######################################################
@@ -588,6 +564,43 @@ class RenameFile(Task):
     def description(self):
         return "Rename ["+self.currentFilename+"] to ["+self.newFilename+"]"
     
+class ChangeIDElement(Task):
+    """Migration task for renaming an ID element of a library reference.
+
+        a sourcefile reference an element within a target file. the
+        inside the sourcefile a LI exist referencing the target file and
+        an ID exist referencing an element inside the target file.
+
+        this task opens the source file. looks for the correct ID (matching ID and LI)
+        and renames the name of the ID.
+        """
+
+    def description(self):
+        return "Change element reference ["+self.elementDetails[2]+"] to ["+self.newElementName+"]"
+    
+    def execute(self):
+        productionLocation = self.productionDetails[2]
+        fileLocation = self.fileDetails[3]
+        fileLocation = os.path.join(productionLocation, fileLocation)
+        fileLocationDir = os.path.dirname(fileLocation)
+        absRefLoc = os.path.normcase(posixpath.normpath(os.path.join(self.productionDetails[2], self.currentFileLocation)))
+        handle = blendfile.openBlendFile(fileLocation, 'r+b')
+        libRef = 0
+        for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
+            relPath = libraryblock.Get("name").split("\0")[0]
+            absPath = blendfile.blendPath2AbsolutePath(fileLocation, relPath)
+            normPath = os.path.normpath(absPath)
+            if normPath==absRefLoc:
+                libRef = libraryblock.OldAddress
+
+        for idblock in handle.FindBlendFileBlocksWithCode("ID"):
+            lib = idblock.Get("lib")
+            if lib == libRef:
+                name = idblock.Get("name").split("\0")[0]
+                if name == self.elementDetails[2]:
+                    idblock.Set("name", self.newElementName)
+        
+        handle.close()
 class ChangeLibrary(Task):
     """ change the library reference of a blend file.
     self.productionDetails
