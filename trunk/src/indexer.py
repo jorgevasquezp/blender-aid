@@ -146,8 +146,8 @@ step 4: determine dependancies
 #        connection.commit()
         #fill in-direct references
         #update id
-        for libElement in connection.execute("select element.reference_file_id, element.li_name, element.li_filename, element.id from element, file where element.file_id=file.id and file.production_id=? and element.type='LI'", [productionId]):
-            connection.execute("update element set reference_file_id=?, li_name=?, li_filename=? where library_id=?", libElement)
+        for libElement in connection.execute("select element.reference_file_id, element.li_name, element.li_filename, element.id, element.reference_file_id from element, file where element.file_id=file.id and file.production_id=? and element.type='LI'", [productionId]):
+            connection.execute("update element set reference_file_id=?, li_name=?, li_filename=? where type='ID' and library_id=? and name in (select name from element li where li.file_id=?)", libElement)
 
         log.debug("finished indexing");
     
@@ -157,8 +157,10 @@ step 4: determine dependancies
 def indexExistingFile(connection, productionId, productionDir, file):
     """index existing file.
     TODO: make sure that file_id is same"""
-    indexOldFile(connection, productionId, productionDir, file)
-    indexNewFile(connection, productionId, productionDir, file)
+    relpath = _relpath(file, productionDir)
+    dbFile = connection.execute("select id from file where location=?", [relpath]).fetchone()
+    connection.execute("delete from element where file_id=?", dbFile)
+    indexNewFile(connection, productionId, productionDir, file, dbFile[0])
     
 def indexOldFile(connection, productionId, productionDir, file):
     """remove a file from production scope"""
@@ -167,18 +169,22 @@ def indexOldFile(connection, productionId, productionDir, file):
     connection.execute("delete from element where file_id=?", dbFile)
     connection.execute("delete from file where id=?", dbFile)
 
-def indexNewFile(connection, productionId, productionDir, file):
+def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
     """index a new file"""
-    newId = connection.execute("select max(id)+1 from file").fetchone()[0]
-    if newId == None:
-        newId=0;
+    if useFileId==None:
+        newId = connection.execute("select max(id)+1 from file").fetchone()[0]
+        if newId == None:
+            newId=0;
     
-    connection.execute("insert into file values (?,?,?,?,?,?)", 
-        [newId, 
-        productionId, 
-        os.path.basename(file), 
-        _relpath(file, productionDir), 
-        int(os.path.getmtime(file)), int(os.path.getsize(file))])
+        connection.execute("insert into file values (?,?,?,?,?,?,?)", 
+            [newId, 
+            productionId, 
+            os.path.basename(file), 
+            _relpath(file, productionDir), 
+            int(os.path.getmtime(file)), int(os.path.getsize(file)), None])
+    else:
+        newId=useFileId
+        connection.execute("update file set lastupdate=?, length=? where id=?", [int(os.path.getmtime(file)), int(os.path.getsize(file)), newId])        
 
     if file.endswith(".blend"):
         log.info("indexing file "+file);
@@ -550,6 +556,14 @@ def queryMissingLinkSolutions(productionId, libraryElementId):
     connection.close()
     return result
 
+def queryMissingLinkSolutionsID(productionId, linkElementId):
+    connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
+    resId = connection.execute("select li.* from element li where li.id = ?", [linkElementId]).fetchone()
+    resLibrary = connection.execute("select li.* from element li, element id where id.id = ? and li.id=id.library_id", [linkElementId]).fetchone()
+    resNames = connection.execute("select element.* from element where file_id=? and type=?", [resLibrary[INDEX_ELEMENT_REFERENCE_FILE_ID],resId[INDEX_ELEMENT_NAME][0:2]]).fetchall()
+    connection.close()
+    return resNames
+
 # all dependancy queries    
 def queryDependancy(productionId, filter):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
@@ -656,10 +670,10 @@ def getConsistencyErrors(productionId):
     for line in tempresult:
         result.append([line[2],line[0],line[1], line[3]])
 
-#    query = """select file.location, element.li_name, element.file_id, element.name from element, file where element.type='ID' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
-#    tempresult = connection.execute(query, [productionId]).fetchall();
-#    for line in tempresult:
-#        result.append([line[2],line[0],line[1]+"#"+line[3]])
+    query = """select file.location, li.li_name, element.file_id, element.name, element.id from element, element li, file where element.type='ID' and element.library_id=li.id and element.reference_file_id is null and li.reference_file_id is not null and element.file_id=file.id and file.production_id=?"""
+    tempresult = connection.execute(query, [productionId]).fetchall();
+    for line in tempresult:
+        result.append([line[2],line[0],line[1]+"#"+line[3],line[4]])
 
     query = """select file.location, element.li_name, element.file_id, element.id from element, file where element.type='IM' and element.reference_file_id is null and element.file_id=file.id and file.production_id=?"""
     tempresult = connection.execute(query, [productionId]).fetchall();
@@ -667,7 +681,7 @@ def getConsistencyErrors(productionId):
         if line[1] != None and len(line[1])>0:
             if line[1]!='Untitled':
                 result.append([line[2],line[0],line[1], line[3]])
-    
+                
     connection.close()
     return result
 
@@ -687,7 +701,8 @@ def setup():
         name text,
         location text,
         lastupdate bigint,
-        length bigint
+        length bigint, 
+        metatags text
     )""")
     connection.execute("""create table if not exists element (
         id int primary key,
@@ -730,7 +745,10 @@ def setup():
 INDEX_ELEMENT_LI_FILENAME = 23
 INDEX_FILE_NAME = 2
 INDEX_FILE_LOCATION = 3
+INDEX_ELEMENT_ID=0
 INDEX_ELEMENT_FILE_ID = 1
 INDEX_ELEMENT_NAME = 5
 INDEX_ELEMENT_TYPE = 6
 INDEX_ELEMENT_LI_NAME = 22
+INDEX_ELEMENT_REFERENCE_FILE_ID=4
+INDEX_LIBRARY_ID=3
