@@ -4,6 +4,7 @@ import settings
 import serviceproduction
 import servicerefactor
 import indexer
+import urllib
 try:
     import json
 except:
@@ -11,8 +12,20 @@ except:
 REPOSITORYROOTLOCATION=os.path.abspath("../test/")
 REPOSITORYLOCATION=os.path.abspath("../test/blender-aid-unittest")
 REPOSITORYPACKED=os.path.abspath("../test/blender-aid-unittest.tar.gz")
+REPOSITORYPACKED2=os.path.abspath("../test/blender-aid-unittest.zip")
 REPOSITORYCONNECTIONURL=os.path.abspath("../test/sql.bin")
 
+def prepareunittests():
+    if os.path.exists(REPOSITORYPACKED):
+        return
+    os.system("rm "+REPOSITORYCONNECTIONURL)
+    os.system("rm -Rf "+ REPOSITORYLOCATION)
+    urllib.urlretrieve("http://download.blender.org/apricot/yofrankie_1_1b_bge.zip", REPOSITORYPACKED2)
+    os.chdir(REPOSITORYROOTLOCATION)
+    os.system("unzip "+REPOSITORYPACKED2)
+    os.system("mv yofrankie_1_1b_bge blender-aid-unittest")
+    os.system("tar -czf blender-aid-unittest.tar.gz blender-aid-unittest")
+    
 class TestCase(unittest.TestCase):
     pass
     
@@ -24,7 +37,7 @@ def refresh():
     os.system("tar -xzf "+REPOSITORYPACKED)
     indexer.setup()
     
-class Scenario1(TestCase):
+class ScenarioBasicAdministration(TestCase):
     def testAddProduction(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
@@ -57,11 +70,14 @@ class ScenarioMoveFile(TestCase):
         for file in files:
             if file["file_location"]==location:
                 fileId=file["file_id"]
+
+        self.assertFalse(fileId == None)
+
         servicerefactor.handleStartMoveFile(Tempout(), {"file_id":fileId,"new_location":newLocation},session)
         servicerefactor.handleExecuteCurrentTasks(Tempout(), {},session)
         
         
-    def testScenarioMoveBlend1(self):
+    def testScenarioMoveBlendCommit(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
@@ -70,7 +86,7 @@ class ScenarioMoveFile(TestCase):
         self.moveFile(session, "chars/frankie_testlevel.blend", "levels")
         servicerefactor.handleCommitCurrentTasks(Tempout(), {},session)
         
-    def testScenarioMoveBlend2(self):
+    def testScenarioMoveBlendRollback(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
@@ -89,11 +105,13 @@ class ScenarioRenameFile(TestCase):
         for file in files:
             if file["file_location"]==location:
                 fileId=file["file_id"]
+        self.assertFalse(fileId == None)
+
         servicerefactor.handleStartRenameFile(Tempout(), {"file_id":fileId,"new_filename":newName},session)
         servicerefactor.handleExecuteCurrentTasks(Tempout(), {},session)
         
         
-    def testScenarioRenameBlend1(self):
+    def testScenarioRenameBlendCommit(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
@@ -102,13 +120,31 @@ class ScenarioRenameFile(TestCase):
         self.renameFile(session, "chars/frankie.blend", "frankie_momo.blend")
         servicerefactor.handleCommitCurrentTasks(Tempout(), {},session)
         
-    def testScenarioRenameBlend2(self):
+    def testScenarioRenameBlendRollback(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
         serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
 
         self.renameFile(session, "chars/frankie.blend", "frankie_momo.blend")
+        servicerefactor.handleRollbackCurrentTasks(Tempout(), {},session)
+
+    def testScenarioRenameTextureCommit(self):
+        refresh()
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+
+        self.renameFile(session, "chars/textures/flyingsquirrel_skin_col.jpg", "frankie_skin_col.jpg")
+        servicerefactor.handleCommitCurrentTasks(Tempout(), {},session)
+        
+    def testScenarioRenameTextureRollback(self):
+        refresh()
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+
+        self.renameFile(session, "chars/textures/flyingsquirrel_skin_col.jpg", "frankie_skin_col.jpg")
         servicerefactor.handleRollbackCurrentTasks(Tempout(), {},session)
 
 class ScenarioRenameElement(TestCase):
@@ -122,9 +158,12 @@ class ScenarioRenameElement(TestCase):
         for file in files:
             if file["file_location"]==location:
                 fileId=file["file_id"]
-        serviceproduction.handleGetFileView(out2, {"file_id":fileId}, session)
-        result = out.loads()
-        elements=result[1]
+                
+        self.assertFalse(fileId == None)
+        
+        serviceproduction.handleGetFileView(out2, {"file_id":fileId, "production_id":session["production_id"]}, session)
+        result = out2.loads()
+        elements=result[2]
         elementId=None
         for element in elements:
             if element["element_name"]==elementName:
@@ -134,7 +173,7 @@ class ScenarioRenameElement(TestCase):
         servicerefactor.handleExecuteCurrentTasks(Tempout(), {},session)
         
         
-    def testScenarioRenameElement1(self):
+    def testScenarioRenameElementCommit(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
@@ -143,7 +182,7 @@ class ScenarioRenameElement(TestCase):
         self.renameElement(session, "chars/frankie.blend", "GRFlyingSquirrel", "GRFrankie")
         servicerefactor.handleCommitCurrentTasks(Tempout(), {},session)
         
-    def testScenarioRenameElement2(self):
+    def testScenarioRenameElementRollback(self):
         refresh()
         serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
         session ={}
@@ -164,4 +203,6 @@ class Tempout():
     def loads(self):
         return json.loads(self.out.decode())
         
-unittest.main()
+if __name__ =='__main__':
+    prepareunittests()
+    unittest.main()
