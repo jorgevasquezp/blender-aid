@@ -223,12 +223,14 @@ class BlendFile:
                 dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
                 if dnaid in DNACatalogCache:
                     self.Catalog = DNACatalogCache[dnaid]
-                    handle.seek(aBlock.Size, os.SEEK_CUR)
+                    handle.read(aBlock.Size)
+#                    handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
                 else:
                     self.Catalog = DNACatalog(self.Header, aBlock, handle)
                     DNACatalogCache[dnaid] = self.Catalog
             else:
-                handle.seek(aBlock.Size, os.SEEK_CUR)
+                handle.read(aBlock.Size)
+#                handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
                 
             self.Blocks.append(aBlock)
             
