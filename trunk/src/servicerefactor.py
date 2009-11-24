@@ -266,7 +266,7 @@ def handleStartSolveMissingLink(wfile, request, session):
     elementId=int(request["element_id"])
     #determine orgiginal file if from elementid
     elementDetails = indexer.getElement(elementId)
-    elementType=elementDetails[indexer.INDEINDEX_ELEMENT_TYPE]
+    elementType=elementDetails[indexer.INDEX_ELEMENT_TYPE]
     orFileId = elementDetails[indexer.INDEX_ELEMENT_FILE_ID]
     orFileDetails = indexer.getFile(orFileId)
     tasks = []
@@ -284,8 +284,8 @@ def handleStartSolveMissingLink(wfile, request, session):
         cl.fileId = orFileId
         cl.productionDetails = production
         cl.libraryDetails=indexer.getElement(elementDetails[indexer.INDEX_LIBRARY_ID])
-        cl.elementDetails=elementDetails[indexer.INDEX_ELEMENT_NAME]
-        cl.newName=newElementDetails[indexer.INDEX_ELEMENT_NAME]
+        cl.elementDetails=elementDetails
+        cl.newElementName=newElementDetails[indexer.INDEX_ELEMENT_NAME]
         tasks.append(cl)
     else:
         newFileDetails = indexer.getFile(fileId)
@@ -634,28 +634,25 @@ class ChangeIDElement(Task):
         """
 
     def description(self):
-        return "Change element reference ["+self.elementDetails[2]+"] to ["+self.newElementName+"]"
+        return "Change element reference ["+self.elementDetails[indexer.INDEX_ELEMENT_NAME]+"] to ["+self.newElementName+"]"
     
     def execute(self):
         productionLocation = self.productionDetails[2]
         fileLocation = self.fileDetails[3]
         fileLocation = os.path.join(productionLocation, fileLocation)
-        fileLocationDir = os.path.dirname(fileLocation)
-        absRefLoc = os.path.normcase(posixpath.normpath(os.path.join(self.productionDetails[2], self.currentFileLocation)))
+        absRefLoc = self.libraryDetails[indexer.INDEX_ELEMENT_LI_FILENAME]
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         libRef = 0
         for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
-            relPath = libraryblock.Get("name").split("\0")[0]
-            absPath = blendfile.blendPath2AbsolutePath(fileLocation, relPath)
-            normPath = os.path.normpath(absPath)
-            if normPath==absRefLoc:
+            relPath = libraryblock.Get("filename").split("\0")[0]
+            if relPath==absRefLoc:
                 libRef = libraryblock.OldAddress
 
         for idblock in handle.FindBlendFileBlocksWithCode("ID"):
             lib = idblock.Get("lib")
             if lib == libRef:
                 name = idblock.Get("name").split("\0")[0]
-                if name == self.elementDetails[2]:
+                if name == self.elementDetails[indexer.INDEX_ELEMENT_NAME]:
                     idblock.Set("name", self.newElementName)
         
         handle.close()
