@@ -165,7 +165,7 @@ def solutionToObject(solution, match=None) :
     obj["file_timestamp"]=solution[4]*1000
     obj["file_size"] = solution[5]
     if match == None:
-        obj["match"] = solution[6]
+        obj["match"] = solution[indexer.INDEX_FILE_LASTINDEX+1]
     else:
         obj["match"] = match
     return obj
