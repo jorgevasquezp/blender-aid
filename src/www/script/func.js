@@ -340,7 +340,7 @@ function missingActionsFactory(item, column, td) {
 	atag = document.createElement("a");
 	atag.setAttribute("href", "#");
 	atag.setAttribute("onclick", "javascript:selectMissingLinkSolution("+item.element_id+");return false;");
-	atag.appendChild(document.createTextNode("Solve"))
+	atag.appendChild(document.createTextNode("Fix it"))
  	return atag;
 }
 
