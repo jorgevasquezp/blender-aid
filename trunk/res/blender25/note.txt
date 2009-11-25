@@ -1,0 +1,4 @@
+in this directory is a hidden directory called .blender
+
+inside there are python scripts that can be used with blender2.5 Alpha 0. It enables the use of blenderaid from within a blender screen. At the moment only the number of missing files and the start blender-aid button is available.
+
