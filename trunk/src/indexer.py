@@ -278,7 +278,7 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
 
             
             
-        for type in ["GR", "ME", "TE", "WO", "IP", "PA", "LA", "CA", "AR", "AC"]:
+        for type in ["GR", "ME", "TE", "WO", "IP", "PA", "LA", "CA", "AR", "AC", "CU"]:
             for block in bf.FindBlendFileBlocksWithCode(type):
                 scId = firstElementId + offsetElementId
                 offsetElementId = offsetElementId + 1 
