@@ -320,6 +320,9 @@ function elementIconFactory(item, column, td) {
 	} else
 	if (type=="AC") {
 		iconfile="images/action.png"
+	} else
+	if (type=="CU") {
+		iconfile="images/curve.png"
 	}
 
 	atag = document.createElement("img");
