@@ -191,7 +191,55 @@ class ScenarioRenameElement(TestCase):
         self.renameElement(session, "chars/frankie.blend", "GRFlyingSquirrel", "GRFrankie")
         servicerefactor.handleRollbackCurrentTasks(Tempout(), {},session)
         
+class ScenarioSolveMissingLink(TestCase):
+    def osRenameFile(self, source, target):
+        os.chdir(REPOSITORYLOCATION)
+        os.system("mv "+source+" "+target)
+
+    def fix(self, missing, source, target, session):
+        out = Tempout()
+        out2 = Tempout()
+        serviceproduction.handleGetProductionView(out, {}, session)
+        result = out.loads()
+        missings = result[3]
+        elementId=None
+        fileId=None
+        newFileId=None
+        for link in missings:
+            if link["file_location"]==source and link["missing_file_location"]==missing:
+                elementId=link["element_id"]
+                fileId=link["file_id"]
+        self.assertFalse(elementId==None)
+        self.assertFalse(fileId==None)
+        servicerefactor.handleGetMissingLinkSolutions(out2, {"production_id":session["production_id"],"element_id":elementId}, session)
+        result2 = out2.loads()
+        for solution in result2:
+            if solution["file_location"]==target:
+                newFileId=solution["file_id"]
+                
+        self.assertFalse(newFileId==None)
+        servicerefactor.handleStartSolveMissingLink(Tempout(), {"file_id":newFileId, "element_id":elementId}, session)
+        servicerefactor.handleExecuteCurrentTasks(Tempout(), {},session)
+
+    def testMissingBlendFileCommit(self):
+        refresh()
+        self.osRenameFile("chars/bird.blend", "chars/birdtest.blend")
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+        self.fix("chars/bird.blend", "levels/start_menu.blend", "chars/birdtest.blend", session)
+        servicerefactor.handleCommitCurrentTasks(Tempout(), {},session)
+    def testMissingBlendFileRollback(self):
+        refresh()
+        self.osRenameFile("chars/bird.blend", "chars/birdtest.blend")
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+        self.fix("chars/bird.blend", "levels/start_menu.blend", "chars/birdtest.blend", session)
+        servicerefactor.handleRollbackCurrentTasks(Tempout(), {},session)
+
         
+
 class Tempout():
     def __init__(self):
         self.out = None
