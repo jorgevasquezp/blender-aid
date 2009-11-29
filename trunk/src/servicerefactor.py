@@ -264,7 +264,7 @@ def handleStartSolveMissingLink(wfile, request, session):
     production = indexer.getProduction(productionId)
     fileId=int(request["file_id"])
     elementId=int(request["element_id"])
-    #determine orgiginal file if from elementid
+    #determine original file if from elementid
     elementDetails = indexer.getElement(elementId)
     elementType=elementDetails[indexer.INDEX_ELEMENT_TYPE]
     orFileId = elementDetails[indexer.INDEX_ELEMENT_FILE_ID]

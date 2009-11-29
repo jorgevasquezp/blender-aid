@@ -17,6 +17,8 @@ cd $dirname
 rm *~
 rm *.pyc
 rm blendfileprofiler.*
+rm blendfile
+rm test*
 rm .svn -Rf
 cd www
 rm *~
