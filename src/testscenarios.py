@@ -148,9 +148,10 @@ class ScenarioRenameFile(TestCase):
         servicerefactor.handleRollbackCurrentTasks(Tempout(), {},session)
 
 class ScenarioRenameElement(TestCase):
-    def renameElement(self, session, location, elementName, newName):
+    def renameElement(self, session, location, elementName, newName, hasError=False):
         out = Tempout()
         out2 = Tempout()
+        outresult = Tempout()
         serviceproduction.handleGetProductionView(out, {}, session)
         result = out.loads()
         files = result[1]
@@ -169,9 +170,29 @@ class ScenarioRenameElement(TestCase):
             if element["element_name"]==elementName:
                 elementId=element["element_id"]
         
-        servicerefactor.handleStartRenameElement(Tempout(), {"production_id":session["production_id"],"file_id":fileId,"element_id":elementId, "new_name":newName},session)
+        servicerefactor.handleStartRenameElement(outresult, {"production_id":session["production_id"],"file_id":fileId,"element_id":elementId, "new_name":newName},session)
+        if hasError:
+            result = outresult.loads()
+            self.assertTrue("message" in result[0])
+            return
+        
         servicerefactor.handleExecuteCurrentTasks(Tempout(), {},session)
         
+    def testScenarioRenameElementElementAlreadyExists(self):
+        refresh()
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+
+        self.renameElement(session, "chars/frankie.blend", "GRFlyingSquirrel", "GRMomoMonkey", True)
+
+    def testScenarioRenameElementElementChangeType(self):
+        refresh()
+        serviceproduction.handleAdd(Tempout(), {"production_location":REPOSITORYLOCATION, "production_name":"unittest"}, {})
+        session ={}
+        serviceproduction.handleActivateProduction(Tempout(), {"production_id":1}, session)
+
+        self.renameElement(session, "chars/frankie.blend", "GRFlyingSquirrel", "grFrankie", True)
         
     def testScenarioRenameElementCommit(self):
         refresh()
