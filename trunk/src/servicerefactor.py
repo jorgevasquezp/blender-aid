@@ -213,6 +213,10 @@ def handleStartRenameElement(wfile, request, session):
     for row in indexer.getFileElementByName(fileId, newElementName): 
         wfile.write("""[{"message":"Element already exists."}]""".encode())
         return
+    if newElementName[0:2] != elementDetails[2][0:2]:
+        wfile.write(("""[{"message":"Type of element cannot be changed.["""+elementDetails[2][0:2]+"""]"}]""").encode())
+        return
+        
     
     tasks = []
     filesDone = []
