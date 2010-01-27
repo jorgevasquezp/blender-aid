@@ -319,6 +319,10 @@ xmlDoc = serviceProductionView(process)
   
 function process() {
 	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
 	result = eval(xmlDoc.responseText)
 	production = result[0];
 	if (production == null) {
@@ -471,6 +475,10 @@ xmlDocProductions = null;
 productionsUl = document.getElementById("productions")
 function processProductions() {
 	if ( xmlDocProductions.readyState != 4 ) return ;
+	if (xmlDocProductions.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDocProductions.responseText)
+			return
+		}
 	productions = eval(xmlDocProductions.responseText);
 	clearChilderen(productionsUl);
 
@@ -510,7 +518,7 @@ function selectProduction(productionId) {
 	xmlDocActivateProduction = serviceActivateProduction(processActivateProduction, productionId)
 }
 function processActivateProduction() {
-	document.getElementById("productionsLayer").setAttribute("style", "display:none;")
+	document.getElementById("productionsLayer").setAttribute("style", "display:none;");
 	fillSpan("spanProductionName", "");
 	fillSpan("spanProductionLocation", "");
 	tableFiles.setItems([]);
@@ -522,8 +530,8 @@ function processActivateProduction() {
 	tableErrors.setItems([]);
 	tableErrors.loading=true;
 	tableErrors.update();
-	xmlDoc = serviceProductionView(process)
 	showProductionView();
+	xmlDoc = serviceProductionView(process)
 }
 
 function showSelectProduction() {
@@ -612,6 +620,10 @@ function selectFile(fileId) {
 
 function processFileView() {
 	if ( xmlDocFileView.readyState != 4 ) return ;
+	if (xmlDocFileView.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDocFileView.responseText)
+			return
+		}
 	result = eval(xmlDocFileView.responseText)
 	production = result[0];
 	file = result[1];
@@ -719,6 +731,10 @@ function startRenameElement(elementId) {
 
 function refactorCallback() {
 	if ( xmlRef.readyState != 4 ) return ;
+	if (xmlRef.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDep.responseText)
+			return
+		}
 	messages = eval(xmlRef.responseText)
 	if (messages.length == 0) {
 		document.location.href="refactor.html"
@@ -729,6 +745,11 @@ function refactorCallback() {
 
 function processD() {
 	if ( xmlDep.readyState != 4 ) return ;
+		if (xmlDep.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDep.responseText)
+			return
+		}
+		
 	items = eval(xmlDep.responseText);
 	tableD.setItems(items)
 	tableD.update()
@@ -831,6 +852,10 @@ function selectMissingLinkSolution(elementId) {
 
 function processSolutionCallback() {
 	if ( xmlSolution .readyState != 4 ) return ;
+	if (xmlSolution.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlSolution.responseText)
+			return
+		}
 	solutions = eval(xmlSolution.responseText)
 	document.getElementById("missingLayer").setAttribute("style", "display:block;")
 	tableSolutions.setItems(solutions)

@@ -43,6 +43,10 @@ xmlDoc=serviceRefactoringTasks(processTasks)
 
 function processTasks() {
 	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
 	result = eval(xmlDoc.responseText)
 	table.setItems(result)
 	table.update()
@@ -51,6 +55,10 @@ function processTasks() {
 
 function process2() {
 	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
 	result = eval(xmlDoc.responseText)
 	tasks = result
 	cont=true;

@@ -150,52 +150,59 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         
         
     def doHandleService(self):
-        servicename = self.path
-        if servicename.find("?") != -1:
-            servicename = servicename[0:servicename.find("?")]
+        try:
+            servicename = self.path
+            if servicename.find("?") != -1:
+                servicename = servicename[0:servicename.find("?")]
 
-        session = getSession(self.client_address[0])
-        line = self.rfile.readline().decode();
+            session = getSession(self.client_address[0])
+            line = self.rfile.readline().decode();
 
-        req = json.loads(line)
-        log.info(servicename)
-        if servicename=="/service/metafromproductionfiles":
-            servicescenes.handleGetAll(self.wfile, req, session)
+            req = json.loads(line)
+            log.info(servicename)
+            if servicename=="/service/metafromproductionfiles":
+                servicescenes.handleGetAll(self.wfile, req, session)
 
-        elif servicename=="/service/productions":
-            serviceproduction.handleGetAll(self.wfile, req, session)
-        elif servicename=="/service/deleteproduction":
-            serviceproduction.handleDelete(self.wfile, req, session)
-        elif servicename=="/service/addproduction":
-            serviceproduction.handleAdd(self.wfile, req, session)
+            elif servicename=="/service/productions":
+                serviceproduction.handleGetAll(self.wfile, req, session)
+            elif servicename=="/service/deleteproduction":
+                serviceproduction.handleDelete(self.wfile, req, session)
+            elif servicename=="/service/addproduction":
+                serviceproduction.handleAdd(self.wfile, req, session)
 
-        elif servicename=="/service/activateproduction":
-            serviceproduction.handleActivateProduction(self.wfile, req, session)
-        elif servicename=="/service/productionview":
-            serviceproduction.handleGetProductionView(self.wfile, req, session)
-        elif servicename=="/service/fileview":
-            serviceproduction.handleGetFileView(self.wfile, req, session)
-        elif servicename=="/service/dependancy":
-            servicedependancy.handleGet(self.wfile, req, session)
-        elif servicename=="/service/renamefile":
-            servicerefactor.handleStartRenameFile(self.wfile, req, session)
-        elif servicename=="/service/movefile":
-            servicerefactor.handleStartMoveFile(self.wfile, req, session)
-        elif servicename=="/service/renameelement":
-            servicerefactor.handleStartRenameElement(self.wfile, req, session)
-        elif servicename=="/service/refactoringtasks":
-            servicerefactor.handleGetCurrentTasks(self.wfile, req, session)
-        elif servicename=="/service/executetask":
-            servicerefactor.handleExecuteOneTask(self.wfile, req, session)
-        elif servicename=="/service/committasks":
-            servicerefactor.handleCommitCurrentTasks(self.wfile, req, session)
-        elif servicename=="/service/rollbacktasks":
-            servicerefactor.handleRollbackCurrentTasks(self.wfile, req, session)
+            elif servicename=="/service/activateproduction":
+                serviceproduction.handleActivateProduction(self.wfile, req, session)
+            elif servicename=="/service/productionview":
+                serviceproduction.handleGetProductionView(self.wfile, req, session)
+            elif servicename=="/service/fileview":
+                serviceproduction.handleGetFileView(self.wfile, req, session)
+            elif servicename=="/service/dependancy":
+                servicedependancy.handleGet(self.wfile, req, session)
+            elif servicename=="/service/renamefile":
+                servicerefactor.handleStartRenameFile(self.wfile, req, session)
+            elif servicename=="/service/movefile":
+                servicerefactor.handleStartMoveFile(self.wfile, req, session)
+            elif servicename=="/service/renameelement":
+                servicerefactor.handleStartRenameElement(self.wfile, req, session)
+            elif servicename=="/service/refactoringtasks":
+                servicerefactor.handleGetCurrentTasks(self.wfile, req, session)
+            elif servicename=="/service/executetask":
+                servicerefactor.handleExecuteOneTask(self.wfile, req, session)
+            elif servicename=="/service/committasks":
+                servicerefactor.handleCommitCurrentTasks(self.wfile, req, session)
+            elif servicename=="/service/rollbacktasks":
+                servicerefactor.handleRollbackCurrentTasks(self.wfile, req, session)
+                
+            elif servicename=="/service/missinglinksolutions":
+                servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
+            elif servicename=="/service/solvemissinglink":
+                servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
+        except sqlite3.Error:
+            self.wfile("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.")
+
+# if (settings.DEBUG == True):
+#    traceback.print_tb()
             
-        elif servicename=="/service/missinglinksolutions":
-            servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
-        elif servicename=="/service/solvemissinglink":
-            servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
 
 # minimal web server.  serves files relative to the
 # current directory.

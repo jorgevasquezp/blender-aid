@@ -18,7 +18,6 @@
 #
 # (c) 2009, At Mind B.V. - Jeroen Bakker
 
-
 # where is the webserver binding
 # do not use port less than 1024 as they need to be created with more privileged than
 # normal users.
@@ -26,13 +25,20 @@ WEBSERVER_BINDING=("localhost", 8080)
 
 # location of the sql database binary.
 # this file will be created when not exists
-SQLITE3_CONNECTIONURL="/var/tmp/sql.bin"
+SQLITE3_CONNECTIONURL="/var/tmp/sql012010.bin"
+
+import platform
+if platform.system() in ('Windows', 'Microsoft'):
+    SQLITE3_CONNECTIONURL="c:\temp\sql012010.bin"
 
 #Stylesheet to use in html
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="20091130"
+VERSION="20100131"
 
 #additional description of the release
-VERSION_DESCRIPTION="November 2009"
+VERSION_DESCRIPTION="January 2010"
+
+#debug flag
+DEBUG=True
