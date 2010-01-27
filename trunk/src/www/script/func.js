@@ -104,7 +104,7 @@ function serviceProductions(callback) {
 function serviceProductionView(callback) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
-	xmlDoc.open( "POST", "/service/productionview", false );
+	xmlDoc.open( "POST", "/service/productionview", true );
 	xmlDoc.send( "{}\r\n" );
 	return xmlDoc;
 }
