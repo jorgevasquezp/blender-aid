@@ -1,0 +1,874 @@
+<html><head>
+<title>Blender-aid</title> <link rel="stylesheet" type="text/css" href="${css}">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+ 
+ 
+
+<script type="text/javascript" src="script/table.js"></script>
+<script type="text/javascript" src="script/tab.js"></script>
+<script type="text/javascript" src="script/func.js"></script>
+<div id="top-navigation" >
+<span style="float:right"><a href="#" onclick="javascript:showSelectProduction();return false;">&lt;&lt;productions</a></span>
+<br/>
+</div>
+<div class="page-header">
+<h1><span id="spanProductionName" ></span><br/><span class="production-location" id="spanProductionLocation" ></span></h1>
+<ul id="tabs-header" class="tabs-header">
+	<li><img src="images/unknownfile.png"><a id="linkFiles" >Files</a></li>
+	<li><img src="images/filter.png"></img><a id="linkScenes">Scenes</a></li>
+	<li><img src="images/missing.png"><a id="linkMissing" >Missing links</a></li>
+</ul>
+</div>
+
+<div id="productionView" >
+<div id="tabMissing"  class="tab2">
+<p>The following files are referenced, but not found.
+</p>
+<table id="errors"></table>
+</div>
+
+<div id="tabFiles" class="tab2">
+<label>filter:</label><input id="filterFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>
+<table id="files"></table>
+</div>
+
+<div id="tabScenes" class="tab2">
+
+<div>
+
+<h2>Filter</h2>
+<ul id="test1"><li><input id="f0" onchange="javascript:filterupdated()" type="checkbox">filter filename <input id="f0fn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value=""> and scene name <input id="f0sn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value="">.</li>
+
+<li><input id="f1" onchange="javascript:filterupdated()" type="checkbox">find scenes which <select id="f1uses" onchange="javascript:filterupdated()"><option selected="selected">uses</option><option>does not use</option></select> <select id="f1res" onchange="javascript:filterupdated()">
+	<option>600x600</option>
+	<option>720x405</option>
+	<option>800x600</option>
+	<option>1024x768</option>
+	<option>1024x1024</option>
+	<option>1080x1920</option>
+	<option>1600x1200</option>
+	<option>1920x1080</option>
+	<option>1920x1920</option>
+	<option>2000x3000</option>
+</select> as resolution.</li>
+<li><input id="f2" onchange="javascript:filterupdated()" type="checkbox">find scenes with output not using <select id="f2size" onchange="javascript:filterupdated()"><option selected="selected" value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select> size reduction</li>
+<li><input id="f3" onchange="javascript:filterupdated()" type="checkbox">find scenes what <select id="f3uses" onchange="javascript:filterupdated()"><option selected="selected">saves</option><option>does not save</option></select> to <select id="f3img" onchange="javascript:filterupdated()"><option>AVI</option><option selected="selected">EXR</option><option>JPEG</option><option>PNG</option></select></li>
+
+<li><input id="f4" onchange="javascript:filterupdated()" type="checkbox">find all scenes using less than <input id="f4num" onchange="javascript:filterupdated()" value="100"> threads/xy-parts</li>
+<li><input id="f5" onchange="javascript:filterupdated()" type="checkbox">not saved in blender version 
+<select id="f5ver" onchange="javascript:filterupdated()" >
+<option value="249">2.49</option>
+<option value="248">2.48</option>
+<option value="247">2.47</option>
+<option value="246">2.46</option>
+<option value="245">2.45</option>
+<option value="244">2.44</option>
+<option value="243">2.43</option>
+<option value="242">2.42</option>
+<option value="241">2.41</option>
+</select></li>
+<li><input id="f6" onchange="javascript:filterupdated()" type="checkbox"></input>display only active scenes</li>
+
+</ul>
+</div>
+
+<div>
+<h2>Columns</h2>
+<ul id="test2" >
+<li><input id="fac1" onchange="javascript:updateFacets()" checked="true" type="checkbox">basic file and scene information (filename, scene name)</li>
+<li><input id="fac2" onchange="javascript:updateFacets()" type="checkbox">blender information (blender version, pointersize, endianness, compression)</li>
+<li><input id="fac3" onchange="javascript:updateFacets()" checked="true" type="checkbox">scene output information (resolution, size, output type)</li>
+<li><input id="fac4" onchange="javascript:updateFacets()" type="checkbox">scene frame information (frame step, start frame, end frame)</li>
+<li><input id="fac5" onchange="javascript:updateFacets()" type="checkbox">scene optimalization information (xparts, yparts)</li>
+</ul>
+</div>
+<div>
+<table id="result" ></table>
+</div>
+</div>
+</div>
+<!-- files view -->
+<div id="filesView" style="display:none;">
+<h2><span id="spanFileLocation" >[filename]</span></h2>
+<ul><li><a href="#" onclick="javascript:startMoveFile()" >Move file</a></li><li><a href="#" onclick="javascript:startRenameFile()" >Rename file</a></li><li><a id="aLocalLink" onclick="javascript:showOpenFileHelp();return false;" style="display:none;">Open</a></li></ul>
+<ul id="tabs" class="tabs">
+	<li><img src="images/unknownfile.png"><a id="linkBasic" >Basic</a></li>
+	<li><img src="images/object.png"><a id="linkElements" >Elements</a></li>
+	<li><img src="images/dependancy.png"><a id="linkReferences" >References</a></li>
+	<li><img src="images/dependancy2.png"><a id="linkDependancies" >Dependancy viewer</a></li>
+</ul>
+
+<div id="tabBasic" class="tab">
+<div id="blend-settings" style="display:none;">
+	<label>scene:</label><span id="spanSceneName" ></span><br/>
+	<label>startframe:</label><span id="spanSceneStartframe" ></span><br/>
+	<label>endframe:</label><span id="spanSceneEndframe" ></span><br/>
+	<label>resolution:</label><span id="spanSceneResolution" ></span><br/>
+	<label>output:</label><span id="spanSceneOutputtype" ></span><br/>
+	<label>x-parts:</label><span id="spanSceneXparts" ></span><br/>
+	<label>y-parts:</label><span id="spanSceneYparts" ></span><br/>
+</div>
+
+<div id="image-settings" style="display:none;">
+<a id="apreview" href="" class="img"><img id="preview" src="" width="512"></img>
+</a>
+</div>
+</div>
+
+<div id="tabElements" class="tab">
+<div id="blend-elements" style="display:none;">
+	<div id="test3">
+		<label>filter:</label><input id="filterElements" onchange="javascript:applyElementsFilter()" onkeyup="javascript:applyElementsFilter()" type="text"></input><br/><br/>
+
+		<table id="elements"></table>
+	</div>
+</div>
+</div>
+
+<div id="tabReferences" class="tab">
+		<a id="aSVGReferences" href="" target="_blank">Show graphical view</a>
+		<div id="blend-uses" style="display:none;">
+		<table id="references"></table> <br/>
+		</div>
+		<table id="usedby"></table>
+</div>
+
+<div id="tabDependancies" class="tab">
+<fieldset>
+	<legend>settings</legend>
+	<select id="selectView" onchange="javascript:updateD()">
+		<option value="neighbour">neighbour</option>
+		<option value="uses">uses</option>
+		<option value="used">used</option>
+		<option value="production">production</option>
+	</select><br/>
+	<input id="checkAll" checked="true" onchange="javascript:updateD()" type="checkbox">All</input> 
+	<ul id="checksub" style="display:none;">
+	<li>
+	<input id="checkOB" onchange="javascript:updateD()" type="checkbox"><img src="images/object.png"></img>Object</input> 
+</li><li><input id="checkMA" onchange="javascript:updateD()" type="checkbox"><img src="images/material.png"></img>Material</input> 
+</li><li><input id="checkME" onchange="javascript:updateD()" type="checkbox"><img src="images/mesh.png"></img>Mesh</input> 
+</li><li><input id="checkTE" onchange="javascript:updateD()" type="checkbox"><img src="images/texture.png"></img>Texture</input> 
+</li><li><input id="checkLA" onchange="javascript:updateD()" type="checkbox"><img src="images/lamp.png"></img>Lamp</input> 
+</li><li><input id="checkAR" onchange="javascript:updateD()" type="checkbox"><img src="images/armature.png"></img>Armature</input> 
+</li><li><input id="checkAC" onchange="javascript:updateD()" type="checkbox"><img src="images/action.png"></img>Action</input> 
+</li><li><input id="checkPA" onchange="javascript:updateD()" type="checkbox"><img src="images/particle.png"></img>Particle</input> 
+</li><li><input id="checkGR" onchange="javascript:updateD()" type="checkbox"><img src="images/group.png"></img>Group</input> 
+</li><li><input id="checkCA" onchange="javascript:updateD()" type="checkbox"><img src="images/camera.png"></img>Camera</input> 
+</li><li><input id="checkWO" onchange="javascript:updateD()" type="checkbox"><img src="images/world.png"></img>World</input> 
+</li><li><input id="checkIM" onchange="javascript:updateD()" type="checkbox"><img src="images/image.png"></img>Image</input>
+</li>
+	</ul>
+
+
+</fieldset>
+<fieldset>
+	<legend>graphical display</legend>
+	<input id="checkDisplay" onchange="javascript:updateD()" type="checkbox">Show detailed file reference information</input> <br/>
+<a id="aGraph" href="/svg/dependancy.svg?navigation=1" target="new">Show graph</a>
+</fieldset>
+<fieldset>
+	<legend>result</legend>
+	<table id="tableD"></table>
+</fieldset>
+</div>
+</div>
+
+</div>
+
+<!--
+	chose production layer
+-->
+
+<div id="productionsLayer" class="outerlayer" style="display:none;">
+<div class="layer">
+<a style="float:right" href="#" onclick="javascript:cancelSelectProduction();return false;"><img src="images/delete.png"></img></a>
+<p>Select your production
+<ul id="productions">
+</ul>
+</p>
+
+
+Add new production
+<div>
+<label>name:</label><input id="productionname"></input><br/>
+<label>location:</label><input id="productionlocation" class="large"></input><br/>
+<a href="#" onclick="javascript:addProduction();return false;" >Add</a>
+</div>
+</div></div>
+
+<!--
+	chose solution
+-->
+
+<div id="missingLayer" class="outerlayer" style="display:none;">
+<div class="layer">
+<a style="float:right" href="#" onclick="javascript:cancelSelectSolution();return false;"><img src="images/delete.png"></img></a>
+<p>Select the link
+<table id="solutions"></table>
+</p>
+</div></div>
+<script>
+tab = document.getElementById("tabs-header")
+initTab(tab, "tab")
+tab.addTab("linkFiles", "tabFiles", "showProductionView")
+tab.addTab("linkMissing", "tabMissing", "showProductionView")
+tab.addTab("linkScenes", "tabScenes", "showProductionView")
+tab.update()
+
+function applyFilesFilter() {
+	tableFiles.needsupdate=true;
+	tableFiles.update();
+}
+function filter(items) {
+	f1 = document.getElementById("filterFile").value;
+	if (f1.length==0) {
+		return items;
+	}
+
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.file_location.indexOf(f1) != -1) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+function iconFactoryMissing(item, column, td) {
+	atag = document.createElement("img");
+	atag.setAttribute("src", "images/missing.png");
+	atag.setAttribute("alt", "Missing link");
+	atag.setAttribute("title", "Missing link");
+	return atag
+}
+
+tableFiles = document.getElementById("files");
+initTable(tableFiles, "tableFiles");
+tableFiles.setCaption("Files");
+tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
+tableFiles.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
+tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
+tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
+tableFiles.pageitems=20;
+tableFiles.filter=filter;
+tableFiles.update();
+
+tableErrors = document.getElementById("errors");
+initTable(tableErrors, "tableErrors");
+tableErrors.setCaption("Missing links");
+tableErrors.addColumn("icon", "", "icon", true, null, iconFactoryMissing);
+tableErrors.addColumn("missing", "missing file", "missing_file_location", true);
+tableErrors.addColumn("file_location", "used by", "file_location", true, null, linkFactoryFile);
+tableErrors.addColumn("refactor", "actions", "element_id", true, false, missingActionsFactory);
+tableErrors.pageitems=30;
+tableErrors.update();
+
+tableScenes = document.getElementById("result");
+initTable(tableScenes, "tableScenes");
+tableScenes.setCaption("result");
+tableScenes.addColumn("icon", "", "blend_file", true, false, fileIconFactory);
+tableScenes.addColumn("blendfile", "blendfile", "blend_file", true, false, linkFactoryFile);
+tableScenes.addColumn("blendversion", "blendversion", "blend_version", false);
+tableScenes.addColumn("blendpointersize", "pointersize", "blend_pointersize", false);
+tableScenes.addColumn("blendendianness", "endianness", "blend_littleendian", false, null, endiannessFactory);
+tableScenes.addColumn("blendcompression", "compressed", "blend_compressed", false, null, booleanFactory);
+tableScenes.addColumn("scene", "scene", "scene_name", true);
+tableScenes.addColumn("resolution", "resolution", "scene_resolution", true);
+tableScenes.addColumn("size", "size", "scene_size", true, null, sizeDom);
+tableScenes.addColumn("output", "output", "scene_outputtype", true);
+tableScenes.addColumn("start", "start", "scene_startframe", false);
+tableScenes.addColumn("end", "end", "scene_endframe", false);
+tableScenes.addColumn("step", "step", "scene_step", false);
+tableScenes.addColumn("xparts", "xparts", "scene_xparts", false);
+tableScenes.addColumn("yparts", "yparts", "scene_yparts", false);
+tableScenes.filter=filterScenes;
+tableScenes.pageitems=30;
+tableScenes.update();
+
+fac = [document.getElementById("fac1"), 
+document.getElementById("fac2"), 
+document.getElementById("fac3"), 
+document.getElementById("fac4"), 
+document.getElementById("fac5")];
+
+function updateFacets() {
+	tableScenes.setColumnVisibility("blendfile", fac[0].checked);
+	tableScenes.setColumnVisibility("blendversion", fac[1].checked);
+	tableScenes.setColumnVisibility("blendpointersize", fac[1].checked);
+	tableScenes.setColumnVisibility("blendendianness", fac[1].checked);
+	tableScenes.setColumnVisibility("blendcompression", fac[1].checked);
+	tableScenes.setColumnVisibility("scene", fac[0].checked|fac[2].checked);
+	tableScenes.setColumnVisibility("resolution", fac[2].checked);
+	tableScenes.setColumnVisibility("size", fac[2].checked);
+	tableScenes.setColumnVisibility("output", fac[2].checked);
+	tableScenes.setColumnVisibility("start", fac[3].checked);
+	tableScenes.setColumnVisibility("end", fac[3].checked);
+	tableScenes.setColumnVisibility("step", fac[3].checked);
+	tableScenes.setColumnVisibility("xparts", fac[4].checked);
+	tableScenes.setColumnVisibility("yparts", fac[4].checked);
+	tableScenes.update();
+}
+
+
+selectedProductionId=-1
+selectedFileId=-1
+selectedElementId = -1
+xmlDoc = serviceProductionView(process)
+  
+function process() {
+	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
+	result = eval(xmlDoc.responseText)
+	production = result[0];
+	if (production == null) {
+		showSelectProduction()
+		return
+	}
+	selectedProductionId=production.production_id;
+
+	files = result[1]
+	scenes = result[2]
+	missing = result[3]
+	fillSpan("spanProductionName", production.production_name);
+	fillSpan("spanProductionLocation", production.production_location);
+
+	tableFiles.setItems(files);
+	tableFiles.update();
+	
+	tableScenes.setItems(scenes);
+	tableScenes.update();
+
+	tableErrors.setItems(missing);
+	tableErrors.update();
+}
+
+function sizeDom(item, column, td) {
+	return document.createTextNode(eval("item."+column[2])+"%");
+}
+
+function filterupdated() {
+	tableScenes.needsupdate=true;
+	tableScenes.update();
+}
+
+function filterScenes(items) {
+	f1 = document.getElementById("f1").checked;
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		add=filter0(item);
+		add=add & filter1(item);
+		add=add & filter2(item);
+		add=add & filter3(item);
+		add=add & filter4(item);
+		add=add & filter5(item);
+		add=add & filter6(item);
+		if (add) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+function filter0(item) {
+	f0 = document.getElementById("f0").checked;
+	if (!f0) return true;
+	filename= document.getElementById("f0fn").value;
+	scenename= document.getElementById("f0sn").value;
+	ifilename = item.blend_file;
+	iscenename = item.scene_name;
+	ifn = ifilename.indexOf(filename)>-1;
+	isn = iscenename.indexOf(scenename)>-1;
+	return ifn & isn;
+}
+
+function filter1(item) {
+	f1 = document.getElementById("f1").checked;
+	if (!f1) return true;
+	uses= document.getElementById("f1uses").value == "uses";
+	res= document.getElementById("f1res").value;
+	ires = item.scene_resolution;
+	if (uses) {
+		return res==ires;
+	} else {
+		return res!=ires;
+	}
+}
+function filter2(item) {
+	f2 = document.getElementById("f2").checked;
+	if (!f2) return true;
+	size= document.getElementById("f2size").value;
+	isize = ""+item.scene_size;
+
+	return size!=isize;
+	
+}
+function filter3(item) {
+	f3 = document.getElementById("f3").checked;
+	if (!f3) return true;
+	uses= document.getElementById("f3uses").value == "saves";
+	res= document.getElementById("f3img").value;
+	ires = item.scene_outputtype;
+
+	if (uses) {
+		return res==ires;
+	} else {
+		return res!=ires;
+	}
+}
+function filter4(item) {
+	f4 = document.getElementById("f4").checked;
+	if (!f4) return true;
+	size=  parseInt(document.getElementById("f4num").value);
+	isize = item.scene_xparts*item.scene_yparts;
+
+	return isize<size;
+
+}
+function filter5(item) {
+	f5 = document.getElementById("f5").checked;
+	if (!f5) return true;
+	ver= document.getElementById("f5ver").value;
+	iver = item.blend_version;
+
+	return ver!=iver;
+}
+
+function filter6(item) {
+	f6 = document.getElementById("f6").checked;
+	if (!f6) return true
+	return item.scene_active==1;
+}
+function showProductionView() {
+	document.getElementById("filesView").setAttribute("style", "display:none");
+	document.getElementById("productionView").setAttribute("style", "display:block");
+	selectedFileId=-1;
+}
+
+function createLink(item) {
+	li = document.createElement("li")
+	
+	link = document.createElement("a")
+	link.setAttribute("href", "#")
+	link.setAttribute("onclick", "javascript:selectProduction("+item.production_id+");return false;");
+	link.setAttribute("title", item.production_location)
+	link.appendChild(document.createTextNode(item.production_name))
+	li.appendChild(link)
+
+	result = document.createElement("a")
+	atag = document.createElement("img");
+	atag.setAttribute("src", "images/delete.png");
+	atag.setAttribute("title", "Delete this production");
+	result.setAttribute("onclick", "javascript:deleteProduction("+item.production_id+");return false;")
+	result.setAttribute("href", "#");
+	result.appendChild(atag);
+	li.appendChild(result)
+
+	return li;
+}
+xmlDocProductions = null;
+productionsUl = document.getElementById("productions")
+function processProductions() {
+	if ( xmlDocProductions.readyState != 4 ) return ;
+	if (xmlDocProductions.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDocProductions.responseText)
+			return
+		}
+	productions = eval(xmlDocProductions.responseText);
+	clearChilderen(productionsUl);
+
+	for (i=0;i<productions.length;i++) {
+		item = productions[i]
+		li = createLink(item)
+		productionsUl.appendChild(li)
+	}
+}
+
+xmlDocDeleteProduction=null;
+xmlDocAddProduction=null;
+xmlDocActivateProduction=null;
+
+function deleteProduction(productionId) {
+	xmlDocDeleteProduction = serviceDeleteProduction(deleteProductionCallback, productionId)
+}
+
+function deleteProductionCallback() {
+	if ( xmlDocDeleteProduction.readyState != 4 ) return ;
+	xmlDocProductions = serviceProductions(processProductions);
+}
+function addProductionCallback() {
+	if ( xmlDocAddProduction.readyState != 4 ) return ;
+	xmlDocProductions = serviceProductions(processProductions);
+	document.getElementById("productionname").value="";
+	document.getElementById("productionlocation").value="";
+}
+
+function addProduction() {
+	name = document.getElementById("productionname").value;
+	plocation = document.getElementById("productionlocation").value;
+	if (!(name.lenght==0 || plocation.length==0))
+		xmlDocAddProduction = serviceAddProduction(addProductionCallback, name, plocation);
+}
+function selectProduction(productionId) {
+	xmlDocActivateProduction = serviceActivateProduction(processActivateProduction, productionId)
+}
+function processActivateProduction() {
+	document.getElementById("productionsLayer").setAttribute("style", "display:none;");
+	fillSpan("spanProductionName", "");
+	fillSpan("spanProductionLocation", "");
+	tableFiles.setItems([]);
+	tableFiles.loading=true;
+	tableFiles.update();	
+	tableScenes.setItems([]);
+	tableScenes.loading=true;
+	tableScenes.update();
+	tableErrors.setItems([]);
+	tableErrors.loading=true;
+	tableErrors.update();
+	showProductionView();
+	xmlDoc = serviceProductionView(process)
+}
+
+function showSelectProduction() {
+	document.getElementById("productionsLayer").setAttribute("style", "display:block;")
+	xmlDocProductions = serviceProductions(processProductions);
+}
+function cancelSelectProduction() {
+	document.getElementById("productionsLayer").setAttribute("style", "display:none;")
+	fillSpan("spanProductionName", "");
+	fillSpan("spanProductionLocation", "");
+
+	tableFiles.setItems([]);
+	tableFiles.loading=true;
+	tableFiles.update();	
+	tableScenes.setItems([]);
+	tableScenes.loading=true;
+	tableScenes.update();
+	tableErrors.setItems([]);
+	tableErrors.loading=true;
+	tableErrors.update();
+	xmlDoc = serviceProductionView(process)
+	showProductionView();
+}
+
+/* file
+*/
+tab = document.getElementById("tabs")
+initTab(tab, "tab")
+tab.addTab("linkBasic", "tabBasic")
+tab.addTab("linkElements", "tabElements")
+tab.addTab("linkReferences", "tabReferences")
+tab.addTab("linkDependancies", "tabDependancies")
+tab.update()
+
+tableElements = document.getElementById("elements");
+initTable(tableElements, "tableElements");
+tableElements.setCaption("Elements");
+tableElements.addColumn("icon", "", "element_type", true, false, elementIconFactory);
+tableElements.addColumn("element_type", "type", "element_type", true);
+tableElements.addColumn("element_name", "name", "element_name", true);
+tableElements.addColumn("refactor", "actions", "file_id", true, false, elementActionsFactory);
+tableElements.pageitems=20;
+tableElements.filter=filterElements;
+tableElements.update(); 
+
+tableReferences = document.getElementById("references");
+initTable(tableReferences, "tableReferences");
+tableReferences.setCaption("References");
+tableReferences.addColumn("file_icon", "", "file_location", true, false, fileIconFactory);
+tableReferences.addColumn("file_location", "file", "file_location", true, null, linkFactoryFile);
+tableReferences.addColumn("element_icon", "", "element_type", true, false, elementIconFactory);
+tableReferences.addColumn("element_type", "type", "element_type", true);
+tableReferences.addColumn("element_name", "name", "element_name", true);
+tableReferences.pageitems=20;
+tableReferences.update();
+tableUsedby = document.getElementById("usedby");
+initTable(tableUsedby, "tableUsedby");
+tableUsedby.setCaption("File is used by");
+tableUsedby.addColumn("file_icon", "", "file_location", true, false, fileIconFactory);
+tableUsedby.addColumn("file_location", "file", "file_location", true, null, linkFactoryFile);
+tableUsedby.addColumn("element_icon", "", "element_type", true, false, elementIconFactory);
+tableUsedby.addColumn("element_type", "type", "element_type", true);
+tableUsedby.addColumn("element_name", "name", "element_name", true);
+tableUsedby.pageitems=20;
+tableUsedby.update(); 
+
+
+xmlDocFileView=null
+function selectFile(fileId) {
+	selectedFileId = fileId
+	tableElements.loading=true;
+	tableElements.setItems([])
+	tableElements.update();
+	tableReferences.loading=true;
+	tableReferences.setItems([])
+	tableReferences.update();
+	tableUsedby.loading=true;
+	tableUsedby.setItems([])
+	document.getElementById("filesView").setAttribute("style", "display:block");
+	document.getElementById("productionView").setAttribute("style", "display:none");
+	xmlDocFileView = serviceFileView(processFileView, selectedProductionId, fileId);
+
+
+	updateD();
+}
+
+function processFileView() {
+	if ( xmlDocFileView.readyState != 4 ) return ;
+	if (xmlDocFileView.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDocFileView.responseText)
+			return
+		}
+	result = eval(xmlDocFileView.responseText)
+	production = result[0];
+	file = result[1];
+
+	fillSpan("spanFileLocation", file.file_location);
+	fileName = file.file_name;
+	fileLocation = file.file_location;
+	locallink=document.getElementById("aLocalLink")
+	locallink.setAttribute("href", "file://"+production.production_location+"/"+file.file_location)
+	locallink.setAttribute("style", "")
+
+
+	if (isBlendFile(file.file_location)) {
+		document.getElementById("blend-settings").setAttribute("style", "display:block;")
+		document.getElementById("blend-elements").setAttribute("style", "display:block;")
+		document.getElementById("blend-uses").setAttribute("style", "display:block;")
+		document.getElementById("image-settings").setAttribute("style", "display:none;")
+		tab.showTabLink("linkElements");
+
+		fillSpan("spanSceneName", file.scene_name);
+		fillSpan("spanSceneStartframe", file.scene_startframe);
+		fillSpan("spanSceneEndframe", file.scene_endframe);
+		fillSpan("spanSceneResolution", file.scene_resolution);
+		fillSpan("spanSceneOutputtype", file.scene_outputtype);
+		fillSpan("spanSceneXparts", file.scene_xparts);
+		fillSpan("spanSceneYparts", file.scene_yparts);
+
+	} else if (isImageFile(file.file_location)) {
+		//update preview image
+		preview = document.getElementById("preview")
+		preview.setAttribute("src", "/thumbnail/512?file_id="+selectedFileId+"&production_id="+selectedProductionId)
+		apreview = document.getElementById("apreview")
+		apreview.setAttribute("href", "/download/file?file_id="+selectedFileId+"&production_id="+selectedProductionId)
+
+		document.getElementById("blend-settings").setAttribute("style", "display:none;")
+		document.getElementById("blend-elements").setAttribute("style", "display:none;")
+		document.getElementById("blend-uses").setAttribute("style", "display:none;")
+		document.getElementById("image-settings").setAttribute("style", "display:block;")
+
+		tab.hideTabLink("linkElements");
+	} else {
+	}
+	elements = result[2]
+	tableElements.setItems(elements);
+	tableElements.update();
+	tableReferences.setItems(result[3]);
+	tableReferences.update();
+	document.getElementById("aSVGReferences").setAttribute("href", "/svg/1/neighbour/all/detail/"+selectedFileId)
+	tableUsedby.setItems(result[4]);
+	tableUsedby.update();
+}
+function applyElementsFilter() {
+	tableElements.needsupdate=true;
+	tableElements.update();
+}
+function filterElements(items) {
+	f1 = document.getElementById("filterElements").value.toLowerCase();
+	if (f1.length==0) {
+		return items;
+	}
+
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.element_name.toLowerCase().indexOf(f1) != -1) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+xmlRef=null
+function startRenameFile() {
+	newName = prompt("new name for ["+fileName+"]", fileName)
+	if (newName != null) {
+		if (newName != fileName) {
+			xmlRef = serviceStartRenameFile(refactorCallback, selectedProductionId, selectedFileId, newName)
+		}
+	}
+}
+function startMoveFile() {
+	path=fileLocation.substring(0,fileLocation.lastIndexOf("/"))
+	newName = prompt("new location for ["+fileLocation+"]", path)
+	if (newName != null) {
+		if (newName != fileName) {
+			xmlRef = serviceStartMoveFile(refactorCallback, selectedProductionId, selectedFileId, newName)
+		}
+	}
+}
+function startRenameElement(elementId) {
+	element=null
+	for (i=0;i<elements.length;i++) {
+		element1=elements[i]
+		if (element1.element_id==elementId) {
+			element = element1
+		}
+	}
+	newName = prompt("new name for ["+element.element_name+"]", element.element_name)
+	if (newName != null) {
+		if (newName != element.element_name) {
+			xmlRef = serviceStartRenameElement(refactorCallback, selectedProductionId, selectedFileId, elementId, newName)
+		}
+	}
+}
+
+function refactorCallback() {
+	if ( xmlRef.readyState != 4 ) return ;
+	if (xmlRef.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDep.responseText)
+			return
+		}
+	messages = eval(xmlRef.responseText)
+	if (messages.length == 0) {
+		document.location.href="refactor.html"
+	} else {
+		alert(messages[0].message);
+	}
+}
+
+function processD() {
+	if ( xmlDep.readyState != 4 ) return ;
+		if (xmlDep.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDep.responseText)
+			return
+		}
+		
+	items = eval(xmlDep.responseText);
+	tableD.setItems(items)
+	tableD.update()
+}
+
+tableD = document.getElementById("tableD")
+initTable(tableD, "tableD")
+tableD.setCaption("result");
+tableD.addColumn("fileicon", "", "source_file_location", true, null, fileIconFactory);
+tableD.addColumn("file", "file", "source_file_location", true, null, linkFactoryFileDepSource);
+tableD.addColumn("referenceicon", "", "target_file_location", true, null, fileIconFactory);
+tableD.addColumn("references", "references", "target_file_location", true, null, linkFactoryFileDepTarget);
+tableD.addColumn("icon", "", "element_type", true, null, elementIconFactory);
+tableD.addColumn("type", "type", "element_type", true);
+tableD.addColumn("element", "element", "element_name", true);
+tableD.pageitems=50
+tableD.setItems([])
+tableD.update()
+
+selectView = document.getElementById("selectView")
+checkAll=document.getElementById("checkAll")
+checkOB=document.getElementById("checkOB")
+checkMA=document.getElementById("checkMA")
+checkME=document.getElementById("checkME")
+checkPA=document.getElementById("checkPA")
+checkGR=document.getElementById("checkGR")
+checkCA=document.getElementById("checkCA")
+checkTE=document.getElementById("checkTE")
+checkLA=document.getElementById("checkLA")
+checkAR=document.getElementById("checkAR")
+checkAC=document.getElementById("checkAC")
+checkWO=document.getElementById("checkWO")
+checkIM=document.getElementById("checkIM")
+
+checkDisplay=document.getElementById("checkDisplay")
+aGraph=document.getElementById("aGraph")
+
+function addFilter(filter, check, type) {
+	if (!check.checked) return filter
+	if (filter!="") {
+		filter=filter+","
+	}
+	filter=filter+type
+	return filter
+}
+xmlDep=null;
+
+function updateD(){
+	filter=""
+	if (checkAll.checked) {
+		filter="all"
+		document.getElementById("checksub").setAttribute("style", "display:none;")
+	} else {
+		document.getElementById("checksub").setAttribute("style", "display:block;")
+		filter=addFilter(filter, checkOB, "OB")
+		filter=addFilter(filter, checkMA, "MA")
+		filter=addFilter(filter, checkME, "ME")
+		filter=addFilter(filter, checkPA, "PA")
+		filter=addFilter(filter, checkGR, "GR")
+		filter=addFilter(filter, checkCA, "CA")
+		filter=addFilter(filter, checkWO, "WO")
+		filter=addFilter(filter, checkTE, "TE")
+		filter=addFilter(filter, checkLA, "LA")
+		filter=addFilter(filter, checkAR, "AR")
+		filter=addFilter(filter, checkAC, "AC")
+		filter=addFilter(filter, checkIM, "IM")
+	}
+
+	display="global"
+	if (checkDisplay.checked) {
+		display="detail"
+	}
+
+	view = selectView.value
+	aGraph.setAttribute("href", "/svg/1/"+view+"/"+filter+"/"+display+"/"+selectedFileId)
+	tableD.setItems([])
+	tableD.loading=true;
+	tableD.update()
+	xmlDep=serviceDependancies(processD, 1, view, filter, display, selectedFileId)
+}
+
+function showOpenFileHelp() {
+	alert("Copy the link location and open the link in a file browser or equilivant.");
+}
+
+// solve missing links
+tableSolutions = document.getElementById("solutions")
+initTable(tableSolutions, "tableSolutions")
+tableSolutions.addColumn("file_location", "file", "file_location", true, null, solveLinkFactory)
+tableSolutions.addColumn("match", "match", "match", true, null, percentageFactory)
+
+function selectMissingLinkSolution(elementId) {
+	tableSolutions.setItems([])
+	tableSolutions.loading=true
+	tableSolutions.update()
+	selectedElementId = elementId
+
+	xmlSolution = serviceMissingLinkSolutions( processSolutionCallback, selectedProductionId, elementId )
+}
+
+function processSolutionCallback() {
+	if ( xmlSolution .readyState != 4 ) return ;
+	if (xmlSolution.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlSolution.responseText)
+			return
+		}
+	solutions = eval(xmlSolution.responseText)
+	document.getElementById("missingLayer").setAttribute("style", "display:block;")
+	tableSolutions.setItems(solutions)
+	tableSolutions.update()
+}
+function cancelSelectSolution() {
+	document.getElementById("missingLayer").setAttribute("style", "display:none;")
+}
+
+function startSolveMissingLink(fileId) {
+	document.getElementById("missingLayer").setAttribute("style", "display:none;")
+	xmlRef = serviceStartSolveMissingLink(refactorCallback, selectedProductionId, selectedElementId, fileId);
+	
+}
+</script>
+ </body></html>
