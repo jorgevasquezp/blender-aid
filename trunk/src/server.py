@@ -35,12 +35,17 @@ except:
     import socketserver as SocketServer
     
 import os
+import exceptions
 
 try:
     import json
 except:
     print("python < 2.6: using simplejson")
-    import simplejson as json
+    try:
+        import simplejson as json
+    except:
+        print("ERROR: simplejson is not installed. Simplejson can be found at http://pypi.python.org/pypi/simplejson/")
+        exit(-1)
 
 import logging
 import time
@@ -51,6 +56,7 @@ import servicedependancy
 import servicedownload
 import servicerefactor
 import settings
+import sqlite3
 
 log = logging.getLogger("server")
 
@@ -197,8 +203,11 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
             elif servicename=="/service/solvemissinglink":
                 servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
+
         except sqlite3.Error:
-            self.wfile("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.")
+            self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
+        except exceptions.IndexError:
+            self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
 
 # if (settings.DEBUG == True):
 #    traceback.print_tb()
