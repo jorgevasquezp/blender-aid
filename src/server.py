@@ -23,15 +23,19 @@
 ######################################################
 # Importing modules
 ######################################################
+import logging
+log = logging.getLogger("server")
+log.setLevel(logging.INFO)
+
 try:
     import SimpleHTTPServer
 except:
-    print("python 3: using http.server")
+    log.info("python 3: using http.server")
     import http.server as SimpleHTTPServer
 try:    
     import SocketServer
 except:
-    print("python 3: using socketserver")
+    log.info("python 3: using socketserver")
     import socketserver as SocketServer
     
 import os
@@ -40,14 +44,13 @@ import exceptions
 try:
     import json
 except:
-    print("python < 2.6: using simplejson")
+    log.info("python < 2.6: using simplejson")
     try:
         import simplejson as json
     except:
-        print("ERROR: simplejson is not installed. Simplejson can be found at http://pypi.python.org/pypi/simplejson/")
+        log.ERROR("ERROR: simplejson is not installed. Simplejson can be found at http://pypi.python.org/pypi/simplejson/")
         exit(-1)
 
-import logging
 import time
 from string import Template
 import indexer
@@ -58,7 +61,7 @@ import servicerefactor
 import settings
 import sqlite3
 
-log = logging.getLogger("server")
+
 
 user_sessions = dict()
 def getSession(user):
@@ -165,7 +168,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             line = self.rfile.readline().decode();
 
             req = json.loads(line)
-            log.info(servicename)
+            log.debug(servicename)
             if servicename=="/service/metafromproductionfiles":
                 servicescenes.handleGetAll(self.wfile, req, session)
 
@@ -215,7 +218,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 # minimal web server.  serves files relative to the
 # current directory.
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logging.getLogger("blendfile").setLevel(logging.WARNING)
 indexer.setup()
 os.chdir("www")
