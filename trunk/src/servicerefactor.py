@@ -22,22 +22,27 @@
 ######################################################
 # Importing modules
 ######################################################
+import logging
 import indexer
 from factory import solutionToObject, solutionIDToObject
 import shutil
 import os
 import posixpath
 import blendfile
+
+log = logging.getLogger("refactor")
+log.setLevel(logging.INFO)
+
 try:
     import json
 except:
-    print("python < 2.6: using simplejson")
+    log.info("python < 2.6: using simplejson")
     import simplejson as json
 
 try:
     from os.path import relpath as _relpath
 except:
-    print("python < 2.6: import custom relpath")
+    log.info("python < 2.6: import custom relpath")
     from bautil import relpath as _relpath
 
 

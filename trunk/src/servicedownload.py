@@ -23,10 +23,16 @@
 # Importing modules
 ######################################################
 import os
+import logging
+import exceptions
+
+log = logging.getLogger("download")
+log.setLevel(logging.INFO)
+
 try:
     from PIL import Image
 except:
-    print("No Python Imaging Library found! redirecting thumbnails")
+    log.ERROR("No Python Imaging Library found! redirecting thumbnails")
     Image=None
 
 import indexer
@@ -50,7 +56,7 @@ def handleGetThumbnail(wfile, request, session, size):
         png thumbnail file or the original file
 
     The thumbnail generation is done by PIL. When PIL is not installed the original file will be send"""
-    
+
     fileId=int(request["file_id"])
     productionId=int(request["production_id"])
     rPath=getAbsoluteFilename(productionId, fileId)
@@ -58,10 +64,13 @@ def handleGetThumbnail(wfile, request, session, size):
         if Image == None:
             handleGet(wfile, request, session)
         else:
-            im = Image.open(rPath)
-            im.thumbnail([size,size], Image.ANTIALIAS)
-            im.save(wfile, "PNG")
-
+            try:
+                im = Image.open(rPath)
+                im.thumbnail([size,size], Image.ANTIALIAS)
+                im.save(wfile, "PNG")
+            except exceptions.IOError:
+                 handleGet(wfile, request, session)              
+    
 def getAbsoluteFilename(productionId, fileId):
     """ determine the absolute path the given file
     input:

@@ -33,13 +33,16 @@ from blendfile import BlendFile
 import sqlite3
 import logging
 
+log = logging.getLogger("indexer")
+log.setLevel(logging.INFO)
+
 try:
     from os.path import relpath as _relpath
 except:
-    print("python < 2.6: import custom relpath")
+    log.info("python < 2.6: import custom relpath")
     from bautil import relpath as _relpath
 
-log = logging.getLogger("indexer")
+
 
 
 G_FILE_COMPRESS = 1 << 1
@@ -117,6 +120,9 @@ step 4: determine dependancies
         if not existOnFS:
             fileToBeRemoved.append(dbFile)
 
+    if len(fileToBeAdded)+ len(fileToBeRemoved)+len(fileToBeUpdated) > 0:
+        log.info("indexing");
+
 #step 3a: index new files
     for file in fileToBeAdded:
         indexNewFile(connection, productionId, productionDir, file[0]);
@@ -149,14 +155,13 @@ step 4: determine dependancies
         for libElement in connection.execute("select element.reference_file_id, element.li_name, element.li_filename, element.id, element.reference_file_id from element, file where element.file_id=file.id and file.production_id=? and element.type='LI'", [productionId]):
             connection.execute("update element set reference_file_id=?, li_name=?, li_filename=? where type='ID' and library_id=? and name in (select name from element li where li.file_id=?)", libElement)
 
-        log.debug("finished indexing");
+        log.info("finished indexing");
     
     connection.commit();
     connection.close()
 
 def indexExistingFile(connection, productionId, productionDir, file):
-    """index existing file.
-    TODO: make sure that file_id is same"""
+    """index existing file."""
     relpath = _relpath(file, productionDir)
     dbFile = connection.execute("select id from file where location=?", [relpath]).fetchone()
     connection.execute("delete from element where file_id=?", dbFile)
@@ -187,7 +192,7 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
         connection.execute("update file set lastupdate=?, length=? where id=?", [int(os.path.getmtime(file)), int(os.path.getsize(file)), newId])        
 
     if file.endswith(".blend"):
-        log.info("indexing file "+file);
+        log.debug("indexing file "+file);
 
         bf=blendfile.openBlendFile(file)
         
