@@ -31,7 +31,7 @@ log.setLevel(logging.INFO)
 try:
     from PIL import Image
 except:
-    log.ERROR("No Python Imaging Library found! redirecting thumbnails")
+    log.error("No Python Imaging Library found! redirecting thumbnails")
     Image=None
 
 import indexer
