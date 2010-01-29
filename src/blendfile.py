@@ -271,15 +271,25 @@ class BlendFileBlock:
         self.File = afile
         header = afile.Header
 
-        blockheader = afile.BlockHeaderStruct.unpack(handle.read(afile.BlockHeaderStruct.size))
-        self.Code = blockheader[0].decode().split("\0")[0]
-        if self.Code!="ENDB":
-            self.Size = blockheader[1]
-            self.OldAddress = blockheader[2]
-            self.SDNAIndex = blockheader[3]
-            self.Count = blockheader[4]
-            self.FileOffset = handle.tell()
+        bytes = handle.read(afile.BlockHeaderStruct.size)
+        if len(bytes)==20:
+            blockheader = afile.BlockHeaderStruct.unpack(bytes)
+            self.Code = blockheader[0].decode().split("\0")[0]
+            if self.Code!="ENDB":
+                self.Size = blockheader[1]
+                self.OldAddress = blockheader[2]
+                self.SDNAIndex = blockheader[3]
+                self.Count = blockheader[4]
+                self.FileOffset = handle.tell()
+            else:
+                self.Size = 0
+                self.OldAddress = 0
+                self.SDNAIndex = 0
+                self.Count = 0
+                self.FileOffset = 0
         else:
+            blockheader = OLDBLOCK.unpack(bytes)
+            self.Code = blockheader[0].decode().split("\0")[0]
             self.Size = 0
             self.OldAddress = 0
             self.SDNAIndex = 0
@@ -313,6 +323,7 @@ BLOCKHEADERSTRUCT[">4"] = struct.Struct(">4sIIII")
 BLOCKHEADERSTRUCT["<8"] = struct.Struct("<4sIQII")
 BLOCKHEADERSTRUCT[">8"] = struct.Struct(">4sIQII")
 FILEHEADER = struct.Struct("7s1s1s3s")
+OLDBLOCK=struct.Struct("4sI")
 class BlendFileHeader:
     def __init__(self, handle):
         log.debug("reading blend-file-header")
