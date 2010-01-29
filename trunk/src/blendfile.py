@@ -272,7 +272,7 @@ class BlendFileBlock:
         header = afile.Header
 
         bytes = handle.read(afile.BlockHeaderStruct.size)
-        if len(bytes)==20:
+        if len(bytes)>15:
             blockheader = afile.BlockHeaderStruct.unpack(bytes)
             self.Code = blockheader[0].decode().split("\0")[0]
             if self.Code!="ENDB":

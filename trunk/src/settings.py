@@ -29,7 +29,7 @@ SQLITE3_CONNECTIONURL="/var/tmp/sql012010.bin"
 
 import platform
 if platform.system() in ('Windows', 'Microsoft'):
-    SQLITE3_CONNECTIONURL="c:\temp\sql012010.bin"
+    SQLITE3_CONNECTIONURL="c:\\temp\\sql012010.bin"
 
 #Stylesheet to use in html
 STYLE_SHEET="site.css"
