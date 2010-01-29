@@ -39,7 +39,6 @@ except:
     import socketserver as SocketServer
     
 import os
-import exceptions
 
 try:
     import json
@@ -209,7 +208,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         except sqlite3.Error:
             self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
-        except exceptions.IndexError:
+        except IndexError:
             self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
 
 # if (settings.DEBUG == True):
