@@ -1,0 +1,124 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="site.css">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+ 
+ 
+<script type="text/javascript" src="script/table.js"></script>
+<script type="text/javascript" src="script/func.js"></script>
+<div class="page-header">
+	<h1>Re-factoring</h1>
+</div>
+<table id="refactorTable"></table>
+
+
+<div id="step1">
+	<a href="#" onclick="javascript:cancel();return false;">Cancel</a>
+	<a href="#" onclick="javascript:performTasks();return false;">Continue</a>
+</div>
+<div id="step2"  style="display:none;" class="outerlayer">
+	<div class="messagebox">
+		<p>Please wait while performing tasks</p>
+		<span class="progressbar">
+			<span id="idpi" style="width:0%;" class="progressindicator"></span>
+		</span>
+		
+	</div>
+</div><div id="step3" style="display:none;">
+	<a href="#" onclick="javascript:rollback();return false;">Undo changes</a>
+	<a href="#" onclick="javascript:commit();return false;">Save changes</a>
+</div>
+<script>
+table = document.getElementById("refactorTable")
+initTable(table, "table");
+table.setCaption("Tasks");
+table.addColumn("icon", "", "file_location", true, false, taskIconFactory);
+table.addColumn("file_name", "file", "file_location", true, false);
+table.addColumn("task_description", "description", "task_description", true, false);
+table.addColumn("task_status", "state", "task_status", true, false);
+table.paging=false;
+table.update(); 
+table.filter=filterTaskDisplay;
+
+xmlDoc=serviceRefactoringTasks(processTasks)
+
+function processTasks() {
+	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
+	result = eval(xmlDoc.responseText)
+	table.setItems(result)
+	table.update()
+	
+}
+
+function process2() {
+	if ( xmlDoc.readyState != 4 ) return ;
+	if (xmlDoc.responseText.substr(0, 5) == "ERROR") {
+			alert (xmlDoc.responseText)
+			return
+		}
+	result = eval(xmlDoc.responseText)
+	tasks = result
+	cont=true;
+	done=0;
+	total=tasks.length
+	for (i=0 ; i < total;i++) {
+		task = tasks[i]
+		if (task.task_status=="Created") {
+			cont=false;
+		} else {
+			done=done+1;
+		}
+	}
+	per = Math.round((100*done)/total)
+	document.getElementById("idpi").setAttribute("style", "width:"+per+"%")
+	if (cont) {
+		document.getElementById("step3").setAttribute("style", "display:block;")
+		document.getElementById("step2").setAttribute("style", "display:none;")
+	}
+	else
+	{
+		xmlDoc=servicePerformOneRefactoringTask(process2)
+	}
+	table.setItems(tasks)
+	table.update()
+}
+
+function process3() {
+	document.location.href="production.html"
+}
+
+function cancel() {
+	document.location.href="production.html"
+}
+function performTasks() {
+	document.getElementById("step1").setAttribute("style", "display:none;")
+	document.getElementById("step2").setAttribute("style", "display:block;")
+	xmlDoc=servicePerformOneRefactoringTask(process2)
+}
+function rollback() {
+	document.getElementById("step3").setAttribute("style", "display:none;")
+	xmlDoc=serviceRollbackTasks(process3)
+}
+function commit() {
+	document.getElementById("step3").setAttribute("style", "display:none;")
+	xmlDoc=serviceCommitTasks(process3)
+}
+
+function filterTaskDisplay(items) {
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.task_display) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+
+</script>
+
+ </body></html>
