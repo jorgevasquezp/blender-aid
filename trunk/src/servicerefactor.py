@@ -538,9 +538,9 @@ if the file is a texture this action will only move the file.
     def execute(self):
         productionLocation = self.productionDetails[2]
         fileLocation = self.fileDetails[3]
-        currentFileLocation = os.path.normpath(os.path.join(productionLocation, fileLocation))
-        newFileLocation = os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename)))
-        dirLocation = os.path.normpath(os.path.dirname(newFileLocation))
+        currentFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, fileLocation)))
+        newFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename))))
+        dirLocation = os.path.normcase(os.path.normpath(os.path.dirname(newFileLocation)))
         
         #create target directory if not existing
         if not os.path.exists(dirLocation):
@@ -555,16 +555,17 @@ if the file is a texture this action will only move the file.
             for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):            
                 relPath = libraryblock.Get("name").split("\0")[0]
                 absPath = blendfile.blendPath2AbsolutePath(currentFileLocation, relPath)
-                normPath = os.path.normpath(absPath)
+                normPath = os.path.normcase(os.path.normpath(absPath))
                 newRelPath = _relpath(normPath, dirLocation)
                 libraryblock.Set("name", "//"+newRelPath)
     
             for libraryblock in handle.FindBlendFileBlocksWithCode("IM"):            
                 relPath = libraryblock.Get("name").split("\0")[0]
-                absPath = blendfile.blendPath2AbsolutePath(currentFileLocation, relPath)
-                normPath = os.path.normpath(absPath)
-                newRelPath = _relpath(normPath, dirLocation)
-                libraryblock.Set("name", "//"+newRelPath)
+                if len(relPath)>0:
+                    absPath = blendfile.blendPath2AbsolutePath(currentFileLocation, relPath)
+                    normPath = os.path.normcase(os.path.normpath(absPath))
+                    newRelPath = _relpath(normPath, dirLocation)
+                    libraryblock.Set("name", "//"+newRelPath)
 
             handle.close()
             
@@ -573,8 +574,8 @@ if the file is a texture this action will only move the file.
     def rollback(self):
         productionLocation = self.productionDetails[2]
         fileLocation = self.fileDetails[3]
-        currentFileLocation = os.path.normpath(os.path.join(productionLocation, fileLocation))
-        newFileLocation = os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename)))
+        currentFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, fileLocation)))
+        newFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename))))
         dirLocation = os.path.normpath(os.path.dirname(newFileLocation))
         os.remove(newFileLocation)
         
