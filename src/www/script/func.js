@@ -47,7 +47,6 @@ function serviceStartRenameElement(callback, productionId, fileId, elementId, ne
 }
 function serviceStartMoveFile(callback, productionId, fileId, newName) {
 	str = newName.replace(/\\/g, "/")
-	alert(str)
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/movefile", true );
