@@ -89,7 +89,6 @@ function serviceDeleteProduction(callback, productionId) {
 }
 function serviceAddProduction(callback, productionName, productionLocation) {
 	str = productionLocation.replace(/\\/g, "/")
-	alert (str)
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/addproduction", true );
