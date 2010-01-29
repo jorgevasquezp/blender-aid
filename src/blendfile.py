@@ -272,7 +272,12 @@ class BlendFileBlock:
         header = afile.Header
 
         bytes = handle.read(afile.BlockHeaderStruct.size)
+        #header size can be 8, 20, or 24 bytes long
+        #8: old blend files ENDB block (exception)
+        #20: normal headers 32 bit platform
+        #24: normal headers 64 bit platform
         if len(bytes)>15:
+
             blockheader = afile.BlockHeaderStruct.unpack(bytes)
             self.Code = blockheader[0].decode().split("\0")[0]
             if self.Code!="ENDB":
