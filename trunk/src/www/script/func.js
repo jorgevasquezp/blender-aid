@@ -88,10 +88,12 @@ function serviceDeleteProduction(callback, productionId) {
 	return xmlDoc;
 }
 function serviceAddProduction(callback, productionName, productionLocation) {
+	str = productionLocation.replace(/\\/g, "/")
+	alert (str)
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/addproduction", true );
-	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+productionLocation+"\"}\r\n" );
+	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+str+"\"}\r\n" );
 	return xmlDoc;
 }
 function serviceProductions(callback) {
