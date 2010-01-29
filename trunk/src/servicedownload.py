@@ -24,7 +24,6 @@
 ######################################################
 import os
 import logging
-import exceptions
 
 log = logging.getLogger("download")
 log.setLevel(logging.INFO)
@@ -68,7 +67,7 @@ def handleGetThumbnail(wfile, request, session, size):
                 im = Image.open(rPath)
                 im.thumbnail([size,size], Image.ANTIALIAS)
                 im.save(wfile, "PNG")
-            except exceptions.IOError:
+            except IOError:
                  handleGet(wfile, request, session)              
     
 def getAbsoluteFilename(productionId, fileId):
