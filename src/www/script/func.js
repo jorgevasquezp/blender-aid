@@ -46,10 +46,12 @@ function serviceStartRenameElement(callback, productionId, fileId, elementId, ne
 	return xmlDoc;
 }
 function serviceStartMoveFile(callback, productionId, fileId, newName) {
+	str = newName.replace(/\\/g, "/")
+	alert(str)
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/movefile", true );
-	xmlDoc.send( "{\"production_id\":"+productionId+", \"file_id\":"+fileId+",\"new_location\":\""+newName+"\"}\r\n" );
+	xmlDoc.send( "{\"production_id\":"+productionId+", \"file_id\":"+fileId+",\"new_location\":\""+str+"\"}\r\n" );
 	return xmlDoc;
 }
 function serviceRefactoringTasks(callback) {
