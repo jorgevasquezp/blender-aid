@@ -41,7 +41,7 @@ def handleGet(wfile, request, session):
     productionId=int(request["production_id"])
     rPath=getAbsoluteFilename(productionId, fileId)
 
-    sfile = file(rPath, "rb")
+    sfile = open(rPath, "rb")
     content = sfile.read()
     wfile.write(content)
     sfile.close()
@@ -68,7 +68,7 @@ def handleGetThumbnail(wfile, request, session, size):
                 im.thumbnail([size,size], Image.ANTIALIAS)
                 im.save(wfile, "PNG")
             except IOError:
-                 handleGet(wfile, request, session)              
+                handleGet(wfile, request, session)              
     
 def getAbsoluteFilename(productionId, fileId):
     """ determine the absolute path the given file

@@ -34,7 +34,7 @@ import sqlite3
 import logging
 
 log = logging.getLogger("indexer")
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 try:
     from os.path import relpath as _relpath
@@ -383,12 +383,16 @@ def determineProductionLocation(productionDir, productionFile, blenderPath):
     
     return blenderPath
 
+TRANS=[
+    "TGA", "IRIS", "HAMX", "FTYPE", "JPEG", "MOV", "UNKOWN", "IRIZ", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "TGA", "AVI", "AVI", "PNG", "AVI", "MOV", "BMP", "HDR", "TIFF",
+    "EXR", "FFMPEG", "FRAMESERVER", "CINEON", "DPX", "MULTILAYER", "DDS"
+]
+
 def formatImageType(value):
-    trans=[
-        "TGA", "IRIS", "HAMX", "FTYPE", "JPEG", "MOV", "UNKOWN", "IRIZ", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN", "TGA", "AVI", "AVI", "PNG", "AVI", "MOV", "BMP", "HDR", "TIFF",
-        "EXR", "FFMPEG", "FRAMESERVER", "CINEON", "DPX", "MULTILAYER", "DDS"
-    ]
-    return trans[value]
+    if value<len(TRANS):
+        return TRANS[value]
+    else:
+        return "UNKNOWN"
 
 def getAllScenes(productionId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
