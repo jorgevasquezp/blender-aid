@@ -38,7 +38,7 @@ STYLE_SHEET="site.css"
 VERSION="20100131"
 
 #additional description of the release
-VERSION_DESCRIPTION="January 2010"
+VERSION_DESCRIPTION="April 2010 - tube logging"
 
 #debug flag
 DEBUG=True

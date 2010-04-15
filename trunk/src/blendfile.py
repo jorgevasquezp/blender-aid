@@ -138,7 +138,6 @@ def ReadString0(data, offset):
 
     while data[offset+add]!=ZEROTESTER:
         add+=1
-
     st = STRING[add]
     S=st.unpack_from(data, offset)[0].decode("iso-8859-1")
     return S
@@ -221,13 +220,14 @@ class BlendFile:
         while aBlock.Code != "ENDB":
             if aBlock.Code == "DNA1":
                 dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
-                if dnaid in DNACatalogCache:
-                    self.Catalog = DNACatalogCache[dnaid]
-                    handle.read(aBlock.Size)
-#                    handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
-                else:
-                    self.Catalog = DNACatalog(self.Header, aBlock, handle)
-                    DNACatalogCache[dnaid] = self.Catalog
+#                if dnaid in DNACatalogCache:
+#                    self.Catalog = DNACatalogCache[dnaid]
+#                    handle.read(aBlock.Size)
+##                    handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
+#                else:
+                self.Catalog = DNACatalog(self.Header, aBlock, handle)
+                log.info(dnaid)
+#                    DNACatalogCache[dnaid] = self.Catalog
             else:
                 handle.read(aBlock.Size)
 #                handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
@@ -392,8 +392,8 @@ class DNACatalog:
         log.debug("building #"+str(numberOfTypes)+" types")
         for i in range(numberOfTypes):
             tType = ReadString0(data, offset)
-            offset += (len(tType) + 1)
             self.Types.append([tType, 0, None])
+            offset += len(tType)+1
 
         offset = Allign(offset)
         offset += 4
@@ -405,6 +405,7 @@ class DNACatalog:
 
         offset = Allign(offset)
         offset += 4
+        
         numberOfStructures = intstruct.unpack_from(data, offset)[0]
         offset += 4
         log.debug("building #"+str(numberOfStructures)+" structures")

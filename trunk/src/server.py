@@ -59,6 +59,7 @@ import servicedownload
 import servicerefactor
 import settings
 import sqlite3
+import traceback
 
 
 
@@ -207,8 +208,10 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
 
         except sqlite3.Error:
+            traceback.print_exc()
             self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
         except IndexError:
+            traceback.print_exc()
             self.wfile.write("ERROR: A database error occured. Please check your database configuration in the settings file. Make sure you have removed the old database. If that does not solve the problem, send us an email.".encode())
 
 # if (settings.DEBUG == True):
@@ -218,7 +221,10 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 # minimal web server.  serves files relative to the
 # current directory.
 logging.basicConfig(level=logging.INFO)
-logging.getLogger("blendfile").setLevel(logging.WARNING)
+if settings.DEBUG:
+    logging.getLogger("blendfile").setLevel(logging.DEBUG)
+else:
+    logging.getLogger("blendfile").setLevel(logging.WARNING)
 indexer.setup()
 os.chdir("www")
 httpd=None
