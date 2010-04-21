@@ -138,8 +138,11 @@ def ReadString0(data, offset):
 
     while data[offset+add]!=ZEROTESTER:
         add+=1
-    st = STRING[add]
-    S=st.unpack_from(data, offset)[0].decode("iso-8859-1")
+    if add < len(STRING):
+        st = STRING[add]
+        S=st.unpack_from(data, offset)[0].decode("iso-8859-1")
+    else:
+        S=struct.Struct(str(add)+"s").unpack_from(data, offset)[0].decode("iso-8859-1")
     return S
 
 ######################################################
