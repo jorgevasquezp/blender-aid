@@ -29,16 +29,16 @@ SQLITE3_CONNECTIONURL="/var/tmp/sql012010.bin"
 
 import platform
 if platform.system() in ('Windows', 'Microsoft'):
-    SQLITE3_CONNECTIONURL="c:\\temp\\sql012010.bin"
+    SQLITE3_CONNECTIONURL="sql012010.bin"
 
 #Stylesheet to use in html
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="20100131"
+VERSION="20100602"
 
 #additional description of the release
-VERSION_DESCRIPTION="April 2010 - tube logging"
+VERSION_DESCRIPTION="June 2010 - tube durian fix"
 
 #debug flag
 DEBUG=True
