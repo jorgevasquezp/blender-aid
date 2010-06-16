@@ -291,17 +291,13 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
 "GD",	
 "GR",	
 
-"IM",	
 "IP",	
 
 "LA",	
 "LT",	
-"MA",	
 "MB",	
 "ME",	
 "NT",	
-"OB",	
-"SC",	
 
 "SO",	
 "TE",	
