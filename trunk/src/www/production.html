@@ -24,6 +24,8 @@
 <div id="tabMissing"  class="tab2">
 <p>The following files are referenced, but not found.
 </p>
+<label>filter:</label><input id="filterMissing" onchange="javascript:applyMissingFilter()" onkeyup="javascript:applyMissingFilter()" type="text"></input><br/><br/>
+
 <table id="errors"></table>
 </div>
 
@@ -216,6 +218,27 @@ tab.addTab("linkMissing", "tabMissing", "showProductionView")
 tab.addTab("linkScenes", "tabScenes", "showProductionView")
 tab.update()
 
+function applyMissingFilter() {
+	tableErrors.needsupdate=true;
+	tableErrors.update();
+}
+function filterMissing(items) {
+	f1 = document.getElementById("filterMissing").value;
+	if (f1.length==0) {
+		return items;
+	}
+
+	result = [];
+
+	for (i=0; i<items.length;i++) {
+		item = items[i];
+		if (item.file_location.indexOf(f1) != -1 || item.missing_file_location.indexOf(f1)!=-1) {
+			result[result.length]=item;
+		}
+	}
+	return result;
+}
+
 function applyFilesFilter() {
 	tableFiles.needsupdate=true;
 	tableFiles.update();
@@ -263,6 +286,7 @@ tableErrors.addColumn("missing", "missing file", "missing_file_location", true);
 tableErrors.addColumn("file_location", "used by", "file_location", true, null, linkFactoryFile);
 tableErrors.addColumn("refactor", "actions", "element_id", true, false, missingActionsFactory);
 tableErrors.pageitems=30;
+tableErrors.filter = filterMissing;
 tableErrors.update();
 
 tableScenes = document.getElementById("result");
