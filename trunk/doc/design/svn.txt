@@ -21,3 +21,20 @@ installatie scenario's
 
 ---
 werking
+
+
+---
+configuratie:
+als het nodig is een setting te hebben tussen werkstation/server variant, dan zal deze in settings.py opgenomen moeten worden
+
+Het zou mogelijk moeten zijn om per productie aan te geven welke svn-integratie-variant van toepassing is.
+a. No svn (or user controlled)
+b. use existing working copy
+c. Svn check out
+
+uit eindelijk maakt het niet uit of b of c gekozen wordt. deze resulteerd in een working copy.
+
+in een server variant wordt ook automatisch de productie bestanden geupdate, in een werkstation wordt dit niet gedaan.
+
+deployment:
+standaard wordt in settings.py de werkstation variant aangezet. mensen die de server variant willen, moeten deze zelf configureren.
