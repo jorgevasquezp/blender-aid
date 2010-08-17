@@ -8,6 +8,10 @@ def productionToObject(production):
     result["production_id"]=production[0]
     result["production_name"]=production[1]
     result["production_location"]=production[2]
+    result["production_active"]=production[3]
+    result["production_svnurl"]=production[4]
+    result["production_svnuserid"]=production[5]
+    result["production_svnpassword"]=production[6]
     return result
 
 def filesToObject(files):

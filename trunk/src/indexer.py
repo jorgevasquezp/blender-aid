@@ -464,7 +464,7 @@ def getAllProductions():
 
 def insertProduction(productionName, productionLocation):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = """insert into production values (null, ?, ?, 0)"""
+    query = """insert into production values (null, ?, ?, 0, null, null, null)"""
     result = connection.execute(query, [productionName, productionLocation]);
     connection.commit();
     connection.close()
@@ -723,7 +723,10 @@ def setup():
         id integer primary key autoincrement,
         name text,
         location text,
-        active int
+        active int, 
+        svnurl text,
+        svnuserid text,
+        svnpassword password
     )""")
     connection.execute("""create table if not exists file (
         id int primary key,
