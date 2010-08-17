@@ -38,3 +38,10 @@ in een server variant wordt ook automatisch de productie bestanden geupdate, in 
 
 deployment:
 standaard wordt in settings.py de werkstation variant aangezet. mensen die de server variant willen, moeten deze zelf configureren.
+
+besluit:
+focus op installeren op workstation.
+svn update door manual knop
+svn acties tijdens refactoring waneer gekoppeld aan svn
+svn commit (manual)
+

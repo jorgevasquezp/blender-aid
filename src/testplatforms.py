@@ -6,6 +6,7 @@ class Platform(unittest.TestCase):
     def runt(self, version):
         print("testing on python"+version+" platform.")
         self.assertTrue(os.system("python"+version+" testscenarios.py") ==0)
+        self.assertTrue(os.system("python"+version+" testsvn.py") ==0)
     def testPython25(self):
         self.runt("2.5")
     def testPython26(self):
