@@ -201,7 +201,6 @@ def Allign(offset):
 ######################################################
 # module classes
 ######################################################
-DNACatalogCache={}
 
 ######################################################
 #    BlendFile
@@ -222,15 +221,7 @@ class BlendFile:
         aBlock = BlendFileBlock(handle, self)
         while aBlock.Code != "ENDB":
             if aBlock.Code == "DNA1":
-                dnaid = str(self.Header.Version)+":"+str(self.Header.PointerSize)+":"+str(aBlock.Size)
-#                if dnaid in DNACatalogCache:
-#                    self.Catalog = DNACatalogCache[dnaid]
-#                    handle.read(aBlock.Size)
-##                    handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!
-#                else:
                 self.Catalog = DNACatalog(self.Header, aBlock, handle)
-                log.info(dnaid)
-#                    DNACatalogCache[dnaid] = self.Catalog
             else:
                 handle.read(aBlock.Size)
 #                handle.seek(aBlock.Size, os.SEEK_CUR) does not work with py3.0!

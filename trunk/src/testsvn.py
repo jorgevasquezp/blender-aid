@@ -32,5 +32,11 @@ class ScenarioBasicSVN(TestCase):
         logs = client.log("/tmp/yofrankie");
         print(logs)
         
+    def testFileInfo(self):
+        client = pysvn.Client()
+        entry = client.info("/tmp/yofrankie/chars/frankie.blend")
+        print(entry.url, entry.commit_author, entry.commit_revision, entry.commit_time)
+        print(entry.url, entry.revision.number, entry.revision.kind)
+        
 if __name__ =='__main__':
     unittest.main()
