@@ -530,12 +530,17 @@ function deleteProductionCallback() {
 }
 function addProductionCallback() {
 	if ( xmlDocAddProduction.readyState != 4 ) return ;
-	xmlDocProductions = serviceProductions(processProductions);
-	document.getElementById("productionname").value="";
-	document.getElementById("productionlocation").value="";
-	document.getElementById("productionsvnurl").value="";
-	document.getElementById("productionsvnuserid").value="";
-	document.getElementById("productionsvnpassword").value="";
+	result = eval(xmlDocAddProduction.responseText);
+	if (result.error == null) {
+		xmlDocProductions = serviceProductions(processProductions);
+		document.getElementById("productionname").value="";
+		document.getElementById("productionlocation").value="";
+		document.getElementById("productionsvnurl").value="";
+		document.getElementById("productionsvnuserid").value="";
+		document.getElementById("productionsvnpassword").value="";
+	} else {
+		alert(result.error);
+	}
 }
 
 function addProduction() {
