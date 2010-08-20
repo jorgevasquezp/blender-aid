@@ -17,24 +17,24 @@ class ScenarioBasicSVN(TestCase):
         client = pysvn.Client()
         client.callback_notify = notify
         client.callback_get_login = testLogin
-        client.checkout("http://atmind/svn/yofrankie", "/tmp/yofrankie");
+        client.checkout("http://atmind/svn/test", "/tmp/test");
     
     def testUpdate(self):
         client = pysvn.Client()
         client.callback_notify = notify
         client.callback_get_login = testLogin
-        client.update("/tmp/yofrankie");
+        client.update("/tmp/test");
 
     def testLog(self):
         client = pysvn.Client()
         client.callback_notify = notify
         client.callback_get_login = testLogin
-        logs = client.log("/tmp/yofrankie");
+        logs = client.log("/tmp/test");
         print(logs)
         
     def testFileInfo(self):
         client = pysvn.Client()
-        entry = client.info("/tmp/yofrankie/chars/frankie.blend")
+        entry = client.info("/tmp/test/file1.blend")
         print(entry.url, entry.commit_author, entry.commit_revision, entry.commit_time)
         print(entry.url, entry.revision.number, entry.revision.kind)
         
