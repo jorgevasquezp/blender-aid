@@ -93,7 +93,7 @@ function serviceAddProduction(callback, productionName, productionLocation, svnu
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/addproduction", true );
-	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+str+"\",\"production_svnurl\":\""+svnurl+"\",\"production_svnuserid\":\""+svnuser+"\",\"production_svnpassword\":\""+svnpassword+"\"}\r\n" );
+	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+str+"\",\"production_svnurl\":\""+svnurl+"\",\"production_svnusername\":\""+svnuser+"\",\"production_svnpassword\":\""+svnpassword+"\"}\r\n" );
 	return xmlDoc;
 }
 function serviceProductions(callback) {
