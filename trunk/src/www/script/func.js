@@ -88,12 +88,12 @@ function serviceDeleteProduction(callback, productionId) {
 	xmlDoc.send( "{\"production_id\":"+productionId+"}\r\n" );
 	return xmlDoc;
 }
-function serviceAddProduction(callback, productionName, productionLocation) {
+function serviceAddProduction(callback, productionName, productionLocation, svnurl, svnuser, svnpassword) {
 	str = productionLocation.replace(/\\/g, "/")
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/addproduction", true );
-	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+str+"\"}\r\n" );
+	xmlDoc.send( "{\"production_name\":\""+productionName+"\",\"production_location\":\""+str+"\",\"production_svnurl\":\""+svnurl+"\",\"production_svnuserid\":\""+svnuser+"\",\"production_svnpassword\":\""+svnpassword+"\"}\r\n" );
 	return xmlDoc;
 }
 function serviceProductions(callback) {

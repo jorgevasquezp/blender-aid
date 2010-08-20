@@ -533,13 +533,19 @@ function addProductionCallback() {
 	xmlDocProductions = serviceProductions(processProductions);
 	document.getElementById("productionname").value="";
 	document.getElementById("productionlocation").value="";
+	document.getElementById("productionsvnurl").value="";
+	document.getElementById("productionsvnuserid").value="";
+	document.getElementById("productionsvnpassword").value="";
 }
 
 function addProduction() {
 	name = document.getElementById("productionname").value;
 	plocation = document.getElementById("productionlocation").value;
+	svnurl= document.getElementById("productionsvnurl").value;
+	svnuser= document.getElementById("productionsvnuserid").value;
+	svnpassword= document.getElementById("productionsvnpassword").value;
 	if (!(name.lenght==0 || plocation.length==0))
-		xmlDocAddProduction = serviceAddProduction(addProductionCallback, name, plocation);
+		xmlDocAddProduction = serviceAddProduction(addProductionCallback, name, plocation, svnurl, svnuser, svnpassword);
 }
 function selectProduction(productionId) {
 	xmlDocActivateProduction = serviceActivateProduction(processActivateProduction, productionId)
