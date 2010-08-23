@@ -63,7 +63,7 @@ class ScenarioBasicSVN(TestCase):
             os.system("rm -Rf /tmp/test");
         svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "jbakker", "zx098zx");
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/test");
-        self.assertEqual(result, svn.SVNURLDIFF);
+        self.assertEqual(result, svn.SVNURLSAME);
         
 if __name__ =='__main__':
     unittest.main()
