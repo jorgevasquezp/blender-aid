@@ -1,5 +1,8 @@
 import unittest
 import pysvn
+import svn
+import inspect
+import os
 
 class TestCase(unittest.TestCase):
     pass
@@ -37,6 +40,30 @@ class ScenarioBasicSVN(TestCase):
         entry = client.info("/tmp/test/file1.blend")
         print(entry.url, entry.commit_author, entry.commit_revision, entry.commit_time)
         print(entry.url, entry.revision.number, entry.revision.kind)
+      
+    def testWorkingFolder(self):
+        #test path is dir
+        currentFile = inspect.currentframe().f_code.co_filename;
+        result, additional = svn.testWorkingFolder(currentFile, "http://atmind/svn/test");
+        self.assertEqual(result, svn.SVNWORKINGFOLDERISFILE);
+        #location does not exist
+        result, additional = svn.testWorkingFolder("/bladiebla", "http://atmind/svn/test");
+        self.assertEqual(result, svn.SVNNOWORKINGFOLDER);
+        #non existing url
+        result, additional = svn.testWorkingFolder("/tmp", "http://atmind2/svn/test");
+        self.assertEqual(result, svn.SVNNOBINDING);
+        #different svn, make test dir
+        if os.path.exists("/tmp/test"):
+            os.system("rm -Rf /tmp/test");
+        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "jbakker", "zx098zx");
+        result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/yofrankie");
+        self.assertEqual(result, svn.SVNURLDIFF);
+        #same svn, make test dir
+        if os.path.exists("/tmp/test"):
+            os.system("rm -Rf /tmp/test");
+        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "jbakker", "zx098zx");
+        result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/test");
+        self.assertEqual(result, svn.SVNURLDIFF);
         
 if __name__ =='__main__':
     unittest.main()
