@@ -42,7 +42,7 @@ def testWorkingFolder(location, url):
             if url==locationUrl:
                return (SVNURLSAME, "");
             else:
-                return (SVNURLDIFF, locationurl);
+                return (SVNURLDIFF, locationUrl);
         elif path.exists(location):
             return (SVNWORKINGFOLDERISFILE, "");
         else:
