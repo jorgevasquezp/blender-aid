@@ -40,15 +40,15 @@ def testWorkingFolder(location, url):
         if path.isdir(location):
             locationUrl = client.info(location).url;
             if url==locationUrl:
-               return (SVNURLSAME);
+               return (SVNURLSAME, "");
             else:
                 return (SVNURLDIFF, locationurl);
         elif path.exists(location):
-            return (SVNWORKINGFOLDERISFILE);
+            return (SVNWORKINGFOLDERISFILE, "");
         else:
-            return (SVNNOWORKINGFOLDER);
+            return (SVNNOWORKINGFOLDER, "");
     except pysvn.ClientError, e:
-        return (SVNNOBINDING);
+        return (SVNNOBINDING, "");
     
 def login( realm, username, may_save ):
     return True, svnUsername, svnPassword, False
