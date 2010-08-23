@@ -53,6 +53,10 @@ def testWorkingFolder(location, url):
 def login( realm, username, may_save ):
     return True, svnUsername, svnPassword, False
 
+def notify( event ):
+    print(event["action"], event["path"])
+    return
+
 def svnCheckout(location, url, uname, password):
     svnUsername = uname;
     svnPassword = password;
