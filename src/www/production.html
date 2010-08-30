@@ -15,6 +15,7 @@
 	<li><img src="images/unknownfile.png"><a id="linkFiles" >Files</a></li>
 	<li><img src="images/filter.png"></img><a id="linkScenes">Scenes</a></li>
 	<li><img src="images/missing.png"><a id="linkMissing" >Missing links</a></li>
+	<li><img src="images/unknownfile.png"><a id="linkState" >SVN state</a></li>
 </ul>
 </div>
 
@@ -30,6 +31,11 @@
 <div id="tabFiles" class="tab2">
 <label>filter:</label><input id="filterFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>
 <table id="files"></table>
+</div>
+
+<div id="tabState" class="tab2">
+<!--<label>filter:</label><input id="filterFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>-->
+<table id="svnstates"></table>
 </div>
 
 <div id="tabScenes" class="tab2">
@@ -217,6 +223,7 @@ initTab(tab, "tab")
 tab.addTab("linkFiles", "tabFiles", "showProductionView")
 tab.addTab("linkMissing", "tabMissing", "showProductionView")
 tab.addTab("linkScenes", "tabScenes", "showProductionView")
+tab.addTab("linkState", "tabState", "showProductionView")
 tab.update()
 
 function applyMissingFilter() {
@@ -281,6 +288,15 @@ tableFiles.addColumn("svnrevision", "SVN state", "file_svn_state", true);
 tableFiles.pageitems=20;
 tableFiles.filter=filter;
 tableFiles.update();
+
+tableSvn = document.getElementById("svnstates")
+initTable(tableSvn, "svnstates");
+tableSvn.setCaption("SVN states");
+tableSvn.addColumn("location", "location", "file_location", true);
+tableSvn.addColumn("state", "state", "svn_state", true);
+tableSvn.pageitems=20;
+tableSvn.update();
+
 
 tableErrors = document.getElementById("errors");
 initTable(tableErrors, "tableErrors");
@@ -362,6 +378,7 @@ function process() {
 	files = result[1]
 	scenes = result[2]
 	missing = result[3]
+	states = result[4]
 	fillSpan("spanProductionName", production.production_name);
 	fillSpan("spanProductionLocation", production.production_location);
 
@@ -373,6 +390,10 @@ function process() {
 
 	tableErrors.setItems(missing);
 	tableErrors.update();
+
+	tableSvn.setItems(states);
+	tableSvn.update();
+
 }
 
 function sizeDom(item, column, td) {

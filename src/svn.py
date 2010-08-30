@@ -64,3 +64,10 @@ def svnCheckout(location, url, uname, password):
     client.callback_notify = notify;
     client.callback_get_login = login;
     client.checkout(url, location);
+    
+def svnStat(location):
+    client = pysvn.Client()
+    status_list = client.status(location, True, True, False, False, False)
+    return status_list
+        
+        

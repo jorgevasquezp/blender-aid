@@ -183,3 +183,13 @@ def solutionIDToObject(solution) :
     obj["file_location"] = solution[indexer.INDEX_ELEMENT_NAME]
     obj["match"] = 1.0
     return obj
+
+def svnStatToObject(states):
+    result = []
+    for stat in states:
+        obj={}
+        obj["file_location"]=stat.entry.name
+        obj["svn_state"]=str(stat.prop_status)
+        result.append(obj)
+    return result
+        

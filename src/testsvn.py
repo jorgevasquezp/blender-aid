@@ -65,5 +65,12 @@ class ScenarioBasicSVN(TestCase):
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/test");
         self.assertEqual(result, svn.SVNURLSAME);
         
+    def testSvnStat(location):
+        client = pysvn.Client();
+        location="/tmp/test"
+        status_list = client.status(location, True, True, False, False, False);
+        for stat in status_list:
+            print(stat.entry.name, stat.prop_status)
+                
 if __name__ =='__main__':
     unittest.main()
