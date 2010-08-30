@@ -32,6 +32,9 @@ def fileToObject(file):
     result["file_location"]=file[3]
     result["file_timestamp"]=file[4]*1000
     result["file_size"]=file[5]
+    result["file_svn_revision"]="test"
+    result["file_svn_user"]="test2"
+    result["file_svn_state"]="test3"
     return result
 
 def scenesToObject(scenes):

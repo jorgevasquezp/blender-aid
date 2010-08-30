@@ -181,12 +181,12 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
         if newId == None:
             newId=0;
     
-        connection.execute("insert into file values (?,?,?,?,?,?,?)", 
+        connection.execute("insert into file values (?,?,?,?,?,?,?,?,?)", 
             [newId, 
             productionId, 
             os.path.basename(file), 
             _relpath(file, productionDir), 
-            int(os.path.getmtime(file)), int(os.path.getsize(file)), None])
+            int(os.path.getmtime(file)), int(os.path.getsize(file)), None, None, None])
     else:
         newId=useFileId
         connection.execute("update file set lastupdate=?, length=? where id=?", [int(os.path.getmtime(file)), int(os.path.getsize(file)), newId])        
@@ -735,7 +735,9 @@ def setup():
         location text,
         lastupdate bigint,
         length bigint, 
-        metatags text
+        revision text,
+        user text,
+        state text
     )""")
     connection.execute("""create table if not exists element (
         id int primary key,
