@@ -65,11 +65,16 @@ def handleGetProductionView(wfile, request, session):
         scenes = indexer.getAllScenes(productionId)
         errors = indexer.getConsistencyErrors(productionId)
         states = svn.svnStat(production[2])
+        temp = {}
+        for stat in states:
+            temp[stat.entry.name] = stat.prop_status
+        for file in files:
+            file[8] = temp[file[2]];
         result.append(productionToObject(production))
         result.append(filesToObject(files))
         result.append(scenesToObject(scenes))
         result.append(errorsToObject(errors))
-        result.append(svnStatToObject(states))
+       # result.append(svnStatToObject(states))
     wfile.write(json.dumps(result).encode())
     
 def handleGetFileView(wfile, request, session):
