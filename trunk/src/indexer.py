@@ -181,7 +181,7 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
         if newId == None:
             newId=0;
     
-        connection.execute("insert into file values (?,?,?,?,?,?,?,?,?)", 
+        connection.execute("insert into file values (?,?,?,?,?,?)", 
             [newId, 
             productionId, 
             os.path.basename(file), 
@@ -517,7 +517,7 @@ def getElement(elementId):
 
 def getProductionFiles(productionId):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = """select * from file where production_id=? order by location"""
+    query = """select *, '', '', '' from file where production_id=? order by location"""
     result = connection.execute(query, [productionId]).fetchall();
     connection.close()
     return result
@@ -734,10 +734,7 @@ def setup():
         name text,
         location text,
         lastupdate bigint,
-        length bigint, 
-        revision text,
-        user text,
-        state text
+        length bigint
     )""")
     connection.execute("""create table if not exists element (
         id int primary key,
