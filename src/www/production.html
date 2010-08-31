@@ -292,8 +292,9 @@ tableFiles.update();
 tableSvn = document.getElementById("svnstates")
 initTable(tableSvn, "svnstates");
 tableSvn.setCaption("SVN states");
-tableSvn.addColumn("location", "location", "file_location", true);
-tableSvn.addColumn("state", "state", "svn_state", true);
+tableSvn.addColumn("icon", "", "file_location", true, false, fileIconFactory);
+tableSvn.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
+tableSvn.addColumn("state", "state", "file_svn_state", true);
 tableSvn.pageitems=20;
 tableSvn.update();
 
@@ -391,7 +392,7 @@ function process() {
 	tableErrors.setItems(missing);
 	tableErrors.update();
 
-	tableSvn.setItems(states);
+	tableSvn.setItems(files);
 	tableSvn.update();
 
 }

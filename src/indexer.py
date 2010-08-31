@@ -186,7 +186,7 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
             productionId, 
             os.path.basename(file), 
             _relpath(file, productionDir), 
-            int(os.path.getmtime(file)), int(os.path.getsize(file)), None, None, None])
+            int(os.path.getmtime(file)), int(os.path.getsize(file))])
     else:
         newId=useFileId
         connection.execute("update file set lastupdate=?, length=? where id=?", [int(os.path.getmtime(file)), int(os.path.getsize(file)), newId])        

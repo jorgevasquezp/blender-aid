@@ -36,6 +36,28 @@ def fileToObject(file):
     result["file_svn_user"]=file[7]
     result["file_svn_state"]=file[8]
     return result
+def files2ToObject(files):
+    """This method will convert a list of file records to a list of file object
+    the result will be an array
+    """
+    result = []
+    for file in files:
+        result.append(file2ToObject(file))
+    return result
+
+def file2ToObject(file):
+    """This method will convert a file record to a file object
+    """
+    result = {}
+    result["file_id"]=file[0][0]
+    result["file_name"]=file[0][2]
+    result["file_location"]=file[0][3]
+    result["file_timestamp"]=file[0][4]*1000
+    result["file_size"]=file[0][5]
+    result["file_svn_revision"]=file[1][0]
+    result["file_svn_user"]=file[1][1]
+    result["file_svn_state"]=file[1][2]
+    return result
 
 def scenesToObject(scenes):
     """This method will convert a list of file records to a list of file object
@@ -183,13 +205,3 @@ def solutionIDToObject(solution) :
     obj["file_location"] = solution[indexer.INDEX_ELEMENT_NAME]
     obj["match"] = 1.0
     return obj
-
-def svnStatToObject(states):
-    result = []
-    for stat in states:
-        obj={}
-        obj["file_location"]=stat.entry.name
-        obj["svn_state"]=str(stat.prop_status)
-        result.append(obj)
-    return result
-        
