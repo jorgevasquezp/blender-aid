@@ -294,8 +294,11 @@ initTable(tableSvn, "svnstates");
 tableSvn.setCaption("SVN states");
 tableSvn.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableSvn.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
-tableSvn.addColumn("state", "state", "file_svn_state", true);
+tableSvn.addColumn("svnrevision", "SVN revision", "file_svn_revision", true);
+tableSvn.addColumn("svnrevision", "SVN user", "file_svn_user", true);
+tableSvn.addColumn("svnrevision", "SVN state", "file_svn_state", true);
 tableSvn.pageitems=20;
+tableSvn.filter=filterSvn;
 tableSvn.update();
 
 
@@ -404,6 +407,16 @@ function sizeDom(item, column, td) {
 function filterupdated() {
 	tableScenes.needsupdate=true;
 	tableScenes.update();
+}
+function filterSvn(items) {
+	result = []
+	for (i=0;i <items.length;i++) {
+		item = items[i];
+		if (item.file_svn_state!="normal") {
+			result[result.length]=item;
+		}
+	}
+	return result;
 }
 
 function filterScenes(items) {

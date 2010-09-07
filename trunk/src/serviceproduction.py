@@ -24,6 +24,7 @@
 ######################################################
 import indexer
 import svn
+import pysvn
 import os.path as path
 from factory import *
 from datetime import datetime
@@ -64,7 +65,10 @@ def handleGetProductionView(wfile, request, session):
         files = indexer.getProductionFiles(productionId)
         scenes = indexer.getAllScenes(productionId)
         errors = indexer.getConsistencyErrors(productionId)
-        states = svn.svnStat(production[2])
+        try:
+            states = svn.svnStat(production[2])
+        except pysvn.ClientError, e:
+            states=[]
         temp = {}
         assignedFiles=[]
         for stat in states:
@@ -78,7 +82,7 @@ def handleGetProductionView(wfile, request, session):
                 ass =[file, temp[abspath]]
             else:
                 ass =[file, ["","","unknown"]]
-            assignedFiles.append(ass)
+            assignedFiles.append(ass)   
         result.append(productionToObject(production))
         result.append(files2ToObject(assignedFiles))
         result.append(scenesToObject(scenes))
