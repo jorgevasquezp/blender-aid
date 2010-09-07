@@ -73,9 +73,9 @@ def handleGetProductionView(wfile, request, session):
         assignedFiles=[]
         for stat in states:
             if stat.entry is None:
-                temp[stat.path] = [None,None,str(stat.prop_status)]
+                temp[stat.path] = [None,None,str(stat.text_status)]
             else:
-                temp[stat.path] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.prop_status)]
+                temp[stat.path] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.text_status)]
         for file in files:
             abspath = path.join(production[2], file[3])
             if abspath in temp:
