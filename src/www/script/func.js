@@ -357,4 +357,20 @@ function solveLinkFactory(item, column, td) {
  	return atag;
 }
 
+function svnActionsFactory(item, column, td) {
+	if (item.file_svn_state=="unknown") {
+		atag = document.createElement("a");
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:startSvnAdd("+item.file_id+");return false;");
+		atag.appendChild(document.createTextNode("Add"))
+		return atag;
+	} else if (item.file_svn_state=="modified") {
+		atag = document.createElement("a");
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:startSvnRevert("+item.file_id+");return false;");
+		atag.appendChild(document.createTextNode("Revert"))
+		return atag;
+	}
+	return document.createTextNode("");
+}
 
