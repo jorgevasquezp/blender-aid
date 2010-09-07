@@ -297,6 +297,8 @@ tableSvn.addColumn("location", "location", "file_location", true, null, linkFact
 tableSvn.addColumn("svnrevision", "SVN revision", "file_svn_revision", true);
 tableSvn.addColumn("svnrevision", "SVN user", "file_svn_user", true);
 tableSvn.addColumn("svnrevision", "SVN state", "file_svn_state", true);
+tableSvn.addColumn("action", "actions", "file_id", true, false, svnActionsFactory);
+
 tableSvn.pageitems=20;
 tableSvn.filter=filterSvn;
 tableSvn.update();
