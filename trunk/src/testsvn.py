@@ -8,7 +8,7 @@ class TestCase(unittest.TestCase):
     pass
 
 def testLogin( realm, username, may_save ):
-    return True, "jbakker", "zx098zx", False
+    return True, "test", "test", False
 
 def notify( event ):
     print(event["action"], event["path"])
@@ -55,13 +55,13 @@ class ScenarioBasicSVN(TestCase):
         #different svn, make test dir
         if os.path.exists("/tmp/test"):
             os.system("rm -Rf /tmp/test");
-        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "jbakker", "zx098zx");
+        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "test", "test");
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/yofrankie");
         self.assertEqual(result, svn.SVNURLDIFF);
         #same svn, make test dir
         if os.path.exists("/tmp/test"):
             os.system("rm -Rf /tmp/test");
-        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "jbakker", "zx098zx");
+        svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "test", "test");
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/test");
         self.assertEqual(result, svn.SVNURLSAME);
         
@@ -71,6 +71,17 @@ class ScenarioBasicSVN(TestCase):
         status_list = client.status(location, True, True, False, False, False);
         for stat in status_list:
             print(stat.entry.name, stat.prop_status)
-                
+             
+        
+    def testSvnAdd(path):
+        client = pysvn.Client();
+        location="/tmp/test"
+        #TODO
+    
+    def testSvnRevert(location):
+        client = pysvn.Client();
+        location="/tmp/test"
+        #TODO
+        
 if __name__ =='__main__':
     unittest.main()

@@ -81,7 +81,7 @@ def handleGetProductionView(wfile, request, session):
             if abspath in temp:
                 ass =[file, temp[abspath]]
             else:
-                ass =[file, ["","","unknown"]]
+                ass =[file, ["","","unversioned"]]
             assignedFiles.append(ass)   
         result.append(productionToObject(production))
         result.append(files2ToObject(assignedFiles))
@@ -157,3 +157,29 @@ def handleAdd(wfile, request, session):
         elif result in [svn.SVNWORKINGFOLDERISFILE]:
             #error, user entry
             wfile.write("[\"error\":\"Working folder is a file\"]\r\n".encode());
+
+def handleSvnAdd(wfile, request, session):
+    file_id = request["file_id"]
+    result = indexer.getFile(file_id)
+    production_id = result[1]
+    file_name = result[2]
+    rel_file_path = result[3]
+    production_result = indexer.getProduction(production_id)
+    production_path = production_result[2]
+    location_part = os.path.join(production_path, rel_file_path)
+    location = os.path.join(location_part, file_name)
+    svn.svnAdd(location)
+    return
+
+def handleSvnRevert(wfile, request, session):
+    file = request["file_id"]
+    result = indexer.getFile(file_id)
+    production_id = result[1]
+    file_name = result[2]
+    rel_file_path = result[3]
+    production_result = indexer.getProduction(production_id)
+    production_path = production_result[2]
+    location_part = os.path.join(production_path, rel_file_path)
+    location = os.path.join(location_part, file_name)
+    svn.svnRevert(location)
+    return

@@ -358,19 +358,36 @@ function solveLinkFactory(item, column, td) {
 }
 
 function svnActionsFactory(item, column, td) {
-	if (item.file_svn_state=="unknown") {
+	if (item.file_svn_state=="unversioned") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		atag.setAttribute("onclick", "javascript:startSvnAdd("+item.file_id+");return false;");
+		atag.setAttribute("onclick", "javascript:startSvnAdd(processActivateProduction,"+item.file_id+");return false;");
 		atag.appendChild(document.createTextNode("Add"))
 		return atag;
 	} else if (item.file_svn_state=="modified") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		atag.setAttribute("onclick", "javascript:startSvnRevert("+item.file_id+");return false;");
+		atag.setAttribute("onclick", "javascript:startSvnRevert(processActivateProduction,"+item.file_id+");return false;");
 		atag.appendChild(document.createTextNode("Revert"))
 		return atag;
 	}
 	return document.createTextNode("");
 }
+
+function startSvnAdd(callback, file_id){
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/svnadd", true );
+	xmlDoc.send( "{"\"file_id\":"+file_Id +"}\r\n" );
+	return xmlDoc;
+	}
+	
+functiom startSvnRevert(callback, file_id) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/svnrevert", true );
+	xmlDoc.send( "{"\"file_id\":"+file_Id +"}\r\n" );
+	return xmlDoc;
+	}
+
 
