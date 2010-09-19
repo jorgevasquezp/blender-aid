@@ -171,14 +171,12 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             log.debug(servicename)
             if servicename=="/service/metafromproductionfiles":
                 servicescenes.handleGetAll(self.wfile, req, session)
-
             elif servicename=="/service/productions":
                 serviceproduction.handleGetAll(self.wfile, req, session)
             elif servicename=="/service/deleteproduction":
                 serviceproduction.handleDelete(self.wfile, req, session)
             elif servicename=="/service/addproduction":
                 serviceproduction.handleAdd(self.wfile, req, session)
-
             elif servicename=="/service/activateproduction":
                 serviceproduction.handleActivateProduction(self.wfile, req, session)
             elif servicename=="/service/productionview":
@@ -201,11 +199,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 servicerefactor.handleCommitCurrentTasks(self.wfile, req, session)
             elif servicename=="/service/rollbacktasks":
                 servicerefactor.handleRollbackCurrentTasks(self.wfile, req, session)
-                
             elif servicename=="/service/missinglinksolutions":
                 servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
             elif servicename=="/service/solvemissinglink":
                 servicerefactor.handleStartSolveMissingLink(self.wfile, req, session)
+            elif servicename=="/service/svnadd":
+                serviceproduction.handleSvnAdd(self.wfile, req, session)
+            elif servicename=="/service/svnrevert":
+                serviceproduction.handleSvnRevert(self.wfile, req, session)
 
         except sqlite3.Error:
             traceback.print_exc()

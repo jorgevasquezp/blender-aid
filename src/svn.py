@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2009, At Mind B.V. - Jeroen Bakker
+# (c) 2009, At Mind B.V. - M.Dewanchand, Jeroen Bakker
 
 
 ######################################################
@@ -69,5 +69,15 @@ def svnStat(location):
     client = pysvn.Client()
     status_list = client.status(location, True, True, False, False, False)
     return status_list
-        
+
+def svnAdd(path):
+    client = pysvn.Client()
+    client.add(path);
+    return
+
+def svnRevert(path):
+    client = pysvn.Client()
+    client.revert(path);
+    return
+    
         
