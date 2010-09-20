@@ -378,15 +378,15 @@ function startSvnAdd(callback, file_id){
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnadd", true );
-	xmlDoc.send( "{"\"file_id\":"+file_Id +"}\r\n" );
+	xmlDoc.send( "{\"file_id\":"+file_Id +"}\r\n" );
 	return xmlDoc;
 	}
 	
-functiom startSvnRevert(callback, file_id) {
+function startSvnRevert(callback, file_id) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnrevert", true );
-	xmlDoc.send( "{"\"file_id\":"+file_Id +"}\r\n" );
+	xmlDoc.send( "{\"file_id\":"+file_Id +"}\r\n" );
 	return xmlDoc;
 	}
 
