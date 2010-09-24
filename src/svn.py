@@ -79,5 +79,19 @@ def svnRevert(path):
     client = pysvn.Client()
     client.revert(path);
     return
-    
-        
+
+# Is the given absolute filepath a known SVN file.
+#   returns True is the file is known by svn
+#   returns False if the file is not known by svn.
+def isKnownSVNFile(filepath):
+    client = pysvn.Client()
+    try:
+        info = client.info(filepath);
+        return True
+    except pysvn.ClientError, e:
+        return False
+
+# action to move a svn file to another location (rename or move)
+def move(fileLocation, newFileLocation):
+    client = pysvn.Client()
+    client.move(fileLocation, newFileLocation)

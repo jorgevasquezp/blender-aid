@@ -29,6 +29,7 @@ import shutil
 import os
 import posixpath
 import blendfile
+import svn
 
 log = logging.getLogger("refactor")
 log.setLevel(logging.INFO)
@@ -619,7 +620,10 @@ class RenameFile(Task):
         newFileLocation = os.path.join(os.path.dirname(fileLocation),self.newFilename)
         fileLocation = os.path.join(productionLocation, fileLocation)
         newFileLocation = os.path.join(productionLocation, newFileLocation)
-        shutil.move(fileLocation, newFileLocation)
+        if svn.isKnownSVNFile(fileLocation):
+            svn.move(fileLocation, newFileLocation)
+        else:
+            shutil.move(fileLocation, newFileLocation)
 
     def rollback(self):
         productionLocation = self.productionDetails[2]
