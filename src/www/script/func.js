@@ -133,7 +133,13 @@ function serviceDependancies(callback, navigation, view, filter, display, fileId
 	return xmlDoc;
 }
 
-
+function serviceStartSvnUpdate(callback, productionId) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/svnupdate", true );
+	xmlDoc.send( "{\"production_id\":"+productionId+"}\r\n" );
+	return xmlDoc;
+}
 function booleanFactory(item, column, td) {
 	value = eval("item."+column[2])
 	if (value == 1) {

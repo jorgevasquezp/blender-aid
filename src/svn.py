@@ -100,3 +100,13 @@ def isKnownSVNFile(filepath):
 def move(fileLocation, newFileLocation):
     client = pysvn.Client()
     client.move(fileLocation, newFileLocation)
+
+def svnUpdate(location, username, password):
+    global _svnUsername
+    global _svnPassword
+    _svnUsername = username;
+    _svnPassword = password;
+    client = pysvn.Client();
+    client.callback_notify = notify;
+    client.callback_get_login = login;
+    client.update(location);
