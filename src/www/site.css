@@ -138,6 +138,15 @@ ul {
 a img {
 	border:none;
 }
+
+ul.oneline-list {
+	display: block;
+	float: none;
+}
+ul.oneline-list li{
+	float: left;
+	display: inline;
+}
 /* tab-control header */
 ul.tabs-header {
 	margin-top:-52px;

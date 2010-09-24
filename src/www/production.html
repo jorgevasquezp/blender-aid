@@ -34,8 +34,18 @@
 </div>
 
 <div id="tabState" class="tab2">
-<!--<label>filter:</label><input id="filterFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>-->
+<div>
+<label>filter:</label><input id="filterSvn" onchange="javascript:applySvnFilter()" onkeyup="javascript:applySvnFilter()" type="text"></input>
+<ul class="oneline-list">
+<li> <input id="svnFilternormal" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Normal</li>
+<li> <input id="svnFilteradded" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Added </li>
+<li> <input id="svnFiltermodified" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Modified </li>
+<li> <input id="svnFilterdeleted" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Deleted </li>
+<li> <input id="svnFiltermissing" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Missing </li>
+</ul>
+</div> <br/><br/><div>
 <table id="svnstates"></table>
+</div>
 </div>
 
 <div id="tabScenes" class="tab2">
@@ -251,6 +261,12 @@ function applyFilesFilter() {
 	tableFiles.needsupdate=true;
 	tableFiles.update();
 }
+
+function applySvnFilter() {
+	tableSvn.needsupdate=true;
+	tableSvn.update();
+}
+
 function filter(items) {
 	f1 = document.getElementById("filterFile").value;
 	if (f1.length==0) {
@@ -282,9 +298,6 @@ tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableFiles.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
 tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
 tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
-tableFiles.addColumn("svnrevision", "SVN revision", "file_svn_revision", true, null, svnRevisionFactory);
-tableFiles.addColumn("svnrevision", "SVN user", "file_svn_user", true);
-tableFiles.addColumn("svnrevision", "SVN state", "file_svn_state", true);
 tableFiles.pageitems=20;
 tableFiles.filter=filter;
 tableFiles.update();
@@ -384,7 +397,6 @@ function process() {
 	files = result[1]
 	scenes = result[2]
 	missing = result[3]
-	states = result[4]
 	fillSpan("spanProductionName", production.production_name);
 	fillSpan("spanProductionLocation", production.production_location);
 
@@ -412,10 +424,15 @@ function filterupdated() {
 }
 function filterSvn(items) {
 	result = []
+	filenameFilter = document.getElementById("filterSvn").value;
 	for (i=0;i <items.length;i++) {
 		item = items[i];
-		if (item.file_svn_state!="normal") {
-			result[result.length]=item;
+		if (filenameFilter.length==0 || item.file_location.indexOf(filenameFilter)>-1) {
+			state = item.file_svn_state
+			checkbox = document.getElementById("svnFilter"+state);
+			if (checkbox==null || checkbox.checked) {
+				result[result.length]=item;
+			}
 		}
 	}
 	return result;
