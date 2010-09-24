@@ -3,6 +3,8 @@ import pysvn
 import svn
 import inspect
 import os
+import subprocess
+import time
 
 class TestCase(unittest.TestCase):
     pass
@@ -54,13 +56,13 @@ class ScenarioBasicSVN(TestCase):
         self.assertEqual(result, svn.SVNNOBINDING);
         #different svn, make test dir
         if os.path.exists("/tmp/test"):
-            os.system("rm -Rf /tmp/test");
+            retcode = subprocess.call(["rm", "-Rf", "/tmp/test"]);
         svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "test", "test");
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/yofrankie");
         self.assertEqual(result, svn.SVNURLDIFF);
         #same svn, make test dir
         if os.path.exists("/tmp/test"):
-            os.system("rm -Rf /tmp/test");
+            retcode = subprocess.call(["rm", "-Rf", "/tmp/test"]);
         svn.svnCheckout("/tmp/test", "http://atmind/svn/test", "test", "test");
         result, additional = svn.testWorkingFolder("/tmp/test", "http://atmind/svn/test");
         self.assertEqual(result, svn.SVNURLSAME);
