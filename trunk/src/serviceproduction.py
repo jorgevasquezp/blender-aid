@@ -182,14 +182,12 @@ def handleSvnRevert(wfile, request, session):
     file_id = request["file_id"]
     revertAll = request["revert_all"]
     production = request["production_id"]
+    production_result = indexer.getProduction(production)
+    production_path = production_result[2]
     if file_id==None and revertAll and production!=None:
-        production_result = indexer.getProduction(production)
-        production_path = production_result[2]
         svn.svnRevert(production_path)
     elif file_id!=None and not revertAll:
         result = indexer.getFile(file_id)
-        production_id = result[1]
-        file_name = result[2]
         rel_file_path = result[3]
         location = path.join(production_path, rel_file_path)
         svn.svnRevert(location)
