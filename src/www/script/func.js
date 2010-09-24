@@ -391,3 +391,10 @@ function startSvnRevert(callback, file_id) {
 	}
 
 
+function svnRevisionFactory(item, column, td) {
+	if (item.file_svn_revision == null || item.file_svn_revision=="-1") {
+		return document.createTextNode("");
+	} else {
+		return document.createTextNode(""+item.file_svn_revision);
+	}
+}
