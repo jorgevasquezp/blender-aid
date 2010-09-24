@@ -30,8 +30,8 @@ SVNNOWORKINGFOLDER = 2      #location does not exists
 SVNNOBINDING = 3            #location exists but is not under svn-control
 SVNWORKINGFOLDERISFILE = 4  #location is a file
 
-svnUsername = "";
-svnPassword = "";
+_svnUsername = "";
+_svnPassword = "";
 
  #TODO test url with file: 
 def testWorkingFolder(location, url):
@@ -51,15 +51,20 @@ def testWorkingFolder(location, url):
         return (SVNNOBINDING, "");
     
 def login( realm, username, may_save ):
-    return True, svnUsername, svnPassword, False
+    global _svnUsername
+    global _svnPassword
+    return True, _svnUsername, _svnPassword, False
 
 def notify( event ):
     print(event["action"], event["path"])
     return
 
 def svnCheckout(location, url, uname, password):
-    svnUsername = uname;
-    svnPassword = password;
+    global _svnUsername
+    global _svnPassword
+    _svnUsername = uname;
+    _svnPassword = password;
+
     client = pysvn.Client();
     client.callback_notify = notify;
     client.callback_get_login = login;
