@@ -24,6 +24,7 @@
 ######################################################
 import pysvn
 import os.path as path
+
 SVNURLSAME = 0              #location exists with same svn url
 SVNURLDIFF = 1              #location exists with different svn url
 SVNNOWORKINGFOLDER = 2      #location does not exists
@@ -75,14 +76,25 @@ def svnStat(location):
     status_list = client.status(location, True, True, False, False, False)
     return status_list
 
-def svnAdd(path):
+def svnAdd(location, all=False):
     client = pysvn.Client()
-    client.add(path);
+    dirname, fname = path.split(location)
+    svnAdds = [location]    
+    while dirname!=null :
+        if isKnownSVNFile(dirname):
+            if all:
+                client.add(svnAdds.pop())
+            else:
+                svnAdds.reverse()
+                client.add(svnAdds, recurse=false);
+            return
+        svnAdds.append(dirname)
+        dirname, fname = path.split(dirname)
     return
 
-def svnRevert(path):
+def svnRevert(location, all=False):
     client = pysvn.Client()
-    client.revert(path);
+    client.revert(location, all);
     return
 
 # Is the given absolute filepath a known SVN file.
