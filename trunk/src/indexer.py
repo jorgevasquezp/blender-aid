@@ -462,10 +462,10 @@ def getAllProductions():
     connection.close()
     return result
 
-def insertProduction(productionName, productionLocation):
+def insertProduction(productionName, productionLocation, svnurl=None, svnusername=None, svnpassword=None):
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
-    query = """insert into production values (null, ?, ?, 0, null, null, null)"""
-    result = connection.execute(query, [productionName, productionLocation]);
+    query = """insert into production values (null, ?, ?, 0, ?, ?, ?)"""
+    result = connection.execute(query, [productionName, productionLocation, svnurl, svnusername, svnpassword]);
     connection.commit();
     connection.close()
 

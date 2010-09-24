@@ -41,6 +41,14 @@ def handleGetAll(wfile, request, session):
     for production in productions:
         list.append(productionToObject(production))
     wfile.write(json.dumps(list).encode())
+
+def handleSvnUpdate(wfile, request, session):
+    """Service to retrieve a list of all available productions
+    """
+    productionId = request["production_id"]
+    production = indexer.getProduction(productionId)
+    svn.svnUpdate(production[2], production[5], production[6])
+    wfile.write(json.dumps([]).encode())
     
 def handleActivateProduction(wfile, request, session):
     productionId = request["production_id"]
@@ -144,11 +152,11 @@ def handleAdd(wfile, request, session):
         if result in [svn.SVNNOBINDING, svn.SVNNOWORKINGFOLDER]:
             #ok, checkout needed do checkout
             svn.svnCheckout(productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
-            indexer.insertProduction(productionName, productionLocation);
+            indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
             wfile.write("[]\r\n".encode());
         elif result in [svn.SVNURLSAME]:
             #ok, do nothing
-            indexer.insertProduction(productionName, productionLocation);
+            indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
             wfile.write("[]\r\n".encode());
         elif result in [svn.SVNURLDIFF]:
             #error, user entry

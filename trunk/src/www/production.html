@@ -37,15 +37,19 @@
 <div>
 <label>filter:</label><input id="filterSvn" onchange="javascript:applySvnFilter()" onkeyup="javascript:applySvnFilter()" type="text"></input>
 <ul class="oneline-list">
-<li> <input id="svnFilternormal" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Normal</li>
+<li> <input id="svnFilternormal" onchange="javascript:applySvnFilter()" type="checkbox" checked="0">Normal</li>
 <li> <input id="svnFilteradded" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Added </li>
 <li> <input id="svnFiltermodified" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Modified </li>
 <li> <input id="svnFilterdeleted" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Deleted </li>
+<li> <input id="svnFilterunversioned" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Unversioned </li>
 <li> <input id="svnFiltermissing" onchange="javascript:applySvnFilter()" type="checkbox" checked="1">Missing </li>
 </ul>
 </div> <br/><br/><div>
 <table id="svnstates"></table>
 </div>
+	<a href="#" onclick="javascript:startSvnUpdate();">Update production</a>
+	<a href="#">Revert all</a>
+	<a href="#">Commit</a>
 </div>
 
 <div id="tabScenes" class="tab2">
@@ -307,9 +311,9 @@ initTable(tableSvn, "svnstates");
 tableSvn.setCaption("SVN states");
 tableSvn.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableSvn.addColumn("location", "location", "file_location", true, null, linkFactoryFile);
-tableSvn.addColumn("svnrevision", "SVN revision", "file_svn_revision", true, null, svnRevisionFactory);
-tableSvn.addColumn("svnrevision", "SVN user", "file_svn_user", true);
-tableSvn.addColumn("svnrevision", "SVN state", "file_svn_state", true);
+tableSvn.addColumn("svnrevision", "state", "file_svn_state", true);
+tableSvn.addColumn("svnrevision", "committer", "file_svn_user", true);
+tableSvn.addColumn("svnrevision", "revision", "file_svn_revision", true, null, svnRevisionFactory);
 tableSvn.addColumn("action", "actions", "file_id", true, false, svnActionsFactory);
 
 tableSvn.pageitems=20;
@@ -962,6 +966,15 @@ function startSolveMissingLink(fileId) {
 	document.getElementById("missingLayer").setAttribute("style", "display:none;")
 	xmlRef = serviceStartSolveMissingLink(refactorCallback, selectedProductionId, selectedElementId, fileId);
 	
+}
+
+var xmlSvnUp;
+function startSvnUpdate() {
+	xmlSvnUp = serviceStartSvnUpdate(svnUpdateCallback, selectedProductionId);
+}
+function svnUpdateCallback() {
+	if ( xmlSvnUp .readyState != 4 ) return ;
+	alert("must refresh screen");
 }
 </script>
  </body></html>
