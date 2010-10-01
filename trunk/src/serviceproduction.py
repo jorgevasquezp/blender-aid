@@ -192,15 +192,20 @@ def handleSvnAdd(wfile, request, session):
 
 def handleSvnRevert(wfile, request, session):
     file_id = request["file_id"]
+    file_path = request["file_location"]
     revertAll = request["revert_all"]
     production_id = request["production_id"]
     production_result = indexer.getProduction(production_id)
     production_path = production_result[2]
-    if file_id==None and revertAll:
+    if file_id==None and file_path==None and revertAll:
         svn.svnRevert(production_path, revertAll)
     elif file_id!=None and not revertAll:
         result = indexer.getFile(file_id)
         rel_file_path = result[3]
+        location = path.join(production_path, rel_file_path)
+        svn.svnRevert(location)
+    elif file_path!=None and not revertAll:
+        rel_file_path = file_path
         location = path.join(production_path, rel_file_path)
         svn.svnRevert(location)
     wfile.write("[]\r\n".encode());
