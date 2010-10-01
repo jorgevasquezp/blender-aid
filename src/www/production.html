@@ -232,13 +232,13 @@ Add new production
 </p>
 </div></div>
 <script>
-tab = document.getElementById("tabs-header")
-initTab(tab, "tab")
-tab.addTab("linkFiles", "tabFiles", "showProductionView")
-tab.addTab("linkMissing", "tabMissing", "showProductionView")
-tab.addTab("linkScenes", "tabScenes", "showProductionView")
-tab.addTab("linkState", "tabState", "showProductionView")
-tab.update()
+maintab = document.getElementById("tabs-header")
+initTab(maintab, "tab")
+maintab.addTab("linkFiles", "tabFiles", "showProductionView")
+maintab.addTab("linkMissing", "tabMissing", "showProductionView")
+maintab.addTab("linkScenes", "tabScenes", "showProductionView")
+maintab.addTab("linkState", "tabState", "showProductionView")
+maintab.update()
 
 function applyMissingFilter() {
 	tableErrors.needsupdate=true;
@@ -413,9 +413,14 @@ function process() {
 	tableErrors.setItems(missing);
 	tableErrors.update();
 
-	tableSvn.setItems(files);
-	tableSvn.update();
-
+	if (production.production_svnurl != null) {
+		tableSvn.setItems(files);
+		tableSvn.update();
+		maintab.showTabLink("linkState");
+	} else {
+		maintab.hideTabLink("linkState");
+		showTab(document.getElementById('linkFiles'), 'tabs-header', 'tabFiles');
+	}
 }
 
 function sizeDom(item, column, td) {
@@ -569,6 +574,7 @@ function processProductions() {
 	clearChilderen(productionsUl);
 
 	for (i=0;i<productions.length;i++) {
+		item = productions[i]
 		item = productions[i]
 		li = createLink(item)
 		productionsUl.appendChild(li)
