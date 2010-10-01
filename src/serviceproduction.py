@@ -93,7 +93,6 @@ def handleGetProductionView(wfile, request, session):
             assignedFiles.append(ass)
         for key, arr in temp.items():
             ass = [[-1, productionId, "name", path.relpath(key, production[2]), 0,0 ], arr]
-            print(ass)
             assignedFiles.append(ass);
         result.append(productionToObject(production))
         result.append(files2ToObject(assignedFiles))
