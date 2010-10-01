@@ -133,7 +133,7 @@ function serviceDependancies(callback, navigation, view, filter, display, fileId
 	return xmlDoc;
 }
 
-function serviceStartSvnUpdate(callback, productionId) {
+function serviceSvnUpdate(callback, productionId) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnupdate", true );
@@ -367,20 +367,20 @@ function svnActionsFactory(item, column, td) {
 	if (item.file_svn_state=="unversioned") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		atag.setAttribute("onclick", "javascript:startSvnAdd(processActivateProduction,"+item.file_id+", false);return false;");
+		atag.setAttribute("onclick", "javascript:startSvnAdd("+item.file_id+", false);return false;");
 		atag.appendChild(document.createTextNode("Add"))
 		return atag;
 	} else if (item.file_svn_state=="modified") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		atag.setAttribute("onclick", "javascript:startSvnRevert(processActivateProduction, selectedProductionId,"+item.file_id+", false);return false;");
+		atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId,"+item.file_id+");return false;");
 		atag.appendChild(document.createTextNode("Revert"))
 		return atag;
 	}
 	return document.createTextNode("");
 }
 
-function startSvnAdd(callback, file_id, recursive){
+function serviceSvnAdd(callback, file_id, recursive){
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnadd", true );
@@ -388,7 +388,7 @@ function startSvnAdd(callback, file_id, recursive){
 	return xmlDoc;
 	}
 	
-function startSvnRevert(callback, production_id, file_id, recursive) {
+function serviceSvnRevert(callback, production_id, file_id, recursive) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnrevert", true );
