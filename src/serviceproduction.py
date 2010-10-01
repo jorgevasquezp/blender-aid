@@ -177,15 +177,22 @@ def handleAdd(wfile, request, session):
 
 def handleSvnAdd(wfile, request, session):
     file_id = request["file_id"]
+    production_id = request["production_id"]
+    file_location = request["file_location"]
     addAll = request["add_all"]
-    result = indexer.getFile(file_id)
-    production_id = result[1]
-    file_name = result[2]
-    rel_file_path = result[3]
-    production_result = indexer.getProduction(production_id)
-    production_path = production_result[2]
-    location = path.join(production_path, rel_file_path)
-    svn.svnAdd(location)
+    if file_id!=-1:
+        result = indexer.getFile(file_id)
+        file_name = result[2]
+        rel_file_path = result[3]
+        production_result = indexer.getProduction(production_id)
+        production_path = production_result[2]
+        location = path.join(production_path, rel_file_path)
+        svn.svnAdd(location)
+    else:
+        production_result = indexer.getProduction(production_id)
+        production_path = production_result[2]
+        location = path.join(production_path, file_location)
+        svn.svnAdd(location)
     wfile.write("[]\r\n".encode());
     return
 

@@ -992,8 +992,8 @@ function svnUpdateCallback() {
 	xmlDoc = serviceProductionView(process)
 }
 
-function startSvnAdd(file_id){
-	xmlSvnAdd = serviceSvnAdd(svnAddCallback, file_id, false)
+function startSvnAdd(production_id, file_id, file_location){
+	xmlSvnAdd = serviceSvnAdd(svnAddCallback, production_id, file_id, file_location, false)
 }
 
 function svnAddCallback(){
