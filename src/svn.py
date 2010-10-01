@@ -125,3 +125,7 @@ def svnUpdate(location, username, password):
     client.callback_notify = notify;
     client.callback_get_login = login;
     client.update(location);
+    
+def svnCommit(location, message):
+    client = pysvn.Client()
+    client.checkin(location, message)

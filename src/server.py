@@ -209,6 +209,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 serviceproduction.handleSvnRevert(self.wfile, req, session)
             elif servicename=="/service/svnupdate":
                 serviceproduction.handleSvnUpdate(self.wfile, req, session)
+            elif servicename=="/service/svncommit":
+                serviceproduction.handleSvnCommit(self.wfile, req, session)
 
         except sqlite3.Error:
             traceback.print_exc()
