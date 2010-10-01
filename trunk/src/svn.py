@@ -80,7 +80,7 @@ def svnAdd(location, all=False):
     client = pysvn.Client()
     dirname, fname = path.split(location)
     svnAdds = [location]    
-    while dirname!=null :
+    while dirname!=None :
         if isKnownSVNFile(dirname):
             if all:
                 client.add(svnAdds.pop())
