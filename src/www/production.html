@@ -982,7 +982,7 @@ var xmlSvnAdd;
 var xmlSvnRevert;
 var xmlSvnRevertAll;
 function startSvnUpdate(production_id) {
-	xmlSvnUp = serviceStartSvnUpdate(svnUpdateCallback, production_id);
+	xmlSvnUp = serviceSvnUpdate(svnUpdateCallback, production_id);
 }
 function svnUpdateCallback() {
 	if ( xmlSvnUp .readyState != 4 ) return ;

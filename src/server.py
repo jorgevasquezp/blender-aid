@@ -226,8 +226,10 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 logging.basicConfig(level=logging.INFO)
 if settings.DEBUG:
     logging.getLogger("blendfile").setLevel(logging.DEBUG)
+    logging.getLogger("server").setLevel(logging.DEBUG)
 else:
     logging.getLogger("blendfile").setLevel(logging.WARNING)
+    logging.getLogger("server").setLevel(logging.WARNING)
 indexer.setup()
 os.chdir("www")
 httpd=None

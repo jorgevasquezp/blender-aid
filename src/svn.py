@@ -104,6 +104,9 @@ def isKnownSVNFile(filepath):
     client = pysvn.Client()
     try:
         info = client.info(filepath);
+        if info == None:
+            return False
+        
         return True
     except pysvn.ClientError, e:
         return False
