@@ -275,3 +275,13 @@ div.outerlayer div.layer {
 	opacity:2.0;
 }
 
+.wait {
+	cursor: wait !Important;
+}
+
+div.outerlayer.wait div.layer a {
+	display:none;
+}
+div.outerlayer.wait div.layer label, div.outerlayer.wait div.layer input {
+	cursor: wait !Important;
+}
