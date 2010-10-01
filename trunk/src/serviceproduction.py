@@ -81,15 +81,20 @@ def handleGetProductionView(wfile, request, session):
         for stat in states:
             if stat.entry is None:
                 temp[stat.path] = [None,None,str(stat.text_status)]
-            else:
+            elif stat.entry.kind != svn.pysvn.node_kind.dir:
                 temp[stat.path] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.text_status)]
         for file in files:
             abspath = path.join(production[2], file[3])
             if abspath in temp:
                 ass =[file, temp[abspath]]
+                del temp[abspath]
             else:
                 ass =[file, ["","","unversioned"]]
-            assignedFiles.append(ass)   
+            assignedFiles.append(ass)
+        for key, arr in temp.items():
+            ass = [[-1, productionId, "name", path.relpath(key, production[2]), 0,0 ], arr]
+            print(ass)
+            assignedFiles.append(ass);
         result.append(productionToObject(production))
         result.append(files2ToObject(assignedFiles))
         result.append(scenesToObject(scenes))
@@ -191,7 +196,7 @@ def handleSvnRevert(wfile, request, session):
     production_id = request["production_id"]
     production_result = indexer.getProduction(production_id)
     production_path = production_result[2]
-    if file_id==None and revertAll and production!=None:
+    if file_id==None and revertAll:
         svn.svnRevert(production_path, revertAll)
     elif file_id!=None and not revertAll:
         result = indexer.getFile(file_id)

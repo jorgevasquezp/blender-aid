@@ -376,6 +376,12 @@ function svnActionsFactory(item, column, td) {
 		atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId,"+item.file_id+");return false;");
 		atag.appendChild(document.createTextNode("Revert"))
 		return atag;
+	} else if (item.file_svn_state=="deleted") {
+		atag = document.createElement("a");
+		atag.setAttribute("href", "#");
+		//TODO: atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId,"+item.file_id+");return false;");
+		atag.appendChild(document.createTextNode("Revert"))
+		return atag;
 	}
 	return document.createTextNode("");
 }
