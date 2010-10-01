@@ -63,7 +63,7 @@
 	<option>1024x768</option>
 	<option>1280x720</option>
 	<option>1920x1080</option>
-	<option>2048×1536</option>
+	<option>2048x1536</option>
 	<option>4096x3072</option>
 </select> as resolution.</li>
 <li><input id="f2" onchange="javascript:filterupdated()" type="checkbox">find scenes with output not using <select id="f2size" onchange="javascript:filterupdated()"><option selected="selected" value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select> size reduction</li>
@@ -273,16 +273,14 @@ function applySvnFilter() {
 
 function filter(items) {
 	f1 = document.getElementById("filterFile").value;
-	if (f1.length==0) {
-		return items;
-	}
-
 	result = [];
 
 	for (i=0; i<items.length;i++) {
 		item = items[i];
-		if (item.file_location.indexOf(f1) != -1) {
-			result[result.length]=item;
+		if (item.file_id != -1) {
+			if (f1.length==0 || item.file_location.indexOf(f1) != -1) {
+				result[result.length]=item;
+			}
 		}
 	}
 	return result;
