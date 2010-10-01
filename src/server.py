@@ -167,8 +167,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             session = getSession(self.client_address[0])
             line = self.rfile.readline().decode();
 
+            log.debug((servicename, line))
             req = json.loads(line)
-            log.debug(servicename)
             if servicename=="/service/metafromproductionfiles":
                 servicescenes.handleGetAll(self.wfile, req, session)
             elif servicename=="/service/productions":

@@ -998,8 +998,8 @@ function svnAddCallback(){
 	xmlDoc = serviceProductionView(process)
 }
 
-function startSvnRevert(production_id, file_id){
-	xmlSvnRevert = serviceSvnRevert(svnRevertCallback, production_id, file_id, false)
+function startSvnRevert(production_id, file_id, file_location){
+	xmlSvnRevert = serviceSvnRevert(svnRevertCallback, production_id, file_id, file_location, false)
 }
 
 function svnRevertCallback(){
@@ -1008,7 +1008,7 @@ function svnRevertCallback(){
 }
 
 function startSvnRevertAll(production_id) {
-	xmlSvnRevertAll = serviceSvnRevert(svnRevertAllCallback, production_id, null, true);
+	xmlSvnRevertAll = serviceSvnRevert(svnRevertAllCallback, production_id, null, null, true);
 }
 function svnRevertAllCallback() {
 	if ( xmlSvnRevertAll .readyState != 4 ) return ;

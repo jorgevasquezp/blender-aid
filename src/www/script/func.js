@@ -379,7 +379,7 @@ function svnActionsFactory(item, column, td) {
 	} else if (item.file_svn_state=="deleted") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		//TODO: atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId,"+item.file_id+");return false;");
+		atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId, null, \""+item.file_location+"\");return false;");
 		atag.appendChild(document.createTextNode("Revert"))
 		return atag;
 	}
@@ -394,11 +394,11 @@ function serviceSvnAdd(callback, file_id, recursive){
 	return xmlDoc;
 	}
 	
-function serviceSvnRevert(callback, production_id, file_id, recursive) {
+function serviceSvnRevert(callback, production_id, file_id, file_location, recursive) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnrevert", true );
-	xmlDoc.send( "{\"production_id\":"+production_id +", \"file_id\":"+file_id +", \"revert_all\":"+recursive +"}\r\n" );
+	xmlDoc.send( "{\"production_id\":"+production_id +", \"file_id\":"+file_id +", \"file_location\":\""+file_location +"\", \"revert_all\":"+recursive +"}\r\n" );
 	return xmlDoc;
 }
 
