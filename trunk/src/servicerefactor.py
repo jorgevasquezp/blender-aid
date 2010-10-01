@@ -621,7 +621,7 @@ class RenameFile(Task):
         fileLocation = os.path.join(productionLocation, fileLocation)
         newFileLocation = os.path.join(productionLocation, newFileLocation)
         if svn.isKnownSVNFile(fileLocation):
-            svn.move(fileLocation, newFileLocation)
+            svn.svnMove(fileLocation, newFileLocation)
         else:
             shutil.move(fileLocation, newFileLocation)
 
