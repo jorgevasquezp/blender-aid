@@ -60,16 +60,11 @@
 <ul id="test1"><li><input id="f0" onchange="javascript:filterupdated()" type="checkbox">filter filename <input id="f0fn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value=""> and scene name <input id="f0sn" onchange="javascript:filterupdated()" onkeyup="javascript:filterupdated()" value="">.</li>
 
 <li><input id="f1" onchange="javascript:filterupdated()" type="checkbox">find scenes which <select id="f1uses" onchange="javascript:filterupdated()"><option selected="selected">uses</option><option>does not use</option></select> <select id="f1res" onchange="javascript:filterupdated()">
-	<option>600x600</option>
-	<option>720x405</option>
-	<option>800x600</option>
 	<option>1024x768</option>
-	<option>1024x1024</option>
-	<option>1080x1920</option>
-	<option>1600x1200</option>
+	<option>1280x720</option>
 	<option>1920x1080</option>
-	<option>1920x1920</option>
-	<option>2000x3000</option>
+	<option>2048×1536</option>
+	<option>4096x3072</option>
 </select> as resolution.</li>
 <li><input id="f2" onchange="javascript:filterupdated()" type="checkbox">find scenes with output not using <select id="f2size" onchange="javascript:filterupdated()"><option selected="selected" value="25">25%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select> size reduction</li>
 <li><input id="f3" onchange="javascript:filterupdated()" type="checkbox">find scenes what <select id="f3uses" onchange="javascript:filterupdated()"><option selected="selected">saves</option><option>does not save</option></select> to <select id="f3img" onchange="javascript:filterupdated()"><option>AVI</option><option selected="selected">EXR</option><option>JPEG</option><option>PNG</option></select></li>
@@ -77,6 +72,11 @@
 <li><input id="f4" onchange="javascript:filterupdated()" type="checkbox">find all scenes using less than <input id="f4num" onchange="javascript:filterupdated()" value="100"> threads/xy-parts</li>
 <li><input id="f5" onchange="javascript:filterupdated()" type="checkbox">not saved in blender version 
 <select id="f5ver" onchange="javascript:filterupdated()" >
+<option value="254">2.54</option>
+<option value="253">2.53</option>
+<option value="252">2.52</option>
+<option value="251">2.51</option>
+<option value="250">2.50</option>
 <option value="249">2.49</option>
 <option value="248">2.48</option>
 <option value="247">2.47</option>
