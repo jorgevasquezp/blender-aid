@@ -627,6 +627,9 @@ function processActivateProduction() {
 	tableErrors.setItems([]);
 	tableErrors.loading=true;
 	tableErrors.update();
+	tableSvn.setItems([]);
+	tableSvn.loading=true;
+	tableSvn.update();
 	showProductionView();
 	xmlDoc = serviceProductionView(process)
 }
