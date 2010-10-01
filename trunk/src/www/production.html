@@ -596,7 +596,7 @@ function deleteProductionCallback() {
 function addProductionCallback() {
 	if ( xmlDocAddProduction.readyState != 4 ) return ;
 	result = eval(xmlDocAddProduction.responseText);
-	if (result.error == null) {
+	if (result.length ==0) {
 		xmlDocProductions = serviceProductions(processProductions);
 		document.getElementById("productionname").value="";
 		document.getElementById("productionlocation").value="";
@@ -604,7 +604,7 @@ function addProductionCallback() {
 		document.getElementById("productionsvnuserid").value="";
 		document.getElementById("productionsvnpassword").value="";
 	} else {
-		alert(result.error);
+		alert(result[0].error);
 	}
 }
 

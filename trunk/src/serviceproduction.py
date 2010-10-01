@@ -141,29 +141,35 @@ def handleAdd(wfile, request, session):
     productionSvnUrl=request["production_svnurl"]
     productionSvnUsername=request["production_svnusername"]
     productionSvnPassword=request["production_svnpassword"]
-    if productionSvnUrl=="":
-        if not path.isdir(productionLocation):
-            wfile.write("[\"error\":\"location doe not exist or is not a directory\"]\r\n".encode());
+    try:
+
+        if productionSvnUrl=="":
+            if not path.isdir(productionLocation):
+                wfile.write("[{\"error\":\"location doe not exist or is not a directory\"}]\r\n".encode());
+            else:
+                indexer.insertProduction(productionName, productionLocation);
+                wfile.write("[]\r\n".encode());
         else:
-            indexer.insertProduction(productionName, productionLocation);
-            wfile.write("[]\r\n".encode());
-    else:
-        result, additional = svn.testWorkingFolder(productionLocation, productionSvnUrl);
-        if result in [svn.SVNNOBINDING, svn.SVNNOWORKINGFOLDER]:
-            #ok, checkout needed do checkout
-            svn.svnCheckout(productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
-            indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
-            wfile.write("[]\r\n".encode());
-        elif result in [svn.SVNURLSAME]:
-            #ok, do nothing
-            indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
-            wfile.write("[]\r\n".encode());
-        elif result in [svn.SVNURLDIFF]:
-            #error, user entry
-            wfile.write("[\"error\":\"Working folder contains content from a different SVN URL\"]\r\n".encode());
-        elif result in [svn.SVNWORKINGFOLDERISFILE]:
-            #error, user entry
-            wfile.write("[\"error\":\"Working folder is a file\"]\r\n".encode());
+            result, additional = svn.testWorkingFolder(productionLocation, productionSvnUrl);
+            if result in [svn.SVNNOBINDING, svn.SVNNOWORKINGFOLDER]:
+                #ok, checkout needed do checkout
+                svn.svnCheckout(productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
+                indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
+                wfile.write("[]\r\n".encode());
+            elif result in [svn.SVNURLSAME]:
+                #ok, do nothing
+                indexer.insertProduction(productionName, productionLocation, productionSvnUrl, productionSvnUsername, productionSvnPassword);
+                wfile.write("[]\r\n".encode());
+            elif result in [svn.SVNURLDIFF]:
+                #error, user entry
+                wfile.write("[{\"error\":\"Working folder contains content from a different SVN URL\"}]\r\n".encode());
+            elif result in [svn.SVNWORKINGFOLDERISFILE]:
+                #error, user entry
+                wfile.write("[{\"error\":\"Working folder is a file\"}]\r\n".encode());
+    except svn.pysvn.ClientError, c:
+        wfile.write("[{\"error\":\""+str(c)+"\"}]\r\n".encode());
+        
+    
 
 def handleSvnAdd(wfile, request, session):
     file_id = request["file_id"]
