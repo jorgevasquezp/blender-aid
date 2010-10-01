@@ -394,8 +394,15 @@ function serviceSvnRevert(callback, production_id, file_id, recursive) {
 	xmlDoc.open( "POST", "/service/svnrevert", true );
 	xmlDoc.send( "{\"production_id\":"+production_id +", \"file_id\":"+file_id +", \"revert_all\":"+recursive +"}\r\n" );
 	return xmlDoc;
-	}
+}
 
+function serviceSvnCommit(callback, production_id, message) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/svncommit", true );
+	xmlDoc.send( "{\"production_id\":"+production_id +", \"message\":\""+message +"\"}\r\n" );
+	return xmlDoc;
+}
 
 function svnRevisionFactory(item, column, td) {
 	if (item.file_svn_revision == null || item.file_svn_revision=="-1") {

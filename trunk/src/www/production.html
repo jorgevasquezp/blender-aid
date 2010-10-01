@@ -49,7 +49,7 @@
 </div>
 	<a href="#" onclick="javascript:startSvnUpdate(selectedProductionId);">Update production</a>
 	<a href="#" onclick="javascript:startSvnRevertAll(selectedProductionId);">Revert all</a>
-	<a href="#">Commit</a>
+	<a href="#" onclick="javascript:startSvnCommit(selectedProductionId);">Commit</a>
 </div>
 
 <div id="tabScenes" class="tab2">
@@ -981,6 +981,8 @@ var xmlSvnUp;
 var xmlSvnAdd;
 var xmlSvnRevert;
 var xmlSvnRevertAll;
+var xmlSvnCommit;
+
 function startSvnUpdate(production_id) {
 	xmlSvnUp = serviceSvnUpdate(svnUpdateCallback, production_id);
 }
@@ -1013,6 +1015,18 @@ function startSvnRevertAll(production_id) {
 function svnRevertAllCallback() {
 	if ( xmlSvnRevertAll .readyState != 4 ) return ;
 	xmlDoc = serviceProductionView(process)
+}
+
+function startSvnCommit(production_id) {
+	message = prompt("Enter commit message", "")
+	if (message == null || message.length==0)  {
+		return;
+	}
+	xmlSvnCommit = serviceSvnCommit(svnCommitCallback, production_id, message)
+}
+function svnCommitCallback() {
+	if (xmlSvnCommit.readyState != 4) return;
+	xmlDoc = serviceProductionView(process)	
 }
 </script>
  </body></html>
