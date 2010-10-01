@@ -176,6 +176,7 @@ def handleSvnAdd(wfile, request, session):
     production_path = production_result[2]
     location = path.join(production_path, rel_file_path)
     svn.svnAdd(location)
+    wfile.write("[]\r\n".encode());
     return
 
 def handleSvnRevert(wfile, request, session):
@@ -185,10 +186,11 @@ def handleSvnRevert(wfile, request, session):
     production_result = indexer.getProduction(production)
     production_path = production_result[2]
     if file_id==None and revertAll and production!=None:
-        svn.svnRevert(production_path)
+        svn.svnRevert(production_path, revertAll)
     elif file_id!=None and not revertAll:
         result = indexer.getFile(file_id)
         rel_file_path = result[3]
         location = path.join(production_path, rel_file_path)
         svn.svnRevert(location)
+    wfile.write("[]\r\n".encode());
     return

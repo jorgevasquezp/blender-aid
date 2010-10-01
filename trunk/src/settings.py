@@ -41,4 +41,4 @@ VERSION="20100602"
 VERSION_DESCRIPTION="June 2010 - tube durian fix"
 
 #debug flag
-DEBUG=False
+DEBUG=True
