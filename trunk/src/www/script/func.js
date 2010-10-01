@@ -367,7 +367,7 @@ function svnActionsFactory(item, column, td) {
 	if (item.file_svn_state=="unversioned") {
 		atag = document.createElement("a");
 		atag.setAttribute("href", "#");
-		atag.setAttribute("onclick", "javascript:startSvnAdd("+item.file_id+", false);return false;");
+		atag.setAttribute("onclick", "javascript:startSvnAdd(selectedProductionId, "+item.file_id+", \""+item.file_location+"\");return false;");
 		atag.appendChild(document.createTextNode("Add"))
 		return atag;
 	} else if (item.file_svn_state=="modified") {
@@ -382,15 +382,21 @@ function svnActionsFactory(item, column, td) {
 		atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId, null, \""+item.file_location+"\");return false;");
 		atag.appendChild(document.createTextNode("Revert"))
 		return atag;
+	} else if (item.file_svn_state=="missing") {
+		atag = document.createElement("a");
+		atag.setAttribute("href", "#");
+		atag.setAttribute("onclick", "javascript:startSvnRevert(selectedProductionId, null, \""+item.file_location+"\");return false;");
+		atag.appendChild(document.createTextNode("Revert"))
+		return atag;
 	}
 	return document.createTextNode("");
 }
 
-function serviceSvnAdd(callback, file_id, recursive){
+function serviceSvnAdd(callback, production_id, file_id, file_location, recursive){
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnadd", true );
-	xmlDoc.send( "{\"file_id\":"+file_id +", \"add_all\":"+recursive +"}\r\n" );
+	xmlDoc.send( "{\"production_id\":"+production_id +",\"file_id\":"+file_id +",\"file_location\":\""+file_location +"\", \"add_all\":"+recursive +"}\r\n" );
 	return xmlDoc;
 	}
 	
