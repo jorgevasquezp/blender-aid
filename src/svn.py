@@ -86,7 +86,7 @@ def svnAdd(location, all=False):
                 client.add(svnAdds.pop())
             else:
                 svnAdds.reverse()
-                client.add(svnAdds, recurse=false);
+                client.add(svnAdds, recurse=False);
             return
         svnAdds.append(dirname)
         dirname, fname = path.split(dirname)
