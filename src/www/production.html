@@ -47,8 +47,8 @@
 </div> <br/><br/><div>
 <table id="svnstates"></table>
 </div>
-	<a href="#" onclick="javascript:startSvnUpdate();">Update production</a>
-	<a href="#">Revert all</a>
+	<a href="#" onclick="javascript:startSvnUpdate(selectedProductionId);">Update production</a>
+	<a href="#" onclick="javascript:startSvnRevertAll(selectedProductionId);">Revert all</a>
 	<a href="#">Commit</a>
 </div>
 
@@ -978,11 +978,40 @@ function startSolveMissingLink(fileId) {
 }
 
 var xmlSvnUp;
-function startSvnUpdate() {
-	xmlSvnUp = serviceStartSvnUpdate(svnUpdateCallback, selectedProductionId);
+var xmlSvnAdd;
+var xmlSvnRevert;
+var xmlSvnRevertAll;
+function startSvnUpdate(production_id) {
+	xmlSvnUp = serviceStartSvnUpdate(svnUpdateCallback, production_id);
 }
 function svnUpdateCallback() {
 	if ( xmlSvnUp .readyState != 4 ) return ;
+	xmlDoc = serviceProductionView(process)
+}
+
+function startSvnAdd(file_id){
+	xmlSvnAdd = serviceSvnAdd(svnAddCallback, file_id, false)
+}
+
+function svnAddCallback(){
+	if(xmlSvnAdd.readyState != 4) return;
+	xmlDoc = serviceProductionView(process)
+}
+
+function startSvnRevert(production_id, file_id){
+	xmlSvnRevert = serviceSvnRevert(svnRevertCallback, production_id, file_id, false)
+}
+
+function svnRevertCallback(){
+	if(xmlSvnRevert.readyState != 4) return;
+	xmlDoc = serviceProductionView(process)
+}
+
+function startSvnRevertAll(production_id) {
+	xmlSvnRevertAll = serviceSvnRevert(svnRevertAllCallback, production_id, null, true);
+}
+function svnRevertAllCallback() {
+	if ( xmlSvnRevertAll .readyState != 4 ) return ;
 	xmlDoc = serviceProductionView(process)
 }
 </script>
