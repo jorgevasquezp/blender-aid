@@ -547,8 +547,11 @@ if the file is a texture this action will only move the file.
         if not os.path.exists(dirLocation):
             os.makedirs(dirLocation)
             
-        shutil.move(currentFileLocation, newFileLocation)
-
+        if svn.isKnownSVNFile(currentFileLocation):
+            svn.svnMove(currentFileLocation, newFileLocation)
+        else:
+            shutil.move(currentFileLocation, newFileLocation)
+        
         #update ID and IM tags of blend files.
         if self.currentFilename.endswith(".blend"):
             handle = blendfile.openBlendFile(newFileLocation, 'r+b')
@@ -621,7 +624,6 @@ class RenameFile(Task):
         fileLocation = os.path.join(productionLocation, fileLocation)
         newFileLocation = os.path.join(productionLocation, newFileLocation)
         if svn.isKnownSVNFile(fileLocation):
-            print(fileLocation, newFileLocation)
             svn.svnMove(fileLocation, newFileLocation)
         else:
             shutil.move(fileLocation, newFileLocation)
@@ -632,6 +634,7 @@ class RenameFile(Task):
         newFileLocation = os.path.join(os.path.dirname(fileLocation),self.newFilename)
         fileLocation = os.path.join(productionLocation, fileLocation)
         newFileLocation = os.path.join(productionLocation, newFileLocation)
+        #TODO: if svn bound, revert both files.
         shutil.move(newFileLocation, fileLocation)
 
     def description(self):

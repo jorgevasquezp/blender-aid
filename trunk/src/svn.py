@@ -114,7 +114,17 @@ def isKnownSVNFile(filepath):
 # action to move a svn file to another location (rename or move)
 def svnMove(fileLocation, newFileLocation):
     client = pysvn.Client()
-    client.move2([fileLocation], newFileLocation)
+    dirname, fname = path.split(newFileLocation)
+    svnAdds = []    
+    while dirname!=None :
+        if isKnownSVNFile(dirname):
+            svnAdds.reverse()
+            client.add(svnAdds, recurse=False);
+            client.move2([fileLocation], newFileLocation)
+            return
+        svnAdds.append(dirname)
+        dirname, fname = path.split(dirname)
+    return
 
 def svnUpdate(location, username, password):
     global _svnUsername
