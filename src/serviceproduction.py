@@ -79,7 +79,7 @@ def handleGetProductionView(wfile, request, session):
         temp = {}
         assignedFiles=[]
         for stat in states:
-            if stat.entry is None:
+            if stat.entry is None and path.isfile(stat.path):
                 temp[stat.path] = [None,None,str(stat.text_status)]
             elif stat.entry.kind != svn.pysvn.node_kind.dir:
                 temp[stat.path] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.text_status)]
