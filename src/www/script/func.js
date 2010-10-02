@@ -405,7 +405,6 @@ function serviceSvnRevert(callback, production_id, file_id, file_location, recur
 	xmlDoc.onload = callback ;
 	xmlDoc.open( "POST", "/service/svnrevert", true );
 	fileLocationString = file_location==null?(", \"file_location\":"+file_location ):(", \"file_location\":\""+file_location +"\"");
-	alert(fileLocationString);
 	xmlDoc.send( "{\"production_id\":"+production_id +", \"file_id\":"+file_id +fileLocationString+ ", \"revert_all\":"+recursive +"}\r\n" );
 	return xmlDoc;
 }
