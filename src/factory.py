@@ -32,10 +32,8 @@ def fileToObject(file):
     result["file_location"]=file[3]
     result["file_timestamp"]=file[4]*1000
     result["file_size"]=file[5]
-    result["file_svn_revision"]=file[6]
-    result["file_svn_user"]=file[7]
-    result["file_svn_state"]=file[8]
     return result
+
 def files2ToObject(files):
     """This method will convert a list of file records to a list of file object
     the result will be an array
