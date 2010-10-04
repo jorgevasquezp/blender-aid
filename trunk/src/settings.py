@@ -25,20 +25,20 @@ WEBSERVER_BINDING=("localhost", 8080)
 
 # location of the sql database binary.
 # this file will be created when not exists
-SQLITE3_CONNECTIONURL="/var/tmp/sql012010.bin"
+SQLITE3_CONNECTIONURL="/var/tmp/sql102010.bin"
 
 import platform
 if platform.system() in ('Windows', 'Microsoft'):
-    SQLITE3_CONNECTIONURL="sql012010.bin"
+    SQLITE3_CONNECTIONURL="sql102010.bin"
 
 #Stylesheet to use in html
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="20100602"
+VERSION="20101016"
 
 #additional description of the release
-VERSION_DESCRIPTION="June 2010 - tube durian fix"
+VERSION_DESCRIPTION="October 2010 - svn integration"
 
 #debug flag
 DEBUG=True
