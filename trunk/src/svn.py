@@ -22,7 +22,13 @@
 ######################################################
 # Importing modules
 ######################################################
-import pysvn
+try:
+    import pysvn
+except:
+    import sys
+    print("Please install pysvn from http://pysvn.tigris.org/ or your packaging system.")
+    sys.exit(-1)
+
 import os.path as path
 
 SVNURLSAME = 0              #location exists with same svn url
