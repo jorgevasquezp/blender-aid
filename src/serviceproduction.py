@@ -150,7 +150,7 @@ def handleAdd(wfile, request, session):
 
         if productionSvnUrl=="":
             if not path.isdir(productionLocation):
-                wfile.write("[{\"error\":\"location ["+productionLocation+"] does not exist or is not a directory\"}]\r\n".encode());
+                wfile.write("[{\"error\":\"Location ["+productionLocation+"] does not exist or is not a directory\"}]\r\n".encode());
             else:
                 indexer.insertProduction(productionName, productionLocation);
                 wfile.write("[]\r\n".encode());
@@ -167,10 +167,10 @@ def handleAdd(wfile, request, session):
                 wfile.write("[]\r\n".encode());
             elif result in [svn.SVNURLDIFF]:
                 #error, user entry
-                wfile.write("[{\"error\":\"Working folder contains content from a different SVN URL\"}]\r\n".encode());
+                wfile.write("[{\"error\":\"Location ["+productionLocation+"] contains content from a different SVN URL\"}]\r\n".encode());
             elif result in [svn.SVNWORKINGFOLDERISFILE]:
                 #error, user entry
-                wfile.write("[{\"error\":\"Working folder is a file\"}]\r\n".encode());
+                wfile.write("[{\"error\":\"Location ["+productionLocation+"] is a file\"}]\r\n".encode());
     except svn.pysvn.ClientError, c:
         wfile.write("[{\"error\":\""+str(c)+"\"}]\r\n".encode());
         
