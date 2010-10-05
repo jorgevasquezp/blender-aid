@@ -24,10 +24,17 @@
 ######################################################
 import indexer
 import svn
-import pysvn
 import os.path as path
 from factory import *
 from datetime import datetime
+
+try:
+    import pysvn
+except:
+    import sys
+    print("Please install pysvn. http://pysvn.tigris.org/")
+    sys.exit(-1)
+
 try:
     import json
 except:
