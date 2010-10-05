@@ -150,7 +150,7 @@ def handleAdd(wfile, request, session):
 
         if productionSvnUrl=="":
             if not path.isdir(productionLocation):
-                wfile.write("[{\"error\":\"location doe not exist or is not a directory\"}]\r\n".encode());
+                wfile.write("[{\"error\":\"location ["+productionLocation+"] does not exist or is not a directory\"}]\r\n".encode());
             else:
                 indexer.insertProduction(productionName, productionLocation);
                 wfile.write("[]\r\n".encode());
