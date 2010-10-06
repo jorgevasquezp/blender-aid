@@ -103,6 +103,11 @@ def svnRevert(location, all=False):
     client.revert(location, all);
     return
 
+def svnRemove(location, force=False):
+    client = pysvn.Client()
+    client.remove(location, force=force);
+    return
+
 # Is the given absolute filepath a known SVN file.
 #   returns True is the file is known by svn
 #   returns False if the file is not known by svn.

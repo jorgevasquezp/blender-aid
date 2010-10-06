@@ -581,7 +581,12 @@ if the file is a texture this action will only move the file.
         currentFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, fileLocation)))
         newFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename))))
         dirLocation = os.path.normpath(os.path.dirname(newFileLocation))
-        os.remove(newFileLocation)
+
+        if svn.isKnownSVNFile(currentFileLocation):
+            svn.svnRevert(currentFileLocation)
+            svn.svnRemove(newFileLocation, force=True)
+        else:
+            os.remove(newFileLocation)
         
 class RenameLibrary(Task):
     """ rename a library or images reference to a different one."""    
@@ -634,8 +639,12 @@ class RenameFile(Task):
         newFileLocation = os.path.join(os.path.dirname(fileLocation),self.newFilename)
         fileLocation = os.path.join(productionLocation, fileLocation)
         newFileLocation = os.path.join(productionLocation, newFileLocation)
-        #TODO: if svn bound, revert both files.
-        shutil.move(newFileLocation, fileLocation)
+
+        if svn.isKnownSVNFile(fileLocation):
+            svn.svnRevert(fileLocation)
+            svn.svnRemove(newFileLocation, force=True)
+        else:
+            shutil.move(newFileLocation, fileLocation)
 
     def description(self):
         return "Rename ["+self.currentFilename+"] to ["+self.newFilename+"]"
