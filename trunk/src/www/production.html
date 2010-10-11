@@ -302,6 +302,7 @@ tableFiles.addColumn("location", "location", "file_name", true, null, linkFactor
 tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
 tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
 tableFiles.addColumn("folder", "folder", "file_parent", true);
+tableFiles.groupingColumn="folder";
 tableFiles.pageitems=20;
 tableFiles.filter=filter;
 tableFiles.update();
@@ -315,7 +316,8 @@ tableSvn.addColumn("svnrevision", "state", "file_svn_state", true);
 tableSvn.addColumn("svnrevision", "committer", "file_svn_user", true);
 tableSvn.addColumn("svnrevision", "revision", "file_svn_revision", true, null, svnRevisionFactory);
 tableSvn.addColumn("action", "actions", "file_id", true, false, svnActionsFactory);
-
+tableSvn.addColumn("folder", "folder", "file_parent", true);
+tableSvn.groupingColumn="folder";
 tableSvn.pageitems=20;
 tableSvn.filter=filterSvn;
 tableSvn.update();
