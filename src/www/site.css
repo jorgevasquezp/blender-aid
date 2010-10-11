@@ -115,6 +115,12 @@ tbody{
 }
 tbody tr:hover {
 	background-color:#f18844;
+	
+}
+tbody tr.grouping-row td {
+	/*color:#8080ff;*/
+	background-color:#e0e0e0;
+	font-weight: bold;
 }
 table tfoot {
 	font-size:small;

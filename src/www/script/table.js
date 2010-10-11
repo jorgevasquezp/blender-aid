@@ -141,42 +141,82 @@ if (gcolumn != null) {
 	
 	tbody = this.tbodytag;
 	if (this.currentsorting != null) {
-		for (k=0; k< groupingvalues.length;k++) {
-			for (i=0;i<this.columnsdef.length;i++) {
-				c=this.columnsdef[i];
-				if (c[0]==this.currentsorting) {
-					sorted = c[4](sorted, c);
+		for (i=0;i<this.columnsdef.length;i++) {
+			c=this.columnsdef[i];
+			if (c[0]==this.currentsorting) {
+				for (k=0; k< groupingvalues.length;k++) {
+					groupingvalue = groupingvalues[k];
+					groupingvalue[1] = c[4](groupingvalue[1], c);
 				}
+				break;
+			}
+		}		
+	}
+	while(tbody.hasChildNodes()){tbody.removeChild(tbody.childNodes[0]);}
+/*	for (i=sitem;i<eitem;i++) {
+		item=sorted[i];
+		tr = document.createElement("tr");
+		for (j=0;j<this.columnsdef.length;j++) {
+			c=this.columnsdef[j];
+			if (c[3]) {
+				td = document.createElement("td");
+				td.appendChild(c[5](item, c, td));
+				tr.appendChild(td);
+			}
+		}
+		tbody.appendChild(tr);
+	}*/
+	for (k=0; k< groupingvalues.length;k++) {
+		groupingvalue = groupingvalues[k];
+		tr = document.createElement("tr");
+		tr.setAttribute("class", "grouping-row");
+		td = document.createElement("td");
+		td.setAttribute("colspan", this.columnsdef.length);
+		td.appendChild(document.createTextNode(groupingvalue[0]));
+		tr.appendChild(td);
+		tbody.appendChild(tr);
+		
+		for (i = 0 ; i < groupingvalue[1].length;i++) {
+			item = groupingvalue[1][i];
+			tr = document.createElement("tr");
+			for (j=0;j<this.columnsdef.length;j++) {
+				c=this.columnsdef[j];
+				if (c[3]) {
+					td = document.createElement("td");
+					td.appendChild(c[5](item, c, td));
+					tr.appendChild(td);
+				}
+			}
+			tbody.appendChild(tr);
+		}
+	}
+} else {
+
+	tbody = this.tbodytag;
+	sorted = items;
+	if (this.currentsorting != null) {
+		for (i=0;i<this.columnsdef.length;i++) {
+			c=this.columnsdef[i];
+			if (c[0]==this.currentsorting) {
+				sorted = c[4](sorted, c);
 			}
 		}
 	}
-}
-
-tbody = this.tbodytag;
-sorted = items;
-if (this.currentsorting != null) {
-	for (i=0;i<this.columnsdef.length;i++) {
-		c=this.columnsdef[i];
-		if (c[0]==this.currentsorting) {
-			sorted = c[4](sorted, c);
+	while(tbody.hasChildNodes()){tbody.removeChild(tbody.childNodes[0]);}
+	for (i=sitem;i<eitem;i++) {
+		item=sorted[i];
+		tr = document.createElement("tr");
+		for (j=0;j<this.columnsdef.length;j++) {
+			c=this.columnsdef[j];
+			if (c[3]) {
+				td = document.createElement("td");
+				td.appendChild(c[5](item, c, td));
+				tr.appendChild(td);
+			}
 		}
+		tbody.appendChild(tr);
 	}
 }
-while(tbody.hasChildNodes()){tbody.removeChild(tbody.childNodes[0]);}
-for (i=sitem;i<eitem;i++) {
-	item=sorted[i];
-	tr = document.createElement("tr");
-	for (j=0;j<this.columnsdef.length;j++) {
-		c=this.columnsdef[j];
-		if (c[3]) {
-			td = document.createElement("td");
-			td.appendChild(c[5](item, c, td));
-			tr.appendChild(td);
-		}
-	}
-	tbody.appendChild(tr);
-}
-
 
 //footer
 tfoot = this.tfoottag;
