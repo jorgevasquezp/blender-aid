@@ -1,4 +1,5 @@
 import indexer
+import os.path
 
 def productionToObject(production):
     """This method will convert a production record to a production object
@@ -48,8 +49,9 @@ def file2ToObject(file):
     """
     result = {}
     result["file_id"]=file[0][0]
-    result["file_name"]=file[0][2]
-    result["file_location"]=file[0][3]
+    result["file_name"]=file[0][2] #only filename
+    result["file_location"]=file[0][3] #dir/filename
+    result["file_parent"]=os.path.dirname(file[0][3]) #dir
     result["file_timestamp"]=file[0][4]*1000
     result["file_size"]=file[0][5]
     result["file_svn_revision"]=file[1][0]
