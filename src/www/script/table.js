@@ -30,6 +30,7 @@ table.setCaption=function(newCaption){
 capt = this.captiontag;
 capt.appendChild(document.createTextNode(newCaption));
 table.needsupdate=true;
+table.groupingColumn=null;
 }
 table.addColumn=function(id, name, xml, visible, sortingfunction, domfactory) {
 if (sortingfunction ==false) {
@@ -107,6 +108,48 @@ if (this.paging) {
 	eitem = sitem+this.pageitems;
 	if (sitem>noitems) sitem = noitems;
 	if (eitem>noitems) eitem = noitems;
+}
+
+gcolumn = this.groupingColumn;
+var gcolumndef;
+var groupingvalues = [];
+if (gcolumn != null) {
+	for (i=0;i<this.columnsdef.length;i++) {
+		c=this.columnsdef[i];
+		if(c[0] == gcolumn){
+			gcolumndef = c;
+			break;
+		}
+	}
+	for(j=0; j<items.length;j++){
+		item = items[j];
+		groupingvalue = eval("item." + gcolumndef[2]);
+		gfound = false;
+		for (k=0; k<groupingvalues.length;k++){
+			if (groupingvalue == groupingvalues[k][0]){
+				index = groupingvalues[k][1].length ;
+				groupingvalues[k][1][index] = item;
+				gfound = true;
+				break;
+			}
+		}
+		if (!gfound){
+			groupingvalues[groupingvalues.length]= [groupingvalue, [item]];
+		}
+	}
+	groupingvalues.sort();
+	
+	tbody = this.tbodytag;
+	if (this.currentsorting != null) {
+		for (k=0; k< groupingvalues.length;k++) {
+			for (i=0;i<this.columnsdef.length;i++) {
+				c=this.columnsdef[i];
+				if (c[0]==this.currentsorting) {
+					sorted = c[4](sorted, c);
+				}
+			}
+		}
+	}
 }
 
 tbody = this.tbodytag;
