@@ -303,7 +303,7 @@ tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
 tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
 tableFiles.addColumn("folder", "folder", "file_parent", false);
 tableFiles.groupingColumn="folder";
-tableFiles.pageitems=20;
+tableFiles.paging=false;
 tableFiles.filter=filter;
 tableFiles.update();
 
@@ -318,7 +318,7 @@ tableSvn.addColumn("svnrevision", "revision", "file_svn_revision", true, null, s
 tableSvn.addColumn("action", "actions", "file_id", true, false, svnActionsFactory);
 tableSvn.addColumn("folder", "folder", "file_parent", false);
 tableSvn.groupingColumn="folder";
-tableSvn.pageitems=20;
+tableSvn.paging=false;
 tableSvn.filter=filterSvn;
 tableSvn.update();
 
