@@ -121,6 +121,11 @@ tbody tr.grouping-row td {
 	/*color:#8080ff;*/
 	background-color:#e0e0e0;
 	font-weight: bold;
+	cursor: pointer;
+}
+
+tbody tr.row-hidden {
+	display:none;
 }
 table tfoot {
 	font-size:small;

@@ -166,28 +166,45 @@ if (gcolumn != null) {
 		}
 		tbody.appendChild(tr);
 	}*/
+	var lastUsedGroup = null;
+	var itemIndex = 0;
+	
 	for (k=0; k< groupingvalues.length;k++) {
 		groupingvalue = groupingvalues[k];
-		tr = document.createElement("tr");
-		tr.setAttribute("class", "grouping-row");
-		td = document.createElement("td");
-		td.setAttribute("colspan", this.columnsdef.length);
-		td.appendChild(document.createTextNode(groupingvalue[0]));
-		tr.appendChild(td);
-		tbody.appendChild(tr);
 		
 		for (i = 0 ; i < groupingvalue[1].length;i++) {
-			item = groupingvalue[1][i];
-			tr = document.createElement("tr");
-			for (j=0;j<this.columnsdef.length;j++) {
-				c=this.columnsdef[j];
-				if (c[3]) {
+			if (itemIndex >= sitem && itemIndex < eitem) {
+				groupname = groupingvalue[0];
+				if (lastUsedGroup != groupingvalue[0]) {
+					tr = document.createElement("tr");
+					tr.setAttribute("onclick", "javascript:showChildRows(this);return false;");
+					tr.setAttribute("class", "grouping-row");
 					td = document.createElement("td");
-					td.appendChild(c[5](item, c, td));
+					td.setAttribute("colspan", this.columnsdef.length);
+					groupdisplay = groupname;
+					if (groupdisplay.length == 0) {
+						groupdisplay= ".";
+					}
+					td.appendChild(document.createTextNode(groupdisplay));
 					tr.appendChild(td);
+					tbody.appendChild(tr);
+					lastUsedGroup = groupname;
 				}
+				item = groupingvalue[1][i];
+				tr = document.createElement("tr");
+				tr.setAttribute("class", "row-hidden");
+				for (j=0;j<this.columnsdef.length;j++) {
+					c=this.columnsdef[j];
+					if (c[3]) {
+						td = document.createElement("td");
+						td.appendChild(c[5](item, c, td));
+						tr.appendChild(td);
+					}
+				}
+				tbody.appendChild(tr);
 			}
-			tbody.appendChild(tr);
+			
+			itemIndex++;
 		}
 	}
 } else {
@@ -289,4 +306,47 @@ function get(item, column) {
 }
 function defaultDom(item, column, td) {
 	return document.createTextNode(eval("item."+column[2]));
+}
+
+function showChildRows(grouprow) {
+	tbody = grouprow.parentNode;
+	var numberOfChilds = tbody.children.length;
+	var i;
+	var state = 0;
+	for (i = 0 ; i < numberOfChilds ; i ++ ) {
+		row = tbody.children[i];
+		if (state == 0) {
+			if (row == grouprow) {
+				state = 1;
+			}
+		} else if (state == 1) {
+			if (row.getAttribute("class") == "grouping-row") {
+				grouprow.setAttribute("onclick", "javascript:hideChildRows(this);return false;");
+				return;
+			} else {
+				row.setAttribute("class", "");
+			}
+		}
+	}
+}
+function hideChildRows(grouprow) {
+	tbody = grouprow.parentNode;
+	var numberOfChilds = tbody.children.length;
+	var i;
+	var state = 0;
+	for (i = 0 ; i < numberOfChilds ; i ++ ) {
+		row = tbody.children[i];
+		if (state == 0) {
+			if (row == grouprow) {
+				state = 1;
+			}
+		} else if (state == 1) {
+			if (row.getAttribute("class") == "grouping-row") {
+				grouprow.setAttribute("onclick", "javascript:showChildRows(this);return false;");
+				return;
+			} else {
+				row.setAttribute("class", "row-hidden");
+			}
+		}
+	}
 }
