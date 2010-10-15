@@ -81,7 +81,7 @@ def handleGetProductionView(wfile, request, session):
         errors = indexer.getConsistencyErrors(productionId)
         try:
             states = svn.svnStat(production[2])
-        except pysvn.ClientError, e:
+        except pysvn.ClientError as e:
             states=[]
         temp = {}
         assignedFiles=[]
@@ -178,7 +178,7 @@ def handleAdd(wfile, request, session):
             elif result in [svn.SVNWORKINGFOLDERISFILE]:
                 #error, user entry
                 wfile.write("[{\"error\":\"Location ["+productionLocation+"] is a file\"}]\r\n".encode());
-    except svn.pysvn.ClientError, c:
+    except svn.pysvn.ClientError as c:
         wfile.write("[{\"error\":\""+str(c)+"\"}]\r\n".encode());
         
     

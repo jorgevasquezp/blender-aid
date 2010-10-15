@@ -54,7 +54,7 @@ def testWorkingFolder(location, url):
             return (SVNWORKINGFOLDERISFILE, "");
         else:
             return (SVNNOWORKINGFOLDER, "");
-    except pysvn.ClientError, e:
+    except pysvn.ClientError as e:
         return (SVNNOBINDING, "");
     
 def login( realm, username, may_save ):
@@ -119,7 +119,7 @@ def isKnownSVNFile(filepath):
             return False
         
         return True
-    except pysvn.ClientError, e:
+    except pysvn.ClientError as e:
         return False
 
 # action to move a svn file to another location (rename or move)
