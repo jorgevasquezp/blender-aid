@@ -34,7 +34,6 @@ import sqlite3
 import logging
 
 log = logging.getLogger("indexer")
-log.setLevel(logging.DEBUG)
 
 try:
     from os.path import relpath as _relpath
@@ -192,7 +191,7 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
         connection.execute("update file set lastupdate=?, length=? where id=?", [int(os.path.getmtime(file)), int(os.path.getsize(file)), newId])        
 
     if file.endswith(".blend"):
-        log.debug("indexing file "+file);
+        log.info("indexing file "+file);
 
         bf=blendfile.openBlendFile(file)
         

@@ -14,6 +14,6 @@ export pythonversionshort="py26"
 #export pythonversionshort="py30"
 #./dist2.sh
 
-#export pythonversion="python3.1"
-#export pythonversionshort="py31"
-#./dist2.sh
+export pythonversion="python3.1"
+export pythonversionshort="py31"
+./dist2.sh
