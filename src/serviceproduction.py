@@ -100,7 +100,7 @@ def handleGetProductionView(wfile, request, session):
                 ass =[file, ["","","unversioned"]]
             assignedFiles.append(ass)
         for key, arr in temp.items():
-            ass = [[-1, productionId, "name", path.relpath(key, production[2]), 0,0 ], arr]
+            ass = [[-1, productionId, path.basename(key), path.relpath(key, production[2]), 0,0 ], arr]
             assignedFiles.append(ass);
         result.append(productionToObject(production))
         result.append(files2ToObject(assignedFiles))
