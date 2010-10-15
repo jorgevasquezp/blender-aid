@@ -78,7 +78,9 @@ for (i=0;i<this.columnsdef.length;i++) {
 		th = document.createElement("th");
 		if (c[4] != null) {
 			th.setAttribute("onclick", "javascript:"+this.jsref+".sort('"+c[0]+"');return false;")
-			th.setAttribute("class", "sortable")
+			th.setAttribute("class", "sortable "+c[0])
+		} else {
+			th.setAttribute("class", c[0])
 		}
 		th.appendChild(document.createTextNode(c[1]));
 		tr.appendChild(th);
@@ -180,12 +182,20 @@ if (gcolumn != null) {
 					tr.setAttribute("onclick", "javascript:showChildRows(this);return false;");
 					tr.setAttribute("class", "grouping-row");
 					td = document.createElement("td");
-					td.setAttribute("colspan", this.columnsdef.length);
+					img = document.createElement("img");
+					img.setAttribute("src", "images/folder.png");
+					td.appendChild(img);
+					tr.appendChild(td);
+					td = document.createElement("td");
+					td.setAttribute("colspan", this.columnsdef.length-1);
 					groupdisplay = groupname;
 					if (groupdisplay.length == 0) {
 						groupdisplay= ".";
 					}
 					td.appendChild(document.createTextNode(groupdisplay));
+					sup = document.createElement("sup");
+					sup.appendChild(document.createTextNode(""+groupingvalue[1].length+(groupingvalue[1].length==1?" item":" items")));
+					td.appendChild(sup)
 					tr.appendChild(td);
 					tbody.appendChild(tr);
 					lastUsedGroup = groupname;

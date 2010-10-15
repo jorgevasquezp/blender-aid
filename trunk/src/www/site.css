@@ -92,13 +92,14 @@ table {
 	background-color:#ffffff;
 	border:#607090 solid 1px;
 	border-collapse: collapse;
-
 }
 table tbody a {
 	color:#000000;
 }
 caption{
 	background:#ffffff;
+	background-color:#607090;
+	color:white;
 }
 th {
 	font-weight:bold;
@@ -106,10 +107,27 @@ th {
 	padding-bottom:10px;
 	padding-left:5px;
 	padding-right:5px;
+	color: #607090;
+	background-color: #e0e0e0;
 }
 th.sortable {
 	cursor:pointer;
 }
+th.location {width:300px;}
+th.size {width:100px;}
+th.icon {width:16px;}
+th.timestamp {width:350px;}
+th.svnstate {width:125px;}
+th.svnrevision {width:100px;}
+th.svncommitter {width:150px;}
+th.action {width:100px;}
+
+table sup {
+	font-weight:normal;
+	font-size:smaller;
+	margin-left: 5px;
+}
+
 tbody{
 	background:#ffffff;
 }
@@ -119,8 +137,8 @@ tbody tr:hover {
 }
 tbody tr.grouping-row td {
 	/*color:#8080ff;*/
-	background-color:#e0e0e0;
-	font-weight: bold;
+	/*background-color:#e0e0e0;*/
+	font-weight: bolder;
 	cursor: pointer;
 }
 
