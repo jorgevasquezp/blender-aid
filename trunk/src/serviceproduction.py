@@ -88,11 +88,11 @@ def handleGetProductionView(wfile, request, session):
         for stat in states:
             if stat.entry is None:
                 if path.isfile(stat.path):
-                    temp[stat.path] = [None,None,str(stat.text_status)]
+                    temp[path.normcase(stat.path)] = [None,None,str(stat.text_status)]
             elif stat.entry.kind != svn.pysvn.node_kind.dir:
-                temp[stat.path] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.text_status)]
+                temp[path.normcase(stat.path)] = [stat.entry.commit_revision.number,stat.entry.commit_author,str(stat.text_status)]
         for file in files:
-            abspath = path.join(production[2], file[3])
+            abspath = path.normcase(path.join(production[2], file[3]))
             if abspath in temp:
                 ass =[file, temp[abspath]]
                 del temp[abspath]

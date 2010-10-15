@@ -46,6 +46,6 @@ zip -r $dirname $dirname
 tar -czf $tarname $dirname
 
 echo == upload archive to googlecode ==
-python googlecode_upload.py -s "Blender-aid" -p "blender-aid" -u "j.bakker@atmind.nl" -w $password -l Type-Archive,OpSys-Linux,OpSys-OSX,$pythonversion $zipname
-python googlecode_upload.py -s "Blender-aid" -p "blender-aid" -u "j.bakker@atmind.nl" -w $password -l Type-Archive,OpSys-Linux,OpSys-OSX,$pythonversion $tarname
+python googlecode_upload.py -s "Blender-aid (svn)" -p "blender-aid" -u "j.bakker@atmind.nl" -w $password -l Type-Archive,OpSys-Linux,OpSys-OSX,$pythonversion $zipname
+python googlecode_upload.py -s "Blender-aid (svn)" -p "blender-aid" -u "j.bakker@atmind.nl" -w $password -l Type-Archive,OpSys-Linux,OpSys-OSX,$pythonversion $tarname
 

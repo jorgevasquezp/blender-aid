@@ -229,9 +229,11 @@ logging.basicConfig(level=logging.INFO)
 if settings.DEBUG:
     logging.getLogger("blendfile").setLevel(logging.DEBUG)
     logging.getLogger("server").setLevel(logging.DEBUG)
+    logging.getLogger("indexer").setLevel(logging.DEBUG)
 else:
-    logging.getLogger("blendfile").setLevel(logging.WARNING)
-    logging.getLogger("server").setLevel(logging.WARNING)
+    logging.getLogger("blendfile").setLevel(logging.INFO)
+    logging.getLogger("server").setLevel(logging.INFO)
+    logging.getLogger("indexer").setLevel(logging.INFO)
 indexer.setup()
 os.chdir("www")
 httpd=None
@@ -246,5 +248,5 @@ while httpd == None:
         time.sleep(5)
         
 log.info("server started on "+str(settings.WEBSERVER_BINDING))
-log.info("browser to http://"+str(settings.WEBSERVER_BINDING[0])+":"+str(settings.WEBSERVER_BINDING[1])+"/")
+log.info("browse to http://"+str(settings.WEBSERVER_BINDING[0])+":"+str(settings.WEBSERVER_BINDING[1])+"/")
 httpd.serve_forever()

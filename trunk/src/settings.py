@@ -29,16 +29,18 @@ SQLITE3_CONNECTIONURL="/var/tmp/sql102010.bin"
 
 import platform
 if platform.system() in ('Windows', 'Microsoft'):
-    SQLITE3_CONNECTIONURL="sql102010.bin"
+    import os.path as path
+    SQLITE3_CONNECTIONURL=path.abspath("sql102010.bin")
+    print("using database located at "+SQLITE3_CONNECTIONURL)
 
 #Stylesheet to use in html
 STYLE_SHEET="site.css"
 
 #release version of the system
-VERSION="20101016"
+VERSION="20101015"
 
 #additional description of the release
 VERSION_DESCRIPTION="October 2010 - svn integration"
 
 #debug flag
-DEBUG=True
+DEBUG=False
