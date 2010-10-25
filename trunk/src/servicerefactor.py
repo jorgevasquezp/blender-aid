@@ -310,6 +310,25 @@ def handleStartSolveMissingLink(wfile, request, session):
     session["tasks"]=tasks
     wfile.write("""[]""".encode())
 
+# rename a directory. target directory must not exist
+
+# all references what are inside the same directory stay the same
+# all references to a file in the directory changes from outside the directory changes
+# all references to a file outside the directory from inside of the directory changes
+# all references to a file outside the directory from outside the directory do not change.
+# a directory means recursive.
+# step 1: make a list with all files inside the directory
+# step 2: find all references to a file in the list created in step 1
+# step 2b. exclude files that are also in the directory
+# step 3: find all references from a file in the list created in step 1
+# step 3b. exclude fiels that are also in the directory
+# step 4: update all references
+# step 5 rename the directory.
+# issue: how to handle rollback of directory?
+
+def handleStartRenameDirectory(wfile, request, session):
+    wfile.write("""[]""".encode())
+    
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
 
