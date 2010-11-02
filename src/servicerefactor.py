@@ -64,20 +64,9 @@ def handleStartMoveFile(wfile, request, session):
     filesDone = []
     usedby = indexer.getFileUsedBy(fileId)
 
-    bu = BackupFile()
-    bu.fileId = fileId
-    bu.fileDetails = indexer.getFile(fileId)
-    bu.productionDetails=production
-    tasks.append(bu)
-
     for used in usedby:
         ofileId = used[3]
         if ofileId not in filesDone:
-            bu = BackupFile()
-            bu.fileId = ofileId
-            bu.fileDetails = indexer.getFile(ofileId)
-            bu.productionDetails=production
-            
             ac = MoveLibrary()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
@@ -88,7 +77,6 @@ def handleStartMoveFile(wfile, request, session):
             ac.productionDetails=production
 
             filesDone.append(ofileId)
-            tasks.append(bu)            
             tasks.append(ac)
 
     bu = MoveFile()
@@ -117,20 +105,9 @@ def handleStartRenameFile(wfile, request, session):
     filesDone = []
     usedby = indexer.getFileUsedBy(fileId)
     
-    bu = BackupFile()
-    bu.fileId = fileId
-    bu.fileDetails = indexer.getFile(fileId)
-    bu.productionDetails=production
-    tasks.append(bu)
-    
     for used in usedby:
         ofileId = used[3]
         if ofileId not in filesDone:
-            bu = BackupFile()
-            bu.fileId = ofileId
-            bu.fileDetails = indexer.getFile(ofileId)
-            bu.productionDetails=production
-            
             ac = RenameLibrary()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
@@ -141,7 +118,6 @@ def handleStartRenameFile(wfile, request, session):
             ac.productionDetails=production
 
             filesDone.append(ofileId)
-            tasks.append(bu)            
             tasks.append(ac)
 
     bu = RenameFile()
@@ -169,20 +145,9 @@ def handleStartRenameFile(wfile, request, session):
     filesDone = []
     usedby = indexer.getFileUsedBy(fileId)
     
-    bu = BackupFile()
-    bu.fileId = fileId
-    bu.fileDetails = indexer.getFile(fileId)
-    bu.productionDetails=production
-    tasks.append(bu)
-    
     for used in usedby:
         ofileId = used[3]
         if ofileId not in filesDone:
-            bu = BackupFile()
-            bu.fileId = ofileId
-            bu.fileDetails = indexer.getFile(ofileId)
-            bu.productionDetails=production
-            
             ac = RenameLibrary()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
@@ -193,7 +158,6 @@ def handleStartRenameFile(wfile, request, session):
             ac.productionDetails=production
 
             filesDone.append(ofileId)
-            tasks.append(bu)            
             tasks.append(ac)
 
     bu = RenameFile()
@@ -228,20 +192,9 @@ def handleStartRenameElement(wfile, request, session):
     filesDone = []
     usedby = indexer.getReferenceToElement(productionId, fileId, elementDetails[2])
     
-    bu = BackupFile()
-    bu.fileId = fileId
-    bu.fileDetails = indexer.getFile(fileId)
-    bu.productionDetails=production
-    tasks.append(bu)
-    
     for used in usedby:
         ofileId = used[0]
         if ofileId not in filesDone:
-            bu = BackupFile()
-            bu.fileId = ofileId
-            bu.fileDetails = indexer.getFile(ofileId)
-            bu.productionDetails=production
-            
             ac = RenameIDElement()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
@@ -254,7 +207,6 @@ def handleStartRenameElement(wfile, request, session):
             ac.productionDetails=production
 
             filesDone.append(ofileId)
-            tasks.append(bu)            
             tasks.append(ac)
 
     bu = RenameElement()
@@ -280,11 +232,6 @@ def handleStartSolveMissingLink(wfile, request, session):
     orFileId = elementDetails[indexer.INDEX_ELEMENT_FILE_ID]
     orFileDetails = indexer.getFile(orFileId)
     tasks = []
-    bu = BackupFile()
-    bu.fileId = orFileId
-    bu.fileDetails = orFileDetails
-    bu.productionDetails=production
-    tasks.append(bu)
 
     if elementType=='ID':
         newElementId=fileId
@@ -363,22 +310,6 @@ def handleExecuteCurrentTasks(wfile, request, session):
             task.status=FIN
     handleGetCurrentTasks(wfile, request, session)
 
-def handleCommitCurrentTasks(wfile, request, session):
-    tasks = session["tasks"]
-    for task in tasks:
-        if task.status==FIN:
-            task.commit()
-            task.status=COMMIT
-    session["tasks"]=None
-        
-def handleRollbackCurrentTasks(wfile, request, session):
-    tasks = session["tasks"]
-    for task in tasks:
-        if task.status==FIN:
-            task.rollback()
-            task.status=ROLLBACK
-    session["tasks"]=None
-
 def handleGetMissingLinkSolutions(wfile, request, session):
     productionId=int(session["production_id"])
     elementId=int(request["element_id"])
@@ -451,12 +382,7 @@ class Task:
         result["file_location"] = self.fileDetails[3]
         result["task_description"] = self.description()
         return json.dumps(result)
-        
-    def commit(self):
-        pass
-    def rollback(self):
-        pass
-    
+            
 class RenameElement(Task):
     """Migration task for renaming an blender element inside a blend file."""
     
@@ -593,20 +519,7 @@ if the file is a texture this action will only move the file.
             handle.close()
             
         pass
-    
-    def rollback(self):
-        productionLocation = self.productionDetails[2]
-        fileLocation = self.fileDetails[3]
-        currentFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, fileLocation)))
-        newFileLocation = os.path.normcase(os.path.normpath(os.path.join(productionLocation, os.path.join(self.newLocation, self.currentFilename))))
-        dirLocation = os.path.normpath(os.path.dirname(newFileLocation))
-
-        if svn.isKnownSVNFile(currentFileLocation):
-            svn.svnRevert(currentFileLocation)
-            svn.svnRemove(newFileLocation, force=True)
-        else:
-            os.remove(newFileLocation)
-        
+            
 class RenameLibrary(Task):
     """ rename a library or images reference to a different one."""    
     def execute(self):
@@ -651,19 +564,6 @@ class RenameFile(Task):
             svn.svnMove(fileLocation, newFileLocation)
         else:
             shutil.move(fileLocation, newFileLocation)
-
-    def rollback(self):
-        productionLocation = self.productionDetails[2]
-        fileLocation = self.fileDetails[3]
-        newFileLocation = os.path.join(os.path.dirname(fileLocation),self.newFilename)
-        fileLocation = os.path.join(productionLocation, fileLocation)
-        newFileLocation = os.path.join(productionLocation, newFileLocation)
-
-        if svn.isKnownSVNFile(fileLocation):
-            svn.svnRevert(fileLocation)
-            svn.svnRemove(newFileLocation, force=True)
-        else:
-            shutil.move(newFileLocation, fileLocation)
 
     def description(self):
         return "Rename ["+self.currentFilename+"] to ["+self.newFilename+"]"
@@ -732,38 +632,3 @@ class ChangeLibrary(Task):
     
     def description(self):
         return "Change library reference to ["+self.newFileDetails[3]+"]"
-
-    
-class BackupFile(Task):
-    def __init__(self):
-        Task.__init__(self)
-        self.display=False
-        
-    def execute(self):
-        productionLocation = self.productionDetails[2]
-        fileLocation = self.fileDetails[3]
-        newFileLocation = fileLocation+".bak"
-        fileLocation = os.path.join(productionLocation, fileLocation)
-        newFileLocation = os.path.join(productionLocation, newFileLocation)
-        shutil.copy(fileLocation, newFileLocation)
-    
-    def description(self):
-        return "Backup ["+self.fileDetails[3]+"]"
-
-    def commit(self):
-        productionLocation = self.productionDetails[2]
-        fileLocation = self.fileDetails[3]
-        newFileLocation = fileLocation+".bak"
-        newFileLocation = os.path.join(productionLocation, newFileLocation)
-        os.remove(newFileLocation)
-        
-    def rollback(self):
-        productionLocation = self.productionDetails[2]
-        fileLocation = self.fileDetails[3]
-        newFileLocation = fileLocation+".bak"
-        fileLocation = os.path.join(productionLocation, fileLocation)
-        newFileLocation = os.path.join(productionLocation, newFileLocation)
-        shutil.copy(newFileLocation, fileLocation)
-        os.remove(newFileLocation)
-    
-
