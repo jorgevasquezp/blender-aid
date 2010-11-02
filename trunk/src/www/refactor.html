@@ -23,9 +23,6 @@
 		</span>
 		
 	</div>
-</div><div id="step3" style="display:none;">
-	<a href="#" onclick="javascript:rollback();return false;">Undo changes</a>
-	<a href="#" onclick="javascript:commit();return false;">Save changes</a>
 </div>
 <script>
 table = document.getElementById("refactorTable")
@@ -75,8 +72,7 @@ function process2() {
 	per = Math.round((100*done)/total)
 	document.getElementById("idpi").setAttribute("style", "width:"+per+"%")
 	if (cont) {
-		document.getElementById("step3").setAttribute("style", "display:block;")
-		document.getElementById("step2").setAttribute("style", "display:none;")
+		document.location.href="production.html"
 	}
 	else
 	{
@@ -86,10 +82,6 @@ function process2() {
 	table.update()
 }
 
-function process3() {
-	document.location.href="production.html"
-}
-
 function cancel() {
 	document.location.href="production.html"
 }
@@ -97,14 +89,6 @@ function performTasks() {
 	document.getElementById("step1").setAttribute("style", "display:none;")
 	document.getElementById("step2").setAttribute("style", "display:block;")
 	xmlDoc=servicePerformOneRefactoringTask(process2)
-}
-function rollback() {
-	document.getElementById("step3").setAttribute("style", "display:none;")
-	xmlDoc=serviceRollbackTasks(process3)
-}
-function commit() {
-	document.getElementById("step3").setAttribute("style", "display:none;")
-	xmlDoc=serviceCommitTasks(process3)
 }
 
 function filterTaskDisplay(items) {

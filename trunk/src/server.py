@@ -195,10 +195,6 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 servicerefactor.handleGetCurrentTasks(self.wfile, req, session)
             elif servicename=="/service/executetask":
                 servicerefactor.handleExecuteOneTask(self.wfile, req, session)
-            elif servicename=="/service/committasks":
-                servicerefactor.handleCommitCurrentTasks(self.wfile, req, session)
-            elif servicename=="/service/rollbacktasks":
-                servicerefactor.handleRollbackCurrentTasks(self.wfile, req, session)
             elif servicename=="/service/missinglinksolutions":
                 servicerefactor.handleGetMissingLinkSolutions(self.wfile, req, session)
             elif servicename=="/service/solvemissinglink":
