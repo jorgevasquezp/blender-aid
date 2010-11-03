@@ -257,12 +257,21 @@ def handleStartSolveMissingLink(wfile, request, session):
     session["tasks"]=tasks
     wfile.write("""[]""".encode())
 
-# rename a directory. target directory must not exist
+# rename a directory.
+# INPUT:
+#   production id
+#   source directory name (relative from production root)
+#   target directory name (only last part of directory)
 
-# all references what are inside the same directory stay the same
-# all references to a file in the directory changes from outside the directory changes
-# all references to a file outside the directory from inside of the directory changes
+# CHECKS:
+#   source directory name not equal to target directory name
+#   target directory may not exist
+
+# all references that are inside the same directory stay the same
+# all references to a file in the directory from outside the directory changes
+# all references to a file outside the directory from inside of the directory do not change
 # all references to a file outside the directory from outside the directory do not change.
+
 # a directory means recursive.
 # step 1: make a list with all files inside the directory
 # step 2: find all references to a file in the list created in step 1
@@ -271,10 +280,45 @@ def handleStartSolveMissingLink(wfile, request, session):
 # step 3b. exclude fiels that are also in the directory
 # step 4: update all references
 # step 5 rename the directory.
-# issue: how to handle rollback of directory?
-
 def handleStartRenameDirectory(wfile, request, session):
-    wfile.write("""[]""".encode())
+    productionId=int(request["production_id"])
+    production=indexer.getProduction(productionId)
+    sourceDirectory=str(request["source_directory"])
+    targetLastDirectoryName=str(request["target_directory_name"])
+    files = indexer.getProductionFiles(productionId);
+    filesInside = []
+    tasks=[]
+    for file in files:
+        if file[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+            filesInside.append(file)
+
+    referencesOutside = {}
+    for file in filesInside:
+        referencesFromOutside = indexer.getFileUsedBy(file[indexer.INDEX_FILE_ID])
+        for reference in referencesFromOutside:
+            referenceFile = indexer.getFile(reference[indexer.INDEX_REFERENCE_FILE_ID])
+            if not referenceFile[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+                if referenceFile not in referencesOutside.keys():
+                    referencesOutside[referenceFile]=[]
+                if file not in referencesOutside[referenceFile]:
+                    referencesOutside[referenceFile].append(file)
+
+    for referenceFile in referencesOutside.keys():
+        for file in referencesOutside[referenceFile]:
+            ac = MoveLibrary()
+            ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
+            ac.fileDetails = referenceFile
+            ac.referenceFileId = file[indexer.INDEX_FILE_ID]
+            ac.newLocation = targetLastDirectoryName #TODO
+            ac.currentFilename = file[indexer.INDEX_FILE_NAME]
+            ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
+            ac.productionDetails=production
+            tasks.append(ac)
+    
+    for task in tasks:
+        print(task.fileDetails[indexer.INDEX_FILE_LOCATION], task.description())
+
+#    wfile.write("""[]""".encode())
     
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
