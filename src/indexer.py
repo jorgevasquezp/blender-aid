@@ -543,6 +543,7 @@ def getFileElementByName(fileId, elementName):
     return result
 
 def getFileReferences(fileID):
+    '''returns a list of files that is referenced by the file with id fileID'''
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     query = "select li_name, substr(name,1,2) as etype, name, reference_file_id from element where type in ('ID', 'IM') and file_id=?;"
     result = connection.execute(query, [fileID]).fetchall()
@@ -550,6 +551,7 @@ def getFileReferences(fileID):
     return result
 
 def getFileUsedBy(fileID):
+    '''returns a list of files that references to the file with id fileID'''
     connection = sqlite3.connect(settings.SQLITE3_CONNECTIONURL)
     query = "select file.location, substr(element.name,1,2) as etype, element.name, file_id from element, file where file.id=element.file_id and type in ('ID', 'IM') and reference_file_id=?;"
     result = connection.execute(query, [fileID]).fetchall()
@@ -774,6 +776,7 @@ def setup():
     connection.close()
     
 INDEX_ELEMENT_LI_FILENAME = 23
+INDEX_FILE_ID = 0
 INDEX_FILE_NAME = 2
 INDEX_FILE_LOCATION = 3
 INDEX_FILE_LASTINDEX = 5
@@ -784,3 +787,8 @@ INDEX_ELEMENT_TYPE = 6
 INDEX_ELEMENT_LI_NAME = 22
 INDEX_ELEMENT_REFERENCE_FILE_ID=4
 INDEX_LIBRARY_ID=3
+
+INDEX_REFERENCE_FILE_LOCATION = 0
+INDEX_REFERENCE_FILE_ELEMENT_TYPE = 1
+INDEX_REFERENCE_FILE_ELEMENT_NAME = 2
+INDEX_REFERENCE_FILE_ID = 3
