@@ -30,6 +30,7 @@
 
 <div id="tabFiles" class="tab2">
 <label>filter:</label><input id="filterFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>
+<label>exclude filter:</label><input id="filterExcludeFile" onchange="javascript:applyFilesFilter()" onkeyup="javascript:applyFilesFilter()" type="text"></input><br/><br/>
 <table id="files"></table>
 </div>
 
@@ -274,13 +275,25 @@ function applySvnFilter() {
 
 function filter(items) {
 	f1 = document.getElementById("filterFile").value;
+	fexcludes = document.getElementById("filterExcludeFile").value.split(",");
 	result = [];
 
 	for (i=0; i<items.length;i++) {
 		item = items[i];
 		if (item.file_id != -1) {
-			if (f1.length==0 || item.file_location.indexOf(f1) != -1) {
-				result[result.length]=item;
+			var conti = true;
+			for (j = 0 ; j < fexcludes.length ; j++) {
+				fexclude = fexcludes[j].replace(/^\s+|\s+$/g,"");
+				if (fexclude.length!=0 && item.file_location.indexOf(fexclude) != -1) {
+					conti=false;
+				}
+			}
+
+			if (conti) {
+				if (f1.length==0 || item.file_location.indexOf(f1) != -1) {
+					result[result.length]=item;
+				}
+
 			}
 		}
 	}

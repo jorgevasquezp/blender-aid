@@ -285,6 +285,7 @@ def handleStartRenameDirectory(wfile, request, session):
     production=indexer.getProduction(productionId)
     sourceDirectory=str(request["source_directory"])
     targetLastDirectoryName=str(request["target_directory_name"])
+    targetDirectory = os.path.join(os.path.dirname(sourceDirectory), targetLastDirectoryName)
     files = indexer.getProductionFiles(productionId);
     filesInside = []
     tasks=[]
@@ -309,7 +310,7 @@ def handleStartRenameDirectory(wfile, request, session):
             ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
             ac.fileDetails = referenceFile
             ac.referenceFileId = file[indexer.INDEX_FILE_ID]
-            ac.newLocation = targetLastDirectoryName #TODO
+            ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
             ac.currentFilename = file[indexer.INDEX_FILE_NAME]
             ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
