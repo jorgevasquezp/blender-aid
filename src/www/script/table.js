@@ -26,13 +26,14 @@ table.filter=null;
 table.columnsdef=[];
 table.items=[];
 table.loading=true;
+table.numberOfGroupingColumns=0;
 table.setCaption=function(newCaption){
 capt = this.captiontag;
 capt.appendChild(document.createTextNode(newCaption));
 table.needsupdate=true;
 table.groupingColumn=null;
 }
-table.addColumn=function(id, name, xml, visible, sortingfunction, domfactory) {
+table.addColumn=function(id, name, xml, visible, sortingfunction, domfactory, grouping) {
 if (sortingfunction ==false) {
 	sortingfunction = null;
 } else {
@@ -41,7 +42,13 @@ if (sortingfunction ==false) {
 if (domfactory==null) {
 	domfactory=defaultDom;
 }
-this.columnsdef.push([id, name, xml, visible, sortingfunction, domfactory]);
+if (grouping==null) {
+	grouping=false;
+}
+if (grouping == true) {
+	this.numberOfGroupingColumns++;
+}
+this.columnsdef.push([id, name, xml, visible, sortingfunction, domfactory, grouping]);
 this.needsupdate=true;
 }
 
@@ -187,7 +194,7 @@ if (gcolumn != null) {
 					td.appendChild(img);
 					tr.appendChild(td);
 					td = document.createElement("td");
-					td.setAttribute("colspan", this.columnsdef.length-1);
+					td.setAttribute("colspan", (this.columnsdef.length-2-this.numberOfGroupingColumns));
 					groupdisplay = groupname;
 					if (groupdisplay.length == 0) {
 						groupdisplay= ".";
@@ -197,6 +204,15 @@ if (gcolumn != null) {
 					sup.appendChild(document.createTextNode(""+groupingvalue[1].length+(groupingvalue[1].length==1?" item":" items")));
 					td.appendChild(sup)
 					tr.appendChild(td);
+
+					for (j=0;j<this.columnsdef.length;j++) {
+						c=this.columnsdef[j];
+						if (c[3] && c[6]) { // visible and groupingrendering
+							td = document.createElement("td");
+							td.appendChild(c[5](groupname, c, td));
+							tr.appendChild(td);
+						}
+					}
 					tbody.appendChild(tr);
 					lastUsedGroup = groupname;
 				}
@@ -207,7 +223,9 @@ if (gcolumn != null) {
 					c=this.columnsdef[j];
 					if (c[3]) {
 						td = document.createElement("td");
-						td.appendChild(c[5](item, c, td));
+						if (!c[6]) {
+							td.appendChild(c[5](item, c, td));
+						}
 						tr.appendChild(td);
 					}
 				}
