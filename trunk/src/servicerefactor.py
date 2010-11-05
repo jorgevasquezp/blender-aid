@@ -322,9 +322,6 @@ def handleStartRenameDirectory(wfile, request, session):
     bu.targetDirectory = targetDirectory
     tasks.append(bu)
     
-    for task in tasks:
-        print(task.description())
-
     session["tasks"]=tasks
     if wfile != None:
         wfile.write("""[]""".encode())
