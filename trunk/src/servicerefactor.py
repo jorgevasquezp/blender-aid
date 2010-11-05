@@ -630,6 +630,15 @@ class RenameDirectory(Task):
         else:
             shutil.move(sourceLocation, targetLocation)
 
+    def json(self):
+        result = dict()
+        result["task_display"] = self.display
+        result["task_status"] = self.status
+        result["file_id"] =  -1
+        result["file_location"] = self.sourceDirectory
+        result["task_description"] = self.description()
+        return json.dumps(result)
+
     def description(self):
         return "Rename directory ["+self.sourceDirectory+"] to ["+self.targetDirectory+"]"
     

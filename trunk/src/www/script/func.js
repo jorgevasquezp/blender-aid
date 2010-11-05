@@ -14,6 +14,14 @@ if(vis.display==''&&elem.offsetWidth!=undefined&&elem.offsetHeight!=undefined)
   vis.display = (vis.display==''||vis.display=='block')?'none':'block';
 }
 
+function serviceStartRenameDir(callback, productionId, sourceDirectory, targetDirectoryLastName) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/renamedir", true );
+	xmlDoc.send( "{\"production_id\":"+productionId+", \"source_directory\":\""+sourceDirectory+"\",\"target_directory_name\":\""+targetDirectoryLastName+"\"}\r\n" );
+	return xmlDoc;
+}
+
 function serviceStartRenameFile(callback, productionId, fileId, newName) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
@@ -423,4 +431,21 @@ function svnRevisionFactory(item, column, td) {
 	} else {
 		return document.createTextNode(""+item.file_svn_revision);
 	}
+}
+
+function directoryActionFactory(item, column, td) {
+	if (item == "") return document.createTextNode("");
+	div = document.createElement("div");
+	renamelink = document.createElement("a");
+	renamelink.appendChild(document.createTextNode("Rename"));
+	renamelink.setAttribute("href", "#");
+	renamelink.setAttribute("onclick", "javascript:event.stopPropagation();startRenameDir(\'"+item+"\');return false;");
+	div.appendChild(renamelink)
+	div.appendChild(document.createTextNode(" "));
+	movelink = document.createElement("a");
+	movelink.appendChild(document.createTextNode("Move"));
+	movelink.setAttribute("href", "#");
+	movelink.setAttribute("onclick", "javascript:event.stopPropagation();startMoveDir(\'"+item+"\');return false;");
+	div.appendChild(movelink);
+	return div;
 }

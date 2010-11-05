@@ -189,6 +189,10 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 servicerefactor.handleStartRenameFile(self.wfile, req, session)
             elif servicename=="/service/movefile":
                 servicerefactor.handleStartMoveFile(self.wfile, req, session)
+            elif servicename=="/service/renamedir":
+                servicerefactor.handleStartRenameDirectory(self.wfile, req, session)
+            elif servicename=="/service/movedir":
+                servicerefactor.handleStartMoveDirectory(self.wfile, req, session)
             elif servicename=="/service/renameelement":
                 servicerefactor.handleStartRenameElement(self.wfile, req, session)
             elif servicename=="/service/refactoringtasks":

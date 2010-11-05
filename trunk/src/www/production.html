@@ -301,6 +301,7 @@ tableFiles.addColumn("icon", "", "file_location", true, false, fileIconFactory);
 tableFiles.addColumn("location", "location", "file_name", true, null, linkFactoryFile);
 tableFiles.addColumn("size", "size", "file_size", true, null, filesizeFactory);
 tableFiles.addColumn("timestamp", "timestamp", "file_timestamp", true, null, dateFactory);
+tableFiles.addColumn("directoryaction", "action", "file_parent", true, null, directoryActionFactory, true);
 tableFiles.addColumn("folder", "folder", "file_parent", false);
 tableFiles.groupingColumn="folder";
 tableFiles.paging=false;
@@ -821,6 +822,29 @@ function startMoveFile() {
 	if (newName != null) {
 		if (newName != fileName) {
 			xmlRef = serviceStartMoveFile(refactorCallback, selectedProductionId, selectedFileId, newName)
+		}
+	}
+}
+function startRenameDir(dirname) {
+	index =dirname.lastIndexOf("/");
+	if (index >= 0) {
+		path=dirname.substring(dirname.lastIndexOf("/")+1);
+	} else {
+		path=dirname;
+	}
+	newName = prompt("Last part of new directory name for ["+dirname+"].", path)
+	if (newName != null) {
+		if (newName != dirname) {
+			xmlRef = serviceStartRenameDir(refactorCallback, selectedProductionId, dirname, newName)
+		}
+	}
+}
+function startMoveDir(dirname) {
+
+	newName = prompt("Complete path for new directory of ["+dirname+"]. ", dirname)
+	if (newName != null) {
+		if (newName != fileName) {
+//			xmlRef = serviceStartMoveFile(refactorCallback, selectedProductionId, selectedFileId, newName)
 		}
 	}
 }

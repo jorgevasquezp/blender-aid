@@ -121,6 +121,7 @@ th.svnstate {width:125px;}
 th.svnrevision {width:100px;}
 th.svncommitter {width:150px;}
 th.action {width:100px;}
+th.directoryaction {width:150px;}
 
 table sup {
 	font-weight:normal;
