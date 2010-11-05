@@ -314,11 +314,20 @@ def handleStartRenameDirectory(wfile, request, session):
             ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
             tasks.append(ac)
+
+    bu = RenameDirectory()
+    bu.productionDetails=production
+    bu.sourceDirectory = sourceDirectory
+    targetDirectory = os.path.join(os.path.dirname(sourceDirectory), targetLastDirectoryName)
+    bu.targetDirectory = targetDirectory
+    tasks.append(bu)
     
     for task in tasks:
-        print(task.fileDetails[indexer.INDEX_FILE_LOCATION], task.description())
+        print(task.description())
 
-#    wfile.write("""[]""".encode())
+    session["tasks"]=tasks
+    if wfile != None:
+        wfile.write("""[]""".encode())
     
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
@@ -611,6 +620,21 @@ class RenameFile(Task):
 
     def description(self):
         return "Rename ["+self.currentFilename+"] to ["+self.newFilename+"]"
+
+class RenameDirectory(Task):
+    def execute(self):
+        productionLocation = self.productionDetails[2]
+        source = self.sourceDirectory
+        target = self.targetDirectory
+        sourceLocation = os.path.join(productionLocation, source)
+        targetLocation = os.path.join(productionLocation, target)
+        if svn.isKnownSVNFile(sourceLocation):
+            svn.svnMove(sourceLocation, targetLocation)
+        else:
+            shutil.move(sourceLocation, targetLocation)
+
+    def description(self):
+        return "Rename directory ["+self.sourceDirectory+"] to ["+self.targetDirectory+"]"
     
 class ChangeIDElement(Task):
     """Migration task for renaming an ID element of a library reference.
