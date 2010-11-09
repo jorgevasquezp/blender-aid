@@ -67,7 +67,7 @@ def handleStartMoveFile(wfile, request, session):
     for used in usedby:
         ofileId = used[3]
         if ofileId not in filesDone:
-            ac = MoveLibrary()
+            ac = ChangeReference()
             ac.fileId = ofileId
             ac.fileDetails = indexer.getFile(ofileId)
             ac.referenceFileId = fileId
@@ -306,7 +306,7 @@ def handleStartRenameDirectory(wfile, request, session):
 
     for referenceFile in referencesOutside.keys():
         for file in referencesOutside[referenceFile]:
-            ac = MoveLibrary()
+            ac = ChangeReference()
             ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
             ac.fileDetails = referenceFile
             ac.referenceFileId = file[indexer.INDEX_FILE_ID]
@@ -326,6 +326,70 @@ def handleStartRenameDirectory(wfile, request, session):
     session["tasks"]=tasks
     if wfile != None:
         wfile.write("""[]""".encode())
+   
+def handleMoveDirectory(wfile, request, session):
+    productionId=int(request["production_id"])
+    production=indexer.getProduction(productionId)
+    sourceDirectory= str(request["source_directory"])
+    targetDirectory= str(request["target_directory"])
+    #perform checks
+    if (sourceDirectory==targetDirectory):
+        wfile.write("""[{"message":"Target directory is same as source."}]""".encode())
+        return;
+    if (os.path.exists(targetDirectory)):
+        wfile.write("""[{"message":"Target directory already exists."}]""".encode())
+        return;
+    files = indexer.getProductionFiles(productionId);
+    for file in files:
+        if file[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+            filesInside.append(file)
+
+    referencesOutside = {}
+    for file in filesInside:
+        referencesFromOutside = indexer.getFileUsedBy(file[indexer.INDEX_FILE_ID])
+        for reference in referencesFromOutside:
+            referenceFile = indexer.getFile(reference[indexer.INDEX_REFERENCE_FILE_ID])
+            if not referenceFile[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+                if referenceFile not in referencesOutside.keys():
+                    referencesOutside[referenceFile]=[]
+                if file not in referencesOutside[referenceFile]:
+                    referencesOutside[referenceFile].append(file)
+    
+    for referenceFile in referencesOutside.keys():
+        for file in referencesOutside[referenceFile]:
+            ac = ChangeReference()
+            ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
+            ac.fileDetails = referenceFile
+            ac.referenceFileId = file[indexer.INDEX_FILE_ID]
+            #ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
+            ac.currentFilename = file[indexer.INDEX_FILE_NAME]
+            ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
+            ac.productionDetails=production
+            tasks.append(ac)
+    
+    referencesInside = {}
+    for file in filesInside:
+        referencesFromInside = indexer.getFileReferences(file[indexer.INDEX_FILE_ID])
+        for reference in referencesFromInside:
+            referenceFile = indexer.getFile(reference[indexer.INDEX_REFERENCE_FILE_ID])
+            if not referenceFile[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+                if referenceFile not in referencesInside.keys():
+                    referencesInside[referenceFile]=[]
+                if file not in referencesInside[referenceFile]:
+                    referencesInside[referenceFile].append(file)
+    
+    for referenceFile in referencesInside.keys():
+        for file in referencesInside[referenceFile]:
+            ac = ChangeReference()
+            ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
+            ac.fileDetails = referenceFile
+            ac.referenceFileId = file[indexer.INDEX_FILE_ID]
+            #ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
+            ac.currentFilename = file[indexer.INDEX_FILE_NAME]
+            ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
+            ac.productionDetails=production
+            tasks.append(ac)
+    
     
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
@@ -492,7 +556,7 @@ class RenameIDElement(Task):
         
         handle.close()
 
-class MoveLibrary(Task):
+class ChangeReference(Task):
     def description(self):
         return "Move library ["+self.currentFileLocation+"] to ["+self.newLocation+"/"+self.currentFilename+"]"
 
