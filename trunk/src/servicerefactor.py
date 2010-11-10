@@ -361,7 +361,7 @@ def handleMoveDirectory(wfile, request, session):
             ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
             ac.fileDetails = referenceFile
             ac.referenceFileId = file[indexer.INDEX_FILE_ID]
-            #ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
+            ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
             ac.currentFilename = file[indexer.INDEX_FILE_NAME]
             ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
@@ -384,7 +384,7 @@ def handleMoveDirectory(wfile, request, session):
             ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
             ac.fileDetails = referenceFile
             ac.referenceFileId = file[indexer.INDEX_FILE_ID]
-            #ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
+            ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
             ac.currentFilename = file[indexer.INDEX_FILE_NAME]
             ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
