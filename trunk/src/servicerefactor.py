@@ -286,12 +286,13 @@ def handleStartRenameDirectory(wfile, request, session):
     sourceDirectory=str(request["source_directory"])
     targetLastDirectoryName=str(request["target_directory_name"])
     targetDirectory = os.path.join(os.path.dirname(sourceDirectory), targetLastDirectoryName)
+    targetAbsoluteDirectory = os.path.join(production[indexer.INDEX_PRODUCTION_LOCATION], targetDirectory)
     files = indexer.getProductionFiles(productionId);
     #perform checks
     if (sourceDirectory==targetDirectory):
         wfile.write("""[{"message":"Target directory is same as source."}]""".encode())
         return;
-    if (os.path.exists(targetDirectory)):
+    if (os.path.exists(targetAbsoluteDirectory)):
         wfile.write("""[{"message":"Target directory already exists."}]""".encode())
         return;
     filesInside = []
@@ -339,11 +340,12 @@ def handleMoveDirectory(wfile, request, session):
     production=indexer.getProduction(productionId)
     sourceDirectory= str(request["source_directory"])
     targetDirectory= str(request["target_directory"])
+    targetAbsoluteDirectory = os.path.join(production[indexer.INDEX_PRODUCTION_LOCATION], targetDirectory)
     #perform checks
     if (sourceDirectory==targetDirectory):
         wfile.write("""[{"message":"Target directory is same as source."}]""".encode())
         return;
-    if (os.path.exists(targetDirectory)):
+    if (os.path.exists(targetAbsoluteDirectory)):
         wfile.write("""[{"message":"Target directory already exists."}]""".encode())
         return;
     files = indexer.getProductionFiles(productionId);
