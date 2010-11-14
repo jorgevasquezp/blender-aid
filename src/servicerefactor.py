@@ -324,12 +324,11 @@ def handleStartRenameDirectory(wfile, request, session):
             ac.productionDetails=production
             tasks.append(ac)
 
-    bu = RenameDirectory()
-    bu.productionDetails=production
-    bu.sourceDirectory = sourceDirectory
-    targetDirectory = os.path.join(os.path.dirname(sourceDirectory), targetLastDirectoryName)
-    bu.targetDirectory = targetDirectory
-    tasks.append(bu)
+    renameDir = RenameDirectory()
+    renameDir.productionDetails=production
+    renameDir.sourceDirectory = sourceDirectory
+    renameDir.targetDirectory = targetDirectory
+    tasks.append(renameDir)
     
     session["tasks"]=tasks
     if wfile != None:
@@ -350,6 +349,7 @@ def handleStartMoveDirectory(wfile, request, session):
         return;
     files = indexer.getProductionFiles(productionId);
     filesInside = []
+    tasks=[]
     for file in files:
         if file[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
             filesInside.append(file)
@@ -400,6 +400,16 @@ def handleStartMoveDirectory(wfile, request, session):
             ac.productionDetails=production
             tasks.append(ac)
     
+    moveDir = moveDirectory()
+    moveDir.productionDetails=production
+    moveDir.sourceDirectory = sourceDirectory
+    moveDir.targetDirectory = targetDirectory
+    tasks.append(moveDir)
+    
+    session["tasks"]=tasks
+    if wfile != None:
+        wfile.write("""[]""".encode())
+        
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
 
@@ -715,6 +725,30 @@ class RenameDirectory(Task):
 
     def description(self):
         return "Rename directory ["+self.sourceDirectory+"] to ["+self.targetDirectory+"]"
+  
+class MoveDirectory(Task):
+    def execute(self):
+        productionLocation = self.productionDetails[2]
+        source = self.sourceDirectory
+        target = self.targetDirectory
+        sourceLocation = os.path.join(productionLocation, source)
+        targetLocation = os.path.join(productionLocation, target)
+        if svn.isKnownSVNFile(sourceLocation):
+            svn.svnMove(sourceLocation, targetLocation)
+        else:
+            shutil.move(sourceLocation, targetLocation)
+
+    def json(self):
+        result = dict()
+        result["task_display"] = self.display
+        result["task_status"] = self.status
+        result["file_id"] =  -1
+        result["file_location"] = self.sourceDirectory
+        result["task_description"] = self.description()
+        return json.dumps(result)
+
+    def description(self):
+        return "Move directory ["+self.sourceDirectory+"] to ["+self.targetDirectory+"]"
     
 class ChangeIDElement(Task):
     """Migration task for renaming an ID element of a library reference.
