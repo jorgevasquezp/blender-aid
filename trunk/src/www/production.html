@@ -847,18 +847,14 @@ function startRenameDir(dirname) {
 	}
 	newName = prompt("Last part of new directory name for ["+dirname+"].", path)
 	if (newName != null) {
-		if (newName != dirname) {
-			xmlRef = serviceStartRenameDir(refactorCallback, selectedProductionId, dirname, newName)
-		}
+		xmlRef = serviceStartRenameDir(refactorCallback, selectedProductionId, dirname, newName)
 	}
 }
 function startMoveDir(dirname) {
 
 	newName = prompt("Complete path for new directory of ["+dirname+"]. ", dirname)
 	if (newName != null) {
-		if (newName != fileName) {
-//			xmlRef = serviceStartMoveFile(refactorCallback, selectedProductionId, selectedFileId, newName)
-		}
+		xmlRef = serviceStartMoveDir(refactorCallback, selectedProductionId, dirname, newName);
 	}
 }
 function startRenameElement(elementId) {
