@@ -382,7 +382,7 @@ def handleStartMoveDirectory(wfile, request, session):
         referencesFromInside = indexer.getFileReferences(file[indexer.INDEX_FILE_ID])
         for reference in referencesFromInside:
             referenceFile = indexer.getFile(reference[indexer.INDEX_REFERENCE_FILE_ID])
-            if not referenceFile[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
+            if referenceFile != None and not referenceFile[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
                 if referenceFile not in referencesInside.keys():
                     referencesInside[referenceFile]=[]
                 if file not in referencesInside[referenceFile]:
@@ -390,17 +390,18 @@ def handleStartMoveDirectory(wfile, request, session):
     
     for referenceFile in referencesInside.keys():
         for file in referencesInside[referenceFile]:
+            print(file, referenceFile)
             ac = ChangeReference()
-            ac.fileId = referenceFile[indexer.INDEX_FILE_ID] 
+            ac.fileId = file[indexer.INDEX_FILE_ID] 
             ac.fileDetails = referenceFile
-            ac.referenceFileId = file[indexer.INDEX_FILE_ID]
+            ac.referenceFileId = referenceFile[indexer.INDEX_FILE_ID]
             ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
-            ac.currentFilename = file[indexer.INDEX_FILE_NAME]
-            ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
+            ac.currentFilename = referenceFile[indexer.INDEX_FILE_NAME]
+            ac.currentFileLocation = referenceFile[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
             tasks.append(ac)
     
-    moveDir = moveDirectory()
+    moveDir = MoveDirectory()
     moveDir.productionDetails=production
     moveDir.sourceDirectory = sourceDirectory
     moveDir.targetDirectory = targetDirectory
@@ -576,6 +577,7 @@ class RenameIDElement(Task):
         handle.close()
 
 class ChangeReference(Task):
+    """ only works when the referenced file is moved, not when the 'using' file is moved! for this the ChangeLibrary is needed. """
     def description(self):
         return "Move library ["+self.currentFileLocation+"] to ["+self.newLocation+"/"+self.currentFilename+"]"
 
@@ -588,6 +590,7 @@ class ChangeReference(Task):
         
         absNewLoc = os.path.normcase(posixpath.normpath(os.path.join(os.path.join(self.productionDetails[2], self.newLocation), self.currentFilename)))
         newpath = "//"+_relpath(absNewLoc, fileLocationDir)
+        print(fileLocation)
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
             
