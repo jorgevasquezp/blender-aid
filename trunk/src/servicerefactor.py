@@ -349,6 +349,7 @@ def handleStartMoveDirectory(wfile, request, session):
         wfile.write("""[{"message":"Target directory already exists."}]""".encode())
         return;
     files = indexer.getProductionFiles(productionId);
+    filesInside = []
     for file in files:
         if file[indexer.INDEX_FILE_LOCATION].startswith(sourceDirectory):
             filesInside.append(file)
