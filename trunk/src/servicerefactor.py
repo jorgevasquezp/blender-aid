@@ -390,7 +390,6 @@ def handleStartMoveDirectory(wfile, request, session):
     
     for referenceFile in referencesInside.keys():
         for file in referencesInside[referenceFile]:
-            print(file, referenceFile)
             ac = ChangeReferenceForMove()
             ac.fileId = file[indexer.INDEX_FILE_ID] 
             ac.fileDetails = file
