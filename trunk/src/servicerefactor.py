@@ -335,7 +335,7 @@ def handleStartRenameDirectory(wfile, request, session):
     if wfile != None:
         wfile.write("""[]""".encode())
    
-def handleMoveDirectory(wfile, request, session):
+def handleStartMoveDirectory(wfile, request, session):
     productionId=int(request["production_id"])
     production=indexer.getProduction(productionId)
     sourceDirectory= str(request["source_directory"])
