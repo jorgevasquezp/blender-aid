@@ -391,13 +391,15 @@ def handleStartMoveDirectory(wfile, request, session):
     for referenceFile in referencesInside.keys():
         for file in referencesInside[referenceFile]:
             print(file, referenceFile)
-            ac = ChangeReference()
+            ac = ChangeReferenceForMove()
             ac.fileId = file[indexer.INDEX_FILE_ID] 
-            ac.fileDetails = referenceFile
+            ac.fileDetails = file
+            ac.referenceFileDetails = referenceFile
             ac.referenceFileId = referenceFile[indexer.INDEX_FILE_ID]
-            ac.newLocation = os.path.dirname(file[indexer.INDEX_FILE_LOCATION].replace(sourceDirectory, targetDirectory, 1))
-            ac.currentFilename = referenceFile[indexer.INDEX_FILE_NAME]
-            ac.currentFileLocation = referenceFile[indexer.INDEX_FILE_LOCATION]
+            ac.targetDirectory = targetDirectory
+            ac.sourceDirectory = sourceDirectory
+            ac.currentFilename = file[indexer.INDEX_FILE_NAME]
+            ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
             tasks.append(ac)
     
@@ -575,7 +577,8 @@ class RenameIDElement(Task):
                     idblock.Set("name", self.newElementName)
         
         handle.close()
-
+        
+#Change reference towards a moved file
 class ChangeReference(Task):
     """ only works when the referenced file is moved, not when the 'using' file is moved! for this the ChangeLibrary is needed. """
     def description(self):
@@ -590,7 +593,6 @@ class ChangeReference(Task):
         
         absNewLoc = os.path.normcase(posixpath.normpath(os.path.join(os.path.join(self.productionDetails[2], self.newLocation), self.currentFilename)))
         newpath = "//"+_relpath(absNewLoc, fileLocationDir)
-        print(fileLocation)
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
             
@@ -610,6 +612,40 @@ class ChangeReference(Task):
             
         handle.close()
 
+#Change references within a moved file
+class ChangeReferenceForMove(Task):
+    def description(self):
+        return "Change library reference [" + self.referenceFileDetails[indexer.INDEX_FILE_LOCATION] + "] in file[" +self.currentFilename+"]"
+
+    def execute(self):
+        productionLocation = self.productionDetails[indexer.INDEX_PRODUCTION_LOCATION]
+        fileLocation = self.fileDetails[indexer.INDEX_FILE_LOCATION]
+        fileLocation = os.path.join(productionLocation, fileLocation)
+        subDirs = fileLocation.replace(self.sourceDirectory, self.targetDirectory, 1)
+        fileLocationDir = os.path.dirname(subDirs)
+        absRefLoc = os.path.normcase(posixpath.normpath(os.path.join(self.productionDetails[2], subDirs)))
+        
+        absNewLoc = os.path.normcase(posixpath.normpath(os.path.join(self.productionDetails[2], self.referenceFileDetails[indexer.INDEX_FILE_LOCATION])))
+        newpath = "//"+_relpath(absNewLoc, fileLocationDir)
+        handle = blendfile.openBlendFile(fileLocation, 'r+b')
+        for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
+            
+            relPath = libraryblock.Get("name").split("\0")[0].replace("\\", "/")
+            absPath = blendfile.blendPath2AbsolutePath(fileLocation, relPath)
+            normPath = os.path.normpath(absPath)
+            if normPath==absNewLoc:
+                libraryblock.Set("name", newpath)
+
+        for imageblock in handle.FindBlendFileBlocksWithCode("IM"):
+            
+            relPath = imageblock.Get("name").split("\0")[0].replace("\\", "/")
+            absPath = blendfile.blendPath2AbsolutePath(fileLocation, relPath)
+            normPath = os.path.normpath(absPath)
+            if normPath==absNewLoc:
+                imageblock.Set("name", newpath)
+            
+        handle.close()
+        
 class MoveFile(Task):
     """Refactor task for moving a blend file.
 the blend file is placed in the new location and all IM and LI references are updated
@@ -736,6 +772,8 @@ class MoveDirectory(Task):
         target = self.targetDirectory
         sourceLocation = os.path.join(productionLocation, source)
         targetLocation = os.path.join(productionLocation, target)
+        if (not os.path.exists(os.path.dirname(targetLocation))):
+            os.makedirs(os.path.dirname(targetLocation))
         if svn.isKnownSVNFile(sourceLocation):
             svn.svnMove(sourceLocation, targetLocation)
         else:

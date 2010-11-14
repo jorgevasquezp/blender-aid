@@ -137,6 +137,21 @@ def svnMove(fileLocation, newFileLocation):
         dirname, fname = path.split(dirname)
     return
 
+# action to move a svn directory to another location
+def svnMoveDir(directoryLocation, newDirectoryLocation):
+    client = pysvn.Client()
+    dirname = newDirectoryLocation
+    svnAdds = []    
+    while dirname!=None :
+        if isKnownSVNFile(dirname):
+            svnAdds.reverse()
+            client.add(svnAdds, recurse=False);
+            client.move2([directoryLocation], newDirectoryLocation)
+            return
+        svnAdds.append(dirname)
+        dirname, fname = path.split(dirname)
+    return
+
 def svnUpdate(location, username, password):
     global _svnUsername
     global _svnPassword
