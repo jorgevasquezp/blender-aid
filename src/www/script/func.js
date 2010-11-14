@@ -21,7 +21,13 @@ function serviceStartRenameDir(callback, productionId, sourceDirectory, targetDi
 	xmlDoc.send( "{\"production_id\":"+productionId+", \"source_directory\":\""+sourceDirectory+"\",\"target_directory_name\":\""+targetDirectoryLastName+"\"}\r\n" );
 	return xmlDoc;
 }
-
+function serviceStartMoveDir(callback, productionId, sourceDirectory, targetDirectory) {
+	xmlDoc = new XMLHttpRequest();
+	xmlDoc.onload = callback ;
+	xmlDoc.open( "POST", "/service/movedir", true );
+	xmlDoc.send( "{\"production_id\":"+productionId+", \"source_directory\":\""+sourceDirectory+"\",\"target_directory\":\""+targetDirectory+"\"}\r\n" );
+	return xmlDoc;
+}
 function serviceStartRenameFile(callback, productionId, fileId, newName) {
 	xmlDoc = new XMLHttpRequest();
 	xmlDoc.onload = callback ;
