@@ -287,6 +287,13 @@ def handleStartRenameDirectory(wfile, request, session):
     targetLastDirectoryName=str(request["target_directory_name"])
     targetDirectory = os.path.join(os.path.dirname(sourceDirectory), targetLastDirectoryName)
     files = indexer.getProductionFiles(productionId);
+    #perform checks
+    if (sourceDirectory==targetDirectory):
+        wfile.write("""[{"message":"Target directory is same as source."}]""".encode())
+        return;
+    if (os.path.exists(targetDirectory)):
+        wfile.write("""[{"message":"Target directory already exists."}]""".encode())
+        return;
     filesInside = []
     tasks=[]
     for file in files:
@@ -389,7 +396,6 @@ def handleMoveDirectory(wfile, request, session):
             ac.currentFileLocation = file[indexer.INDEX_FILE_LOCATION]
             ac.productionDetails=production
             tasks.append(ac)
-    
     
 def handleGetCurrentTasks(wfile, request, session):
     tasks = session["tasks"]
