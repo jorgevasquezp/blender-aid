@@ -17,6 +17,7 @@
     
 """
 # the blender-aid API
+import json
 
 class BlenderAidException:
     """
@@ -35,7 +36,10 @@ def request(server, servicename, requestParams)
             3. receive the JSON response string
             4. translate the JSON response to the result
     """
-    pass
+    # 1
+    request = json.dumps(requestParams)
+    # 4:
+    return json.loads(response)
     
 class Server:
     """
