@@ -17,6 +17,10 @@
     
 """
 # the blender-aid API
+# httplib if < python 3.0
+# anders http.client
+
+import httplib
 import json
 
 class BlenderAidException:
@@ -25,7 +29,7 @@ class BlenderAidException:
     """
     pass
 
-def request(server, servicename, requestParams)
+def request(server, servicename, requestParams):
     """
         send a request to the servicename with the requestParams and result
         the response.
@@ -37,10 +41,18 @@ def request(server, servicename, requestParams)
             4. translate the JSON response to the result
     """
     # 1
-    request = json.dumps(requestParams)
+    request = json.dumps(requestParams)+"\r\n"
+    # 2
+    connection = httplib.HTTPConnection(server[0], server[1])
+    connection.request("POST", "/service/" + servicename, request)
+    # 3
+    response = connection.getresponse()
+    responseBytes = response.read()
+    connection.close()
     # 4:
-    return json.loads(response)
-    
+    result = json.loads(responseBytes)
+    return result
+
 class Server:
     """
         Server is the entry class to access Blender-aid functionality from
@@ -54,7 +66,7 @@ class Server:
             usage:
             server = blenderaidapi.Server(("127.0.0.1", 8080))
         """
-        pass
+        self.binding = binding
         
     def getProductions(self, name=None, workfolder=None):
         """
@@ -63,8 +75,11 @@ class Server:
             
             result is an array with Production classes, or an Exception
         """
-        pass
-
+        response = request(self.binding, "productions", [])
+        result = []
+        for jsonProduction in response:
+            result.append(Production(self, jsonProduction))
+        return result
     def addProduction(self, production):
         """
             register a production to blender-aid
@@ -114,14 +129,14 @@ class Production:
         svnUserid -- SVN userid
         svnPassword -- SVN password
     """
-    def __init__(self, server):
+    def __init__(self, server, jsonProduction):
         self.server=server
-        self.id=None
-        self.name=None
-        self.location=None
-        self.svnUrl=None
-        self.svnUserid=None
-        self.svnPassword=None
+        self.id=jsonProduction["production_id"]
+        self.name=jsonProduction["production_name"]
+        self.location=jsonProduction["production_location"]
+        self.svnUrl=jsonProduction["production_svnurl"]
+        self.svnUserid=jsonProduction["production_svnuserid"]
+        self.svnPassword=jsonProduction["production_svnpassword"]
 
     def getMissingLinks(self):
         """
