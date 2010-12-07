@@ -78,8 +78,24 @@ class Server:
         response = request(self.binding, "productions", [])
         result = []
         for jsonProduction in response:
-            result.append(Production(self, jsonProduction))
+            add = True
+            if name != None and jsonProduction.production_name.find(name) != -1:
+                add = False
+            if workfolder != None and jsonProduction.production_location.find(workfolder) != -1:
+                add = False
+
+            if add:
+                result.append(Production(self, jsonProduction))
+
         return result
+    
+    def getActiveProduction(self):
+        """
+            get the active production.
+            return Production or None, when no production is active
+        """
+        pass
+
     def addProduction(self, production):
         """
             register a production to blender-aid
@@ -128,12 +144,14 @@ class Production:
         svnUrl -- SVN url of the production
         svnUserid -- SVN userid
         svnPassword -- SVN password
+        active -- is this the actice production
     """
     def __init__(self, server, jsonProduction):
         self.server=server
         self.id=jsonProduction["production_id"]
         self.name=jsonProduction["production_name"]
         self.location=jsonProduction["production_location"]
+        self.active=jsonProduction["production_active"]
         self.svnUrl=jsonProduction["production_svnurl"]
         self.svnUserid=jsonProduction["production_svnuserid"]
         self.svnPassword=jsonProduction["production_svnpassword"]
@@ -159,6 +177,12 @@ class Production:
         """
             get a list of directories in the production. Empty directories are 
             always excluded in the result
+        """
+        pass
+    def activate(self):
+        """
+            activate this production (make the production the current active
+            production. usable for easy retrieval.
         """
         pass
 
