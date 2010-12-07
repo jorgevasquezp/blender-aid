@@ -70,7 +70,10 @@ def handleGetProductionView(wfile, request, session):
         scenes of the production
         missing links of the production
     """
-    production = indexer.getActiveProduction()
+    if ("production_id" in request ) :
+        production = indexer.getProduction(request["production_id"])
+    else :
+        production = indexer.getActiveProduction()
     result = []
     if production is not None:
         productionId=production[0]

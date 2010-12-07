@@ -447,7 +447,10 @@ def handleExecuteCurrentTasks(wfile, request, session):
     handleGetCurrentTasks(wfile, request, session)
 
 def handleGetMissingLinkSolutions(wfile, request, session):
-    productionId=int(session["production_id"])
+    if "production_id" in request:
+        productionId=int(request["production_id"])
+    else:
+        productionId=int(session["production_id"])
     elementId=int(request["element_id"])
     elementDetails = indexer.getElement(elementId)
     result = []
