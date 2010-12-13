@@ -23,11 +23,15 @@
 import httplib
 import json
 
-class BlenderAidException:
+class BlenderAidException(Exception):
     """
         Base Exception class to be used for exception management.
     """
-    pass
+    def __init__(self, message):
+        self.message = message
+        
+    def __str__(self):
+        return str(self.message)
 
 def request(binding, servicename, requestParams):
     """
@@ -186,6 +190,7 @@ class PossibleLink:
         pass
     def __str__(self):
         return "Match: "+self.file_location+" "+str(self.match)
+
 class Production:
     """
         object representing a production
@@ -250,12 +255,14 @@ class Production:
             always excluded in the result
         """
         pass
+        
     def activate(self):
         """
             activate this production (make the production the current active
             production. usable for easy retrieval.
         """
-        pass
+        response = request(self.server.binding, "activateproduction", {"production_id":self.id})
+        return None
         
     def __str__(self):
         return "Production: "+self.name
@@ -308,6 +315,7 @@ class File:
         
     def __str__(self):
         return "File: "+self.location
+
 class Directory:
     """
         object representing a directory
@@ -318,14 +326,22 @@ class Directory:
                     from the roor location of the production
             server -- the Server object what is used to retrieve this object
     """
-    def __init__(self, server, production):
-        pass
+    def __init__(self, server, production, json):
+        self.server = server
+        self.production = production
+        self.location=json["dir_location"]
 
-    def rename(self, newName, execute=True):
-        pass
+    def rename(self, targetDirname, execute=True):
+        response = request(self.server.binding, "renamedir", {"production_id":self.id, "source_directory":self.location, "target_directory_name":targetDirname})
+        
+        if len(response) > 0 :
+           raise BlenderAidException(response[0]["message"]) 
+        elif execute :
+            #execute rename 
 
-    def move(self, newLocation, execute=True):
-        pass
+    def move(self, targetDirname, execute=True):
+        response = request(self.server.binding, "movedir", {"production_id":self.id, "source_directory":self.location, "target_directory":targetDirname})
+        #response controleren
         
     def getFiles(self):
         """
