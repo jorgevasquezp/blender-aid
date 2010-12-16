@@ -22,6 +22,7 @@
 
 import httplib
 import json
+import os
 
 class BlenderAidException(Exception):
     """
@@ -130,13 +131,57 @@ class Server:
             "production_id":production.id
         })
 
-class RefactoringAction:
-    pass
+class RefactoringTask:
+    def __init__(self, server, process, json) :
+        self.server = server
+        self.process = process
+        self.display = json["task_display"]
+        self.status = json["task_status"]
+        self.file_id = json["file_id"]
+        self.file_location = json["file_location"]
+        self.description = json["task_description"]
+    def __str__(self):
+        return self.description
 
 class RefactoringProcess:
-    def execute(self):
-        pass
+    """
+        Container holding all tasks of a refactoring process
+    """
+    def __init__(self, server):
+        self.server = server
+        self.update()
+        
+    def update(self):
+        """
+            update the task list with the actual state of the server
+        """
+        response = request(self.server.binding, "refactoringtasks", {})
+        json = RefactoringProcess(self.server, response)
+        tasks=[]
+        for jsonTask in json:
+            tasks.append(RefactoringTask(self.server, self, jsonTask))
+        self.tasks = tasks
+        
+    def execute(self, all = True):
+        if all:
+            while True:
+                cont = True
+                for task in self.tasks:
+                    if task.status == "Init":
+                        cont = False
+                if cont:
+                    return
+                self.execute(all=False)
+        else:
+            response = request(self.server.binding, "executetask", {})
+            self.update()
 
+    def __str__(self):
+        str = ""
+        for task in self.tasks:
+            str = str + str(task)+"\r\n"
+        return str
+    
 class MissingLink:
     """
         object representing a missing link
@@ -176,6 +221,7 @@ class PossibleLink:
         self.production = production
         self.missinglink = missinglink
         self.file_id = json["file_id"]
+        self.element_id = json["element_id"]
         self.file_name = json["file_name"]
         self.file_location = json["file_location"]
         self.match = json["match"]
@@ -187,6 +233,14 @@ class PossibleLink:
             execute -- boolean indicating if the refactoring process will be
                     executed immediatly by this call
         """
+        response = request(self.server.binding, "solvemissinglink", {"production_id":self.id, "file_id":self.file_id, "element_id":self.element_id})
+        
+        if len(response) > 0 :
+            raise BlenderAidException(response[0]["message"]) 
+        elif execute :
+            return RefactoringProcess(self.server).execute()
+        else:
+            return RefactoringProcess(self.server)
         pass
     def __str__(self):
         return "Match: "+self.file_location+" "+str(self.match)
@@ -254,7 +308,19 @@ class Production:
             get a list of directories in the production. Empty directories are 
             always excluded in the result
         """
-        pass
+        files = getFiles(self)
+        directorynames = []
+        for file in files:
+            directoryname = file.getDirectoryName()
+            if directoryname not in directorynames:
+                directorynames.append(directoryname)
+        result = []
+        
+        for directoryname in directorynames:
+            result.append(Directory(self.server, self, directoryname))
+
+        return result
+
         
     def activate(self):
         """
@@ -262,7 +328,6 @@ class Production:
             production. usable for easy retrieval.
         """
         response = request(self.server.binding, "activateproduction", {"production_id":self.id})
-        return None
         
     def __str__(self):
         return "Production: "+self.name
@@ -307,11 +372,17 @@ class File:
     def move(self, directory, execute=True):
         pass
     
+    def getDirectoryName(self):
+        """
+            returns the production relative path of the directory where the file is located.
+        """
+        return os.path.dirname(self.location)
+    
     def getDirectory(self):
         """
             get the directory where this file is located.
         """
-        pass
+        return Directory(self.server, self.production, self.getDirectoryName())
         
     def __str__(self):
         return "File: "+self.location
@@ -326,18 +397,20 @@ class Directory:
                     from the roor location of the production
             server -- the Server object what is used to retrieve this object
     """
-    def __init__(self, server, production, json):
+    def __init__(self, server, production, location):
         self.server = server
         self.production = production
-        self.location=json["dir_location"]
+        self.location = location
 
     def rename(self, targetDirname, execute=True):
         response = request(self.server.binding, "renamedir", {"production_id":self.id, "source_directory":self.location, "target_directory_name":targetDirname})
         
         if len(response) > 0 :
-           raise BlenderAidException(response[0]["message"]) 
+            raise BlenderAidException(response[0]["message"]) 
         elif execute :
-            #execute rename 
+            return RefactoringProcess(self.server).execute()
+        else:
+            return RefactoringProcess(self.server)
 
     def move(self, targetDirname, execute=True):
         response = request(self.server.binding, "movedir", {"production_id":self.id, "source_directory":self.location, "target_directory":targetDirname})
@@ -347,7 +420,12 @@ class Directory:
         """
             retrieve all files inside this directory (including subdirectories)
         """
-        pass
+        files = self.production.getFiles()
+        result = []
+        for file in files:
+            if file.location.startswith(self.location):
+                result.append(file)
+        return result
 
 class Element:
     """
