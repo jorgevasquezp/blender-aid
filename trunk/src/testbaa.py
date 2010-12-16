@@ -17,3 +17,10 @@ for missinglink in production.getMissingLinks():
     print(missinglink)
     for match in missinglink.getPossibleMatches():
         print(" - "+str(match))
+        
+missinglink = production.getMissingLinks()[0]
+print(missinglink)
+match =missinglink.getPossibleMatches()[0]
+process = match.fix(False)
+print(process)
+
