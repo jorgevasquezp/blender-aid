@@ -1,0 +1,461 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module blenderaidapi</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>blenderaidapi</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/jbakker/googlecode/blender-aid/src/blenderaidapi.py">/home/jbakker/googlecode/blender-aid/src/blenderaidapi.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;Blender-aid&nbsp;API.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;=&nbsp;blenderaidapi.<a href="#Server">Server</a>(("localhost",&nbsp;8080))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;productions&nbsp;=&nbsp;server.getProductions()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;production&nbsp;in&nbsp;productions:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(production.name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;files&nbsp;=&nbsp;production.getFiles()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;file&nbsp;in&nbsp;files:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(file.location)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Example2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;=&nbsp;blenderaidapi.<a href="#Server">Server</a>(("localhost",&nbsp;8080))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;production&nbsp;=&nbsp;server.getProductions()[0]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;production.getFiles(location="chars/frankie.blend")[0].rename("momo.blend")</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="httplib.html">httplib</a><br>
+</td><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="blenderaidapi.html#Directory">Directory</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#Element">Element</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#File">File</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#MissingLink">MissingLink</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#PossibleLink">PossibleLink</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#Production">Production</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#RefactoringProcess">RefactoringProcess</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#RefactoringTask">RefactoringTask</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#Reference">Reference</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blenderaidapi.html#Server">Server</a>
+</font></dt><dt><font face="helvetica, arial"><a href="exceptions.html#Exception">exceptions.Exception</a>(<a href="exceptions.html#BaseException">exceptions.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="blenderaidapi.html#BlenderAidException">BlenderAidException</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BlenderAidException">class <strong>BlenderAidException</strong></a>(<a href="exceptions.html#Exception">exceptions.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Base&nbsp;<a href="exceptions.html#Exception">Exception</a>&nbsp;class&nbsp;to&nbsp;be&nbsp;used&nbsp;for&nbsp;exception&nbsp;management.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="blenderaidapi.html#BlenderAidException">BlenderAidException</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="BlenderAidException-__init__"><strong>__init__</strong></a>(self, message)</dt></dl>
+
+<dl><dt><a name="BlenderAidException-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;string&nbsp;of&nbsp;the&nbsp;object.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#BlenderAidException-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="BlenderAidException-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BlenderAidException-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#BlenderAidException-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="BlenderAidException-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BlenderAidException-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Directory">class <strong>Directory</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>object&nbsp;representing&nbsp;a&nbsp;directory<br>
+&nbsp;<br>
+fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;production&nbsp;--&nbsp;production&nbsp;where&nbsp;this&nbsp;directory&nbsp;is&nbsp;part&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;location&nbsp;--&nbsp;the&nbsp;full&nbsp;directory&nbsp;name&nbsp;(including&nbsp;parent&nbsp;directory)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;the&nbsp;roor&nbsp;location&nbsp;of&nbsp;the&nbsp;production<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;--&nbsp;the&nbsp;<a href="#Server">Server</a>&nbsp;object&nbsp;what&nbsp;is&nbsp;used&nbsp;to&nbsp;retrieve&nbsp;this&nbsp;object<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Directory-__init__"><strong>__init__</strong></a>(self, server, production, location)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#Directory">Directory</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="Directory-getFiles"><strong>getFiles</strong></a>(self)</dt><dd><tt>Retrieve&nbsp;all&nbsp;files&nbsp;inside&nbsp;this&nbsp;directory&nbsp;(including&nbsp;subdirectories)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Array&nbsp;of&nbsp;files.</tt></dd></dl>
+
+<dl><dt><a name="Directory-move"><strong>move</strong></a>(self, targetDirname, execute<font color="#909090">=True</font>)</dt><dd><tt>Move&nbsp;the&nbsp;directory.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targetDirname&nbsp;-&nbsp;target&nbsp;directory&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execute&nbsp;&nbsp;&nbsp;-&nbsp;if&nbsp;true,&nbsp;perform&nbsp;move&nbsp;along&nbsp;with&nbsp;method&nbsp;call,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;do&nbsp;not&nbsp;perform&nbsp;the&nbsp;move.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Refactoringprocess&nbsp;object&nbsp;or&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+<dl><dt><a name="Directory-rename"><strong>rename</strong></a>(self, targetDirname, execute<font color="#909090">=True</font>)</dt><dd><tt>Rename&nbsp;the&nbsp;directory.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targetDirname&nbsp;-&nbsp;target&nbsp;directory&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execute&nbsp;&nbsp;&nbsp;-&nbsp;if&nbsp;true,&nbsp;perform&nbsp;move&nbsp;along&nbsp;with&nbsp;method&nbsp;call,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;do&nbsp;not&nbsp;perform&nbsp;the&nbsp;move.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Refactoringprocess&nbsp;object&nbsp;or&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Element">class <strong>Element</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;an&nbsp;element.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Element-__init__"><strong>__init__</strong></a>(self, server, production, file, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#Element">Element</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="Element-getReferencesTo"><strong>getReferencesTo</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;with&nbsp;all&nbsp;references&nbsp;to&nbsp;this&nbsp;specific&nbsp;element.</tt></dd></dl>
+
+<dl><dt><a name="Element-rename"><strong>rename</strong></a>(self, newName, execute<font color="#909090">=True</font>)</dt><dd><tt>Rename&nbsp;this&nbsp;element&nbsp;to&nbsp;newName.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newName&nbsp;&nbsp;&nbsp;-&nbsp;new&nbsp;name&nbsp;of&nbsp;the&nbsp;element<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execute&nbsp;&nbsp;&nbsp;-&nbsp;if&nbsp;true,&nbsp;perform&nbsp;move&nbsp;along&nbsp;with&nbsp;method&nbsp;call,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;do&nbsp;not&nbsp;perform&nbsp;the&nbsp;move.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Refactoringprocess&nbsp;object&nbsp;or&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="File">class <strong>File</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;instance&nbsp;of&nbsp;the&nbsp;server&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;production&nbsp;&nbsp;-&nbsp;<a href="#Production">Production</a>&nbsp;where&nbsp;this&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;file&nbsp;(key)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;location&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;relative&nbsp;location&nbsp;from&nbsp;the&nbsp;production&nbsp;location&nbsp;of&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;including&nbsp;the&nbsp;filename<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;name&nbsp;of&nbsp;the&nbsp;file<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="File-__init__"><strong>__init__</strong></a>(self, server, production, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#File">File</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="File-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;the&nbsp;object&nbsp;<a href="#File">File</a>&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="File-getDirectory"><strong>getDirectory</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;directory&nbsp;where&nbsp;this&nbsp;file&nbsp;is&nbsp;located.</tt></dd></dl>
+
+<dl><dt><a name="File-getDirectoryName"><strong>getDirectoryName</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;production&nbsp;relative&nbsp;path&nbsp;of&nbsp;the&nbsp;directory&nbsp;where&nbsp;the&nbsp;file&nbsp;is&nbsp;located.</tt></dd></dl>
+
+<dl><dt><a name="File-getElements"><strong>getElements</strong></a>(self, name<font color="#909090">=None</font>, type<font color="#909090">=None</font>)</dt><dd><tt>Get&nbsp;a&nbsp;list&nbsp;of&nbsp;elements&nbsp;of&nbsp;this&nbsp;file.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;--&nbsp;name&nbsp;filter&nbsp;to&nbsp;use<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;--&nbsp;type&nbsp;filter&nbsp;to&nbsp;use<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Array&nbsp;of&nbsp;elements.</tt></dd></dl>
+
+<dl><dt><a name="File-getReferences"><strong>getReferences</strong></a>(self, referencedBy<font color="#909090">=False</font>)</dt><dd><tt>Get&nbsp;all&nbsp;the&nbsp;references&nbsp;of&nbsp;the&nbsp;file.<br>
+&nbsp;<br>
+Parameter:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;referencedBy&nbsp;-&nbsp;if&nbsp;true,&nbsp;only&nbsp;the&nbsp;references&nbsp;towards&nbsp;the&nbsp;file&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are&nbsp;returned,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;only&nbsp;the&nbsp;references&nbsp;from&nbsp;the&nbsp;file&nbsp;(towards<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;other&nbsp;files)&nbsp;are&nbsp;returned.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Array&nbsp;of&nbsp;references.</tt></dd></dl>
+
+<dl><dt><a name="File-move"><strong>move</strong></a>(self, newLoation, execute<font color="#909090">=True</font>)</dt><dd><tt>Move&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newLoation&nbsp;-&nbsp;the&nbsp;target&nbsp;directory&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execute&nbsp;&nbsp;&nbsp;-&nbsp;if&nbsp;true,&nbsp;perform&nbsp;move&nbsp;along&nbsp;with&nbsp;method&nbsp;call,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;do&nbsp;not&nbsp;perform&nbsp;the&nbsp;move.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Refactoringprocess&nbsp;object&nbsp;or&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+<dl><dt><a name="File-rename"><strong>rename</strong></a>(self, newFilename, execute<font color="#909090">=True</font>)</dt><dd><tt>Rename&nbsp;a&nbsp;file.&nbsp;<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newFilename&nbsp;-&nbsp;new&nbsp;name&nbsp;of&nbsp;the&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;execute:&nbsp;if&nbsp;true,&nbsp;perform&nbsp;renaming&nbsp;along&nbsp;with&nbsp;method&nbsp;call,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;false,&nbsp;don&nbsp;not&nbsp;perform&nbsp;the&nbsp;renaming.<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Refactoringprocess&nbsp;object&nbsp;or&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MissingLink">class <strong>MissingLink</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;a&nbsp;missing&nbsp;link.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;instance&nbsp;of&nbsp;the&nbsp;server&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;production&nbsp;&nbsp;&nbsp;-&nbsp;the&nbsp;production&nbsp;of&nbsp;the&nbsp;missing&nbsp;link<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file_location-&nbsp;location&nbsp;of&nbsp;the&nbsp;file&nbsp;containing&nbsp;the&nbsp;missing&nbsp;link<br>
+&nbsp;&nbsp;&nbsp;&nbsp;missing_file_location-&nbsp;location&nbsp;of&nbsp;the&nbsp;missing&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;file&nbsp;containing&nbsp;the&nbsp;missing&nbsp;link<br>
+&nbsp;&nbsp;&nbsp;&nbsp;element_id&nbsp;&nbsp;&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;element&nbsp;in&nbsp;the&nbsp;file<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MissingLink-__init__"><strong>__init__</strong></a>(self, server, production, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#MissingLink">MissingLink</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="MissingLink-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;missing&nbsp;link&nbsp;as&nbsp;a&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="MissingLink-getPossibleMatches"><strong>getPossibleMatches</strong></a>(self)</dt><dd><tt>Get&nbsp;possibilities&nbsp;for&nbsp;the&nbsp;missing&nbsp;link.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PossibleLink">class <strong>PossibleLink</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;a&nbsp;possible&nbsp;link&nbsp;to&nbsp;solve&nbsp;of&nbsp;a&nbsp;missing&nbsp;link.<br>
+&nbsp;<br>
+server&nbsp;-&nbsp;the&nbsp;server&nbsp;instance<br>
+production&nbsp;-&nbsp;the&nbsp;production&nbsp;instance<br>
+missinglink&nbsp;-&nbsp;the&nbsp;missinglink&nbsp;instance<br>
+file_id&nbsp;-&nbsp;the&nbsp;file&nbsp;id&nbsp;where&nbsp;the&nbsp;missing&nbsp;link&nbsp;can&nbsp;be&nbsp;linked&nbsp;to&nbsp;<br>
+element_id&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;element&nbsp;in&nbsp;the&nbsp;file<br>
+file_name&nbsp;-&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;file<br>
+file_location&nbsp;-&nbsp;the&nbsp;relative&nbsp;location&nbsp;of&nbsp;the&nbsp;file<br>
+match&nbsp;-&nbsp;how&nbsp;likely&nbsp;the&nbsp;link&nbsp;is<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="PossibleLink-__init__"><strong>__init__</strong></a>(self, server, production, missinglink, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#PossibleLink">PossibleLink</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="PossibleLink-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;the&nbsp;object&nbsp;<a href="#PossibleLink">PossibleLink</a>&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="PossibleLink-fix"><strong>fix</strong></a>(self, execute<font color="#909090">=True</font>)</dt><dd><tt>Fix&nbsp;the&nbsp;missing&nbsp;link&nbsp;by&nbsp;applying&nbsp;this&nbsp;link.<br>
+&nbsp;<br>
+Execute&nbsp;--&nbsp;boolean&nbsp;indicating&nbsp;if&nbsp;the&nbsp;refactoring&nbsp;process&nbsp;will&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executed&nbsp;immediatly&nbsp;by&nbsp;this&nbsp;call</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Production">class <strong>Production</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;a&nbsp;production.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;&nbsp;-&nbsp;instance&nbsp;of&nbsp;the&nbsp;server&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;production&nbsp;(key)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;name&nbsp;of&nbsp;the&nbsp;production<br>
+&nbsp;&nbsp;&nbsp;&nbsp;location-&nbsp;absolute&nbsp;path&nbsp;to&nbsp;the&nbsp;root&nbsp;of&nbsp;the&nbsp;production&nbsp;on&nbsp;the&nbsp;filesystem<br>
+&nbsp;&nbsp;&nbsp;&nbsp;svnUrl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;SVN&nbsp;url&nbsp;of&nbsp;the&nbsp;production<br>
+&nbsp;&nbsp;&nbsp;&nbsp;svnUserid&nbsp;&nbsp;&nbsp;-&nbsp;SVN&nbsp;userid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;svnPassword&nbsp;-&nbsp;SVN&nbsp;password<br>
+&nbsp;&nbsp;&nbsp;&nbsp;active&nbsp;&nbsp;-&nbsp;is&nbsp;this&nbsp;the&nbsp;actice&nbsp;production<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Production-__init__"><strong>__init__</strong></a>(self, server, jsonProduction)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#Production">Production</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="Production-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;the&nbsp;object&nbsp;<a href="#Production">Production</a>&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="Production-activate"><strong>activate</strong></a>(self)</dt><dd><tt>Activate&nbsp;this&nbsp;production&nbsp;(make&nbsp;the&nbsp;production&nbsp;the&nbsp;current&nbsp;active<br>
+production.&nbsp;Usable&nbsp;for&nbsp;easy&nbsp;retrieval.<br>
+&nbsp;<br>
+A&nbsp;production&nbsp;must&nbsp;be&nbsp;active&nbsp;in&nbsp;order&nbsp;to&nbsp;perform&nbsp;a&nbsp;refactoring&nbsp;task.</tt></dd></dl>
+
+<dl><dt><a name="Production-getDirectories"><strong>getDirectories</strong></a>(self)</dt><dd><tt>Get&nbsp;a&nbsp;list&nbsp;of&nbsp;directories&nbsp;in&nbsp;the&nbsp;production.&nbsp;Empty&nbsp;directories&nbsp;are&nbsp;<br>
+always&nbsp;excluded&nbsp;in&nbsp;the&nbsp;result.</tt></dd></dl>
+
+<dl><dt><a name="Production-getFiles"><strong>getFiles</strong></a>(self, name<font color="#909090">=None</font>, location<font color="#909090">=None</font>)</dt><dd><tt>Get&nbsp;a&nbsp;list&nbsp;of&nbsp;the&nbsp;files&nbsp;in&nbsp;the&nbsp;production.&nbsp;The&nbsp;list&nbsp;is&nbsp;filtered&nbsp;<br>
+with&nbsp;the&nbsp;given&nbsp;name&nbsp;and&nbsp;location.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;part&nbsp;of&nbsp;the&nbsp;filename&nbsp;to&nbsp;be&nbsp;include&nbsp;in&nbsp;the&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;location-&nbsp;part&nbsp;of&nbsp;the&nbsp;location&nbsp;of&nbsp;the&nbsp;file&nbsp;to&nbsp;be&nbsp;included&nbsp;in&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="Production-getMissingLinks"><strong>getMissingLinks</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;missing&nbsp;links&nbsp;in&nbsp;the&nbsp;production.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RefactoringProcess">class <strong>RefactoringProcess</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Container&nbsp;holding&nbsp;all&nbsp;tasks&nbsp;of&nbsp;a&nbsp;refactoring&nbsp;process.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;&nbsp;-&nbsp;instance&nbsp;of&nbsp;the&nbsp;server&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tasks&nbsp;&nbsp;&nbsp;-&nbsp;list&nbsp;of&nbsp;tasks&nbsp;to&nbsp;be&nbsp;performed<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RefactoringProcess-__init__"><strong>__init__</strong></a>(self, server)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#RefactoringProcess">RefactoringProcess</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="RefactoringProcess-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;process&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="RefactoringProcess-execute"><strong>execute</strong></a>(self, all<font color="#909090">=True</font>)</dt><dd><tt>Execute&nbsp;a&nbsp;task.<br>
+If&nbsp;all&nbsp;is&nbsp;true,&nbsp;all&nbsp;tasks&nbsp;are&nbsp;executed.</tt></dd></dl>
+
+<dl><dt><a name="RefactoringProcess-update"><strong>update</strong></a>(self)</dt><dd><tt>Internal&nbsp;method&nbsp;to&nbsp;update&nbsp;the&nbsp;task&nbsp;list&nbsp;with&nbsp;the&nbsp;actual&nbsp;state&nbsp;of&nbsp;the&nbsp;server.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RefactoringTask">class <strong>RefactoringTask</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;single&nbsp;task&nbsp;in&nbsp;a&nbsp;refactoring&nbsp;process.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;&nbsp;-&nbsp;instance&nbsp;of&nbsp;the&nbsp;server&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;process&nbsp;-&nbsp;instance&nbsp;of&nbsp;refactoringprocess&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;-&nbsp;display&nbsp;of&nbsp;the&nbsp;task<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;&nbsp;-&nbsp;state&nbsp;of&nbsp;the&nbsp;task<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file_id&nbsp;-&nbsp;id&nbsp;of&nbsp;the&nbsp;file&nbsp;that&nbsp;the&nbsp;task&nbsp;effects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file_location&nbsp;-&nbsp;location&nbsp;of&nbsp;the&nbsp;file&nbsp;of&nbsp;the&nbsp;task<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;-&nbsp;description&nbsp;of&nbsp;the&nbsp;task<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RefactoringTask-__init__"><strong>__init__</strong></a>(self, server, process, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#RefactoringTask">RefactoringTask</a>&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="RefactoringTask-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Display&nbsp;the&nbsp;task&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Reference">class <strong>Reference</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Object&nbsp;representing&nbsp;a&nbsp;reference&nbsp;(link&nbsp;between&nbsp;files).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Reference-__init__"><strong>__init__</strong></a>(self, json)</dt><dd><tt>Initialize&nbsp;the&nbsp;<a href="#Reference">Reference</a>&nbsp;object.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Server">class <strong>Server</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Server">Server</a>&nbsp;is&nbsp;the&nbsp;entry&nbsp;class&nbsp;to&nbsp;access&nbsp;Blender-aid&nbsp;functionality&nbsp;from<br>
+other&nbsp;python&nbsp;sources.<br>
+&nbsp;<br>
+It&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;automate&nbsp;and&nbsp;integrate&nbsp;Blender-aid&nbsp;into&nbsp;your<br>
+production&nbsp;pipeline.<br>
+&nbsp;<br>
+Fields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;binding&nbsp;-&nbsp;server&nbsp;binding<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Server-__init__"><strong>__init__</strong></a>(self, binding)</dt><dd><tt>Usage:<br>
+server&nbsp;=&nbsp;blenderaidapi.<a href="#Server">Server</a>(("127.0.0.1",&nbsp;8080))</tt></dd></dl>
+
+<dl><dt><a name="Server-addProduction"><strong>addProduction</strong></a>(self, name, location, svnUrl<font color="#909090">=None</font>, svnUserid<font color="#909090">=None</font>, svnPassword<font color="#909090">=None</font>)</dt><dd><tt>Register&nbsp;a&nbsp;production&nbsp;to&nbsp;blender-aid.<br>
+&nbsp;<br>
+Note:&nbsp;the&nbsp;new&nbsp;production&nbsp;id&nbsp;generated&nbsp;by&nbsp;the&nbsp;database<br>
+is&nbsp;not&nbsp;updated.&nbsp;The&nbsp;production&nbsp;should&nbsp;be&nbsp;re-read.<br>
+&nbsp;<br>
+Note:&nbsp;exception&nbsp;handling&nbsp;not&nbsp;implemented&nbsp;yet.</tt></dd></dl>
+
+<dl><dt><a name="Server-getActiveProduction"><strong>getActiveProduction</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;active&nbsp;production.<br>
+Returns&nbsp;the&nbsp;active&nbsp;<a href="#Production">Production</a>&nbsp;or&nbsp;None,&nbsp;when&nbsp;no&nbsp;production&nbsp;is&nbsp;active.<br>
+&nbsp;<br>
+To&nbsp;refactor&nbsp;a&nbsp;production,&nbsp;the&nbsp;production&nbsp;must&nbsp;be&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Server-getProductions"><strong>getProductions</strong></a>(self, name<font color="#909090">=None</font>, workfolder<font color="#909090">=None</font>)</dt><dd><tt>Receive&nbsp;productions&nbsp;configured&nbsp;on&nbsp;the&nbsp;server&nbsp;matching&nbsp;the&nbsp;given&nbsp;name&nbsp;and<br>
+workfolder.&nbsp;When&nbsp;None&nbsp;these&nbsp;will&nbsp;be&nbsp;ignored.<br>
+&nbsp;<br>
+Result&nbsp;is&nbsp;an&nbsp;array&nbsp;with&nbsp;<a href="#Production">Production</a>&nbsp;classes,&nbsp;or&nbsp;an&nbsp;<a href="exceptions.html#Exception">Exception</a>.</tt></dd></dl>
+
+<dl><dt><a name="Server-removeProduction"><strong>removeProduction</strong></a>(self, production)</dt><dd><tt>Unregister&nbsp;a&nbsp;production&nbsp;from&nbsp;blender-aid.</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-request"><strong>request</strong></a>(binding, servicename, requestParams)</dt><dd><tt>Internal&nbsp;method&nbsp;used&nbsp;to&nbsp;send&nbsp;a&nbsp;request&nbsp;to&nbsp;the&nbsp;server&nbsp;with&nbsp;servicename&nbsp;<br>
+and&nbsp;requestParams.&nbsp;The&nbsp;server&nbsp;response&nbsp;is&nbsp;returneds.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;does:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;translate&nbsp;the&nbsp;requestParams&nbsp;to&nbsp;a&nbsp;JSON&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;send&nbsp;the&nbsp;JSON&nbsp;string&nbsp;to&nbsp;the&nbsp;server/servicename<br>
+&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;receive&nbsp;the&nbsp;JSON&nbsp;response&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;translate&nbsp;the&nbsp;JSON&nbsp;response&nbsp;to&nbsp;the&nbsp;result</tt></dd></dl>
+</td></tr></table>
+</body></html>

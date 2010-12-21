@@ -114,7 +114,7 @@ class Server:
             return Production(self, response[0])
         
 
-    def addProduction(self, production):
+    def addProduction(self, name, location, svnUrl=None, svnUserid=None, svnPassword=None):
         """
             Register a production to blender-aid.
             
@@ -124,11 +124,11 @@ class Server:
             Note: exception handling not implemented yet.
         """
         return request(self.binding, "addproduction", {
-            "production_name":production.name,
-            "production_location":production.location,
-            "production_svnurl":production.svnUrl,
-            "production_svnusername":production.svnUserid,
-            "production_svnpassword":production.svnPassword
+            "production_name":name,
+            "production_location":location,
+            "production_svnurl":svnUrl,
+            "production_svnusername":svnUserid,
+            "production_svnpassword":svnPassword
         })
         
     def removeProduction(self, production):
@@ -212,15 +212,19 @@ class RefactoringProcess:
         else:
             response = request(self.server.binding, "executetask", {})
             self.update()
+            print(self)
 
     def __str__(self):
         """
             Display process as a string.
         """
-        str = ""
+        numberOfTasks= len(self.tasks)
+        numberFinished = 0
         for task in self.tasks:
-            str = str + str(task)+"\r\n"
-        return str
+            if task.status=="Finished":
+                numberFinished+=1
+            
+        return "refactoring ["+str(numberFinished)+"-"+str(numberOfTasks)+"]"
     
 class MissingLink:
     """
