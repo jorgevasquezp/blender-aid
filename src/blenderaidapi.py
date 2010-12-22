@@ -286,7 +286,6 @@ class PossibleLink:
         self.production = production
         self.missinglink = missinglink
         self.file_id = json["file_id"]
-        self.element_id = json["element_id"]
         self.file_name = json["file_name"]
         self.file_location = json["file_location"]
         self.match = json["match"]
@@ -298,7 +297,7 @@ class PossibleLink:
             Execute -- boolean indicating if the refactoring process will be
                     executed immediatly by this call
         """
-        response = request(self.server.binding, "solvemissinglink", {"production_id":self.id, "file_id":self.file_id, "element_id":self.element_id})
+        response = request(self.server.binding, "solvemissinglink", {"production_id":self.production.id, "file_id":self.file_id, "element_id":self.missinglink.element_id})
         
         if len(response) > 0 :
             raise BlenderAidException(response[0]["message"]) 
@@ -382,7 +381,7 @@ class Production:
             Get a list of directories in the production. Empty directories are 
             always excluded in the result.
         """
-        files = getFiles(self)
+        files = self.getFiles()
         directorynames = []
         for file in files:
             directoryname = file.getDirectoryName()
@@ -448,7 +447,7 @@ class File:
         response = request(self.server.binding,"fileview", {"production_id":self.production.id, "file_id":self.id})
         result = []
         for elementjson in response[2]:
-            element = Element(self.server, self.production, self.file, elementjson)
+            element = Element(self.server, self.production, self, elementjson)
             add = True
             if name is not None and element.name.find(name) == -1:
                 add = False
@@ -638,7 +637,7 @@ class Element:
             Returns:
                 Refactoringprocess object or an exception.
         """
-        response = request(self.server.binding, "renameelement", {"file_id":self.file.id, "element_id":self.id, "new_name":newFilename})
+        response = request(self.server.binding, "renameelement", {"file_id":self.file.id, "element_id":self.id, "new_name":newName})
         if len(response) > 0 :
             raise BlenderAidException(response[0]["message"]) 
         elif execute :
@@ -659,6 +658,12 @@ class Element:
             
         return result
     
+    def __str__(self):
+        """
+            Display the object Element as a string.
+        """
+        return "Element: "+self.name
+    
 class Reference:
     """
         Object representing a reference (link between files).
@@ -671,3 +676,9 @@ class Reference:
         self.file_location = json["file_location"]
         self.element_name = json["element_name"]
         self.element_type = json["element_type"]
+        
+    def __str__(self):
+        """
+            Display the object Reference as a string.
+        """
+        return "Reference: "+self.file_location+"=>"+self.element_name
