@@ -17,10 +17,13 @@
     
 """
 # the blender-aid API
-# httplib if < python 3.0
-# anders http.client
 
-import httplib
+try:
+	#python 3.1 include
+	import http.client as httpclient
+except:
+	#python 2.6 include
+	import httplib as httpclient
 import json
 import os
 
@@ -51,7 +54,7 @@ def request(binding, servicename, requestParams):
     # 1
     request = json.dumps(requestParams)+"\r\n"
     # 2
-    connection = httplib.HTTPConnection(binding[0], binding[1])
+    connection = httpclient.HTTPConnection(binding[0], binding[1])
     connection.request("POST", "/service/" + servicename, request)
     # 3
     response = connection.getresponse()
