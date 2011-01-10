@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2009, At Mind B.V. - Jeroen Bakker
+# (c) 2009, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 # 4-11-2009
 #  jbakker: fixed sqlite3 substr
 

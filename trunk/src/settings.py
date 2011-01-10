@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2009, At Mind B.V. - Jeroen Bakker
+# (c) 2009, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 
 # where is the webserver binding
 # do not use port less than 1024 as they need to be created with more privileged than
