@@ -1,0 +1,47 @@
+Blender-aid kan op 2 manieren opgezet worden. 
+
+1. installeren op je werkstation, hierbij werkt de SVN integratie op een "working copy". Commit en rollback moeten altijd door de gebruiker gedaan worden. een geforceerde commit kan bestanden inchecken, waar de gebruiker zelf aan het werken was.
+
+2. installeren op een server. hierbij kan blender-aid autonoom werken. de "working copy" wordt specifiek voor blender-aid aangelegd. Blender-aid functioneert dan als eind-gebruiker. blender-aid kan zelf commits uitvoeren.
+
+3. installeren op een werkstation/server zonder SVN integratie. (± huidige implementatie, wellicht zonder commit/rollback knop)
+
+beide scenario's worden ondersteund en kan aan/uitgezet worden.
+
+---
+
+installatie scenario's
+1. de gebruiker heeft reeds een bestaande working copy op zijn workstation. hij configureerd de working folder en blender-aid maakt gebruik van de reeds bestaande instellingen. Blender-aid kan checken op bestaan van .svn directory. Blender-aid heeft in deze scenario geen kennis van gebruiker, wachtwoord en svn locatie. deze is ook niet noodzakelijk.
+
+2. de gebruiker wilt blender-aid installeren op zijn werkstation. er bestaat nog geen working copy. de gebruiker voert de usernaam, wachtwoord en svn repository locatie in. blender-aid maakt de working-folder aan en haalt de bestanden uit de svn repository met de bovenstaande gegevens. Deze scenario kan alleen als: de working folder nog niet bestaat, of de working folder bestaat, maar heeft geen .svn (svn moet aangeven dat het geen working copy is) directory. er mogen wel andere bestanden cq directories bestaan.
+
+3. de gebruiker wilt blender-aid installeren op een server. er bestaat nog geen working copy. de gebruiker voert de usernaam, wachtwoord en svn repository locatie in. blender-aid maakt de working-folder aan en haalt de bestanden uit de svn repository met de bovenstaande gegevens. Deze scenario kan alleen als: de working folder nog niet bestaat, of de working folder bestaat, maar heeft geen .svn (svn moet aangeven dat het geen working copy is) directory. de directory moet leeg zijn. 
+
+4. de gebruiker wilt blender-aid installeren op een server. hij configureerd de working folder en blender-aid maakt gebruik van de reeds bestaande instellingen. Blender-aid kan checken op bestaan van .svn directory. Blender-aid heeft in deze scenario geen kennis van gebruiker, wachtwoord en svn locatie. deze is ook niet noodzakelijk.
+
+---
+werking
+
+
+---
+configuratie:
+als het nodig is een setting te hebben tussen werkstation/server variant, dan zal deze in settings.py opgenomen moeten worden
+
+Het zou mogelijk moeten zijn om per productie aan te geven welke svn-integratie-variant van toepassing is.
+a. No svn (or user controlled)
+b. use existing working copy
+c. Svn check out
+
+uit eindelijk maakt het niet uit of b of c gekozen wordt. deze resulteerd in een working copy.
+
+in een server variant wordt ook automatisch de productie bestanden geupdate, in een werkstation wordt dit niet gedaan.
+
+deployment:
+standaard wordt in settings.py de werkstation variant aangezet. mensen die de server variant willen, moeten deze zelf configureren.
+
+besluit:
+focus op installeren op workstation.
+svn update door manual knop
+svn acties tijdens refactoring waneer gekoppeld aan svn
+svn commit (manual)
+

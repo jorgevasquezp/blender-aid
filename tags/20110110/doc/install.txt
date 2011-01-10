@@ -1,0 +1,8 @@
+make sure you have python 2.6 and pysvn and subversion installed.
+python can be found on www.python.org
+pysvn can be found on http://pysvn.tigris.org/
+subversion can be found on http://subversion.tigris.org/
+
+extract the blender-aid package into a folder and start it with
+python ./server.py
+
