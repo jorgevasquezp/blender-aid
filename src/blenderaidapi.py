@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2011, At Mind B.V. - Jeroen Bakker
+# (c) 2011, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 """
     The Blender-aid API.
     

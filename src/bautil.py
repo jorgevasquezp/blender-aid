@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2009, At Mind B.V. - Jeroen Bakker
+# (c) 2009, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 
 # This file is used to support python 2.5.
 # blender-aid uses some python 2.6 specific functions.

@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2009, At Mind B.V. - Jeroen Bakker, M.Dewanchand
+# (c) 2009, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 
 
 ######################################################

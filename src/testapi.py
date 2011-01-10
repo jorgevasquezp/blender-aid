@@ -16,7 +16,7 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 #
-# (c) 2010, At Mind B.V. - Jeroen Bakker
+# (c) 2010, At Mind B.V. - Jeroen Bakker, Monique Dewanchand
 import blenderaidapi as api
 server = api.Server(("localhost", 8080))
 
