@@ -59,9 +59,10 @@ def request(binding, servicename, requestParams):
     # 3
     response = connection.getresponse()
     responseBytes = response.read()
+    responseString = responseBytes.decode()
     connection.close()
     # 4:
-    result = json.loads(responseBytes)
+    result = json.loads(responseString)
     return result
 
 class Server:
