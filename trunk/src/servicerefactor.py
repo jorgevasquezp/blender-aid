@@ -843,8 +843,8 @@ class ChangeLibrary(Task):
         newpath = "//"+_relpath(absNewLoc, fileLocationDir)
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         if self.libraryDetails[indexer.INDEX_ELEMENT_TYPE] == 'LI':
-            for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):    
-                path = libraryblock.Get("filepath").split("\0")[0].replace("\\", "/")
+            for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):   
+                path = libraryblock.Get("filename").split("\0")[0].replace("\\", "/")
                 if path == self.libraryDetails[indexer.INDEX_ELEMENT_LI_FILENAME]:
                     libraryblock.Set("name", newpath)
         elif self.libraryDetails[indexer.INDEX_ELEMENT_TYPE] == 'IM':
