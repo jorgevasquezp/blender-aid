@@ -815,7 +815,10 @@ class ChangeIDElement(Task):
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         libRef = 0
         for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):
-            relPath = libraryblock.Get("filename").split("\0")[0]
+            relPath = libraryblock.Get("filename")
+            if relPath == None:
+                relPath = libraryblock.Get("filepath")
+            relPath = relPath.split("\0")[0]
             if relPath==absRefLoc:
                 libRef = libraryblock.OldAddress
 
@@ -844,7 +847,10 @@ class ChangeLibrary(Task):
         handle = blendfile.openBlendFile(fileLocation, 'r+b')
         if self.libraryDetails[indexer.INDEX_ELEMENT_TYPE] == 'LI':
             for libraryblock in handle.FindBlendFileBlocksWithCode("LI"):   
-                path = libraryblock.Get("filename").split("\0")[0].replace("\\", "/")
+                path = libraryblock.Get("filename")
+                if path == None:
+                    path = libraryblock.Get("filepath") #blender 2.5 renamed field
+                path = path.split("\0")[0].replace("\\", "/")
                 if path == self.libraryDetails[indexer.INDEX_ELEMENT_LI_FILENAME]:
                     libraryblock.Set("name", newpath)
         elif self.libraryDetails[indexer.INDEX_ELEMENT_TYPE] == 'IM':
