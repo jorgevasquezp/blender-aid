@@ -353,6 +353,10 @@ def indexNewFile(connection, productionId, productionDir, file, useFileId=None):
             
             liName = determineProductionLocation(productionDir, file, liName)
             liFilename = block.Get("filename"); #absolute path when saved?
+            if liFilename == None:
+                # in blender 2.5 filename has been renamed to filepath
+                liFilename = block.Get("filepath"); #absolute path when saved?
+                
             connection.execute("insert into element (id, file_id, blendfile_id, name, type, li_name, li_filename) values (?,?,?,?,?,?,?)", 
                 [scId, 
                 newId, 
