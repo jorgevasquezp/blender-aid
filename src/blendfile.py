@@ -119,7 +119,7 @@ def WriteString(handle, astring, fieldlen):
 #    ReadString reads a String of given length from a file handle
 ######################################################
 STRING=[]
-for i in range(0, 250):
+for i in range(0, 2048):
     STRING.append(struct.Struct(str(i)+"s"))
                   
 def ReadString(handle, length):
